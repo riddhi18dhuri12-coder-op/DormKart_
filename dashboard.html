@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DormKart - Home</title>
+    <link rel="stylesheet" href="css/mobile-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Specific Dashboard Styles */
+        .search-bar {
+            margin: 20px;
+            background: white;
+            border-radius: 30px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            gap: 10px;
+        }
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+        }
+        .filter-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 0 20px 20px 20px;
+            gap: 10px;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .filter-scroll::-webkit-scrollbar { display: none; } /* Hide scrollbar Chrome/Safari */
+        
+        .chip {
+            background: white;
+            border: 1px solid #E2E8F0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            white-space: nowrap;
+            font-size: 14px;
+            color: #64748B;
+        }
+        .chip.active {
+            background: #14B8A6;
+            color: white;
+            border-color: #14B8A6;
+        }
+        
+        .section-title {
+            padding: 0 20px;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 0 20px 100px 20px; /* 100px padding for bottom nav */
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #14B8A6;
+            color: white;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.4);
+            cursor: pointer;
+            z-index: 90;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-bar">
+        <button class="icon-btn"><i class="material-icons">menu</i></button>
+        <h1>DormKart</h1>
+        <button class="icon-btn" onclick="logout()"><i class="material-icons">logout</i></button>
+    </div>
+
+    <div class="search-bar">
+        <i class="material-icons" style="color: #94A3B8;">search</i>
+        <input type="text" placeholder="Search textbooks, calculators...">
+    </div>
+
+    <div class="filter-scroll">
+        <div class="chip active">All Items</div>
+        <div class="chip">Books</div>
+        <div class="chip">Electronics</div>
+        <div class="chip">Notes</div>
+    </div>
+
+    <div class="section-title">
+        <i class="material-icons" style="color: #F59E0B;">local_fire_department</i> 
+        Fresh Listings
+    </div>
+
+    <div class="products-grid" id="products-container">
+        <p style="grid-column: span 2; text-align: center; color: #94A3B8; margin-top: 20px;">
+            Loading items...
+        </p>
+    </div>
+
+    <a href="add-product.html" class="fab">
+        <i class="material-icons">add</i>
+    </a>
+
+    <div class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active">
+            <i class="material-icons">home</i>
+            <span>Home</span>
+        </a>
+        <a href="marketplace.html" class="nav-item">
+            <i class="material-icons">storefront</i>
+            <span>Market</span>
+        </a>
+        <a href="chats.html" class="nav-item">
+            <i class="material-icons">chat</i>
+            <span>Chat</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="material-icons">person</i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Check if user is logged in, redirect if not
+        async function checkAuth() {
+            const { data } = await supabase.auth.getSession();
+            if (!data.session) {
+                window.location.href = 'login.html';
+            }
+        }
+        checkAuth();
+
+        async function logout() {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        }
+    </script>
+    <script src="js/products.js"></script>
+</body>
+</html>
