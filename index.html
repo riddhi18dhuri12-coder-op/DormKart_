@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DormKart</title>
+    <link rel="stylesheet" href="css/mobile-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #14B8A6;
+            color: white;
+            flex-direction: column;
+        }
+        .logo-container {
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <i class="material-icons" style="font-size: 80px;">storefront</i>
+        <h1 style="font-size: 32px; margin-top: 10px; letter-spacing: 1px;">DormKart</h1>
+        <p style="margin-top: 5px; opacity: 0.9;">Loading your campus...</p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script>
+        // Check session and route the user
+        async function routeUser() {
+            const { data } = await supabase.auth.getSession();
+            
+            setTimeout(() => {
+                if (data.session) {
+                    window.location.href = "dashboard.html";
+                } else {
+                    window.location.href = "login.html";
+                }
+            }, 1500); // 1.5 second delay just to show the splash screen
+        }
+        
+        routeUser();
+    </script>
+</body>
+</html>
