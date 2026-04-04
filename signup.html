@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sign Up - DormKart</title>
+    <link rel="stylesheet" href="css/mobile-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="background: white;">
+
+    <div class="app-bar" style="background: white; color: #0F172A; box-shadow: none;">
+        <button class="icon-btn" onclick="window.history.back()" style="color: #0F172A;">
+            <i class="material-icons">arrow_back</i>
+        </button>
+    </div>
+
+    <div class="auth-container" style="padding-top: 0;">
+        <h1 style="font-size: 28px; margin-bottom: 5px;">Create Account</h1>
+        <p style="color: #64748B; margin-bottom: 30px;">Join your campus marketplace.</p>
+
+        <form id="signupForm">
+            <div class="input-group">
+                <i class="material-icons">person</i>
+                <input type="text" id="fullName" class="android-input" placeholder="Full Name" required>
+            </div>
+
+            <div class="input-group">
+                <i class="material-icons">email</i>
+                <input type="email" id="email" class="android-input" placeholder="Email Address" required>
+            </div>
+
+            <div class="input-group">
+                <i class="material-icons">lock</i>
+                <input type="password" id="password" class="android-input" placeholder="Create Password" required>
+            </div>
+
+            <div class="input-group" style="margin-bottom: 30px;">
+                <p style="font-size: 14px; color: #64748B; margin-bottom: 8px;">Upload Student ID for Verification</p>
+                <input type="file" id="studentId" accept="image/*" class="android-input" style="padding: 12px;" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Create Account</button>
+        </form>
+
+        <p id="authMessage" style="text-align: center; margin-top: 15px;"></p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
