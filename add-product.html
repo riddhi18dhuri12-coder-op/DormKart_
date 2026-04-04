@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Add Item - DormKart</title>
+    <link rel="stylesheet" href="css/mobile-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .form-container {
+            padding: 20px;
+            padding-bottom: 40px;
+        }
+        .file-upload-box {
+            border: 2px dashed #14B8A6;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            background: #E6FFFA;
+            color: #14B8A6;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body style="background: white;">
+
+    <div class="app-bar">
+        <button class="icon-btn" onclick="window.location.href='dashboard.html'">
+            <i class="material-icons">arrow_back</i>
+        </button>
+        <h1>List an Item</h1>
+        <div style="width: 24px;"></div> </div>
+
+    <div class="form-container">
+        <form id="addProductForm">
+            
+            <div class="file-upload-box" onclick="document.getElementById('productImage').click()">
+                <i class="material-icons" style="font-size: 40px;">add_a_photo</i>
+                <p style="margin-top: 10px; font-weight: 500;">Tap to upload item photo</p>
+                <input type="file" id="productImage" accept="image/*" style="display: none;" required>
+            </div>
+            <p id="fileNameDisplay" style="text-align: center; color: #64748B; margin-bottom: 20px; font-size: 14px;"></p>
+
+            <div class="input-group">
+                <input type="text" id="title" class="android-input" style="padding-left: 16px;" placeholder="What are you selling? (e.g. Data Structures Book)" required>
+            </div>
+
+            <div style="display: flex; gap: 15px;">
+                <div class="input-group" style="flex: 1;">
+                    <i class="material-icons" style="color: #14B8A6;">currency_rupee</i>
+                    <input type="number" id="price" class="android-input" placeholder="Your Price" required>
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <i class="material-icons">sell</i>
+                    <input type="number" id="originalPrice" class="android-input" placeholder="Original Price" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <select id="category" class="android-input" style="padding-left: 16px; appearance: none;" required>
+                    <option value="" disabled selected>Select Category</option>
+                    <option value="Buy/Sell">Buy/Sell</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Swap">Swap</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <textarea id="description" class="android-input" style="padding-left: 16px; height: 100px; resize: none;" placeholder="Add some details (condition, edition, etc.)" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitProductBtn">Post Listing</button>
+            <p id="uploadMessage" style="text-align: center; margin-top: 15px; font-weight: 500;"></p>
+        </form>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/products.js"></script>
+    <script>
+        // Show selected file name
+        document.getElementById('productImage').addEventListener('change', function(e) {
+            if(e.target.files[0]) {
+                document.getElementById('fileNameDisplay').innerText = "Selected: " + e.target.files[0].name;
+            }
+        });
+    </script>
+</body>
+</html>
