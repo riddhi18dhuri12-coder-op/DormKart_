@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Login - DormKart</title>
+    <link rel="stylesheet" href="css/mobile-ui.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body style="background: white;">
+
+    <div class="auth-container">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <i class="material-icons" style="font-size: 64px; color: #14B8A6;">storefront</i>
+            <h1 style="font-size: 28px; margin-top: 10px;">Welcome Back</h1>
+            <p style="color: #64748B; margin-top: 5px;">Sign in to continue to DormKart</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <i class="material-icons">email</i>
+                <input type="email" id="email" class="android-input" placeholder="Email Address" required>
+            </div>
+
+            <div class="input-group">
+                <i class="material-icons">lock</i>
+                <input type="password" id="password" class="android-input" placeholder="Password" required>
+            </div>
+
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 24px; color: #64748B;">
+            Don't have an account? <a href="signup.html" class="text-link">Sign Up</a>
+        </p>
+        <p id="authMessage" style="text-align: center; margin-top: 15px; color: #EF4444;"></p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
