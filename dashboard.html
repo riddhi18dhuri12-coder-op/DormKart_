@@ -2,225 +2,457 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DormKart - Marketplace</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DormKart Marketplace</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
 <style>
-    :root {
-        /* Palette from your image */
-        --primary: #519755;      /* Forest Green */
-        --secondary: #A8DCAB;    /* Sage Green */
-        --accent-warm: #DBAAA7;  /* Muted Rose */
-        --accent-cool: #BE91BE;  /* Soft Lavender */
-        --bg-light: #fdfaf9;
-        --border: #dbdbdb;
-    }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root{
+--primary:#519755;
+--secondary:#A8DCAB;
+--bg:#fdfaf9;
+--border:#e5e5e5;
+}
 
-    body { 
-        background-color: var(--bg-light); 
-        font-family: -apple-system, sans-serif;
-        margin: 0;
-    }
+body{
+margin:0;
+background:var(--bg);
+font-family:-apple-system, sans-serif;
+}
 
-    /* HEADER with Notification Bell */
-    .app-header {
-        background: white;
-        height: 55px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 15px;
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
-    .app-header h1 { font-size: 18px; font-weight: 800; color: var(--primary); margin: 0; }
-    
-    .notif-btn {
-        background: none;
-        border: none;
-        font-size: 22px;
-        cursor: pointer;
-        position: relative;
-        padding: 5px;
-    }
-    .notif-badge {
-        position: absolute;
-        top: 5px;
-        right: 2px;
-        width: 10px;
-        height: 10px;
-        background: #ef4444;
-        border-radius: 50%;
-        border: 2px solid white;
-        display: none;
-    }
+header{
+height:55px;
+background:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 15px;
+border-bottom:1px solid var(--border);
+position:sticky;
+top:0;
+z-index:100;
+}
 
-    /* THE GRID: Instagram/Pinterest High Density */
-    .product-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2px;
-        padding-bottom: 100px;
-    }
+header h1{
+font-size:18px;
+font-weight:800;
+color:var(--primary);
+}
 
-    .product-card {
-        background: white;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
+.notif-btn{
+background:none;
+border:none;
+font-size:20px;
+cursor:pointer;
+position:relative;
+}
 
-    .p-img-container {
-        width: 100%;
-        aspect-ratio: 1 / 1;
-        overflow: hidden;
-        background: #f0f0f0;
-    }
-    .p-img-container img { width: 100%; height: 100%; object-fit: cover; }
+.notif-badge{
+position:absolute;
+top:0;
+right:0;
+width:10px;
+height:10px;
+background:red;
+border-radius:50%;
+display:none;
+}
 
-    .p-info { padding: 8px; }
-    .p-price { font-weight: 800; font-size: 15px; color: var(--text-dark); }
-    .p-title { font-size: 12px; margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+.search-bar{
+padding:10px;
+background:white;
+border-bottom:1px solid var(--border);
+}
 
-    /* ACTION BUTTONS */
-    .card-actions { display: flex; gap: 4px; margin-top: 5px; }
-    .action-btn {
-        flex: 1;
-        padding: 6px 0;
-        border-radius: 4px;
-        border: 1px solid var(--border);
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        cursor: pointer;
-    }
-    .btn-offer { background: var(--primary); color: white; border: none; }
+.search-bar input{
+width:100%;
+padding:8px;
+border-radius:8px;
+border:1px solid var(--border);
+}
 
-    /* BOTTOM NAV (Flat Style) */
-    .bottom-nav {
-        position: fixed; bottom: 0; width: 100%; height: 60px;
-        background: white; display: flex; justify-content: space-around;
-        align-items: center; border-top: 1px solid var(--border);
-        z-index: 1000;
-    }
-    .nav-item { text-decoration: none; color: #8e8e8e; font-size: 24px; }
-    .nav-item.active { color: var(--primary); }
+.filter-bar{
+display:flex;
+gap:6px;
+overflow-x:auto;
+padding:10px;
+}
+
+.filter-chip{
+padding:6px 10px;
+border-radius:20px;
+background:#eee;
+font-size:12px;
+cursor:pointer;
+}
+
+.product-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:2px;
+padding-bottom:100px;
+}
+
+.product-card{
+background:white;
+position:relative;
+}
+
+.p-img{
+width:100%;
+aspect-ratio:1/1;
+overflow:hidden;
+}
+
+.p-img img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.p-info{
+padding:8px;
+}
+
+.p-price{
+font-weight:800;
+font-size:15px;
+}
+
+.p-title{
+font-size:12px;
+margin:4px 0;
+}
+
+.rating{
+font-size:11px;
+color:#F59E0B;
+}
+
+.wishlist{
+position:absolute;
+top:8px;
+right:8px;
+background:white;
+border-radius:50%;
+border:none;
+width:28px;
+height:28px;
+cursor:pointer;
+}
+
+.bottom-nav{
+position:fixed;
+bottom:0;
+width:100%;
+height:60px;
+background:white;
+display:flex;
+justify-content:space-around;
+align-items:center;
+border-top:1px solid var(--border);
+}
+
+.nav-item{
+font-size:22px;
+text-decoration:none;
+color:#8e8e8e;
+}
+
+.nav-item.active{
+color:var(--primary);
+}
+
 </style>
 </head>
 
 <body>
 
-<header class="app-header">
-    <div style="width: 32px;"></div>
-    <h1>DORMKART</h1>
-    <button class="notif-btn" onclick="location='notifications.html'">
-        🔔
-        <div id="notifBadge" class="notif-badge"></div>
-    </button>
+<header>
+<div></div>
+<h1>DORMKART</h1>
+<button class="notif-btn">
+🔔
+<div id="notifBadge" class="notif-badge"></div>
+</button>
 </header>
 
+<div class="search-bar">
+<input id="searchInput" placeholder="Search items or colleges">
+</div>
+
+<div class="filter-bar">
+<div class="filter-chip" onclick="setCategory('all')">All</div>
+<div class="filter-chip" onclick="setCategory('books')">Books</div>
+<div class="filter-chip" onclick="setCategory('electronics')">Electronics</div>
+<div class="filter-chip" onclick="setCategory('hostel')">Hostel</div>
+<div class="filter-chip" onclick="setCategory('services')">Services</div>
+</div>
+
 <main>
-    <div class="product-grid" id="productGrid"></div>
+
+<h3 style="padding:10px">🔥 Trending</h3>
+<div id="trendingGrid" class="product-grid"></div>
+
+<h3 style="padding:10px">🎓 From Your College</h3>
+<div id="collegeGrid" class="product-grid"></div>
+
+<h3 style="padding:10px">Marketplace</h3>
+<div id="productGrid" class="product-grid"></div>
+
 </main>
 
 <nav class="bottom-nav">
-    <a href="dashboard.html" class="nav-item active">⌂</a>
-    <a href="chats.html" class="nav-item">🗨</a>
-    <a href="add_product.html" class="nav-item">⊕</a>
-    <a href="profile.html" class="nav-item">👤</a>
+<a href="dashboard.html" class="nav-item active">⌂</a>
+<a href="chats.html" class="nav-item">🗨</a>
+<a href="add_product.html" class="nav-item">⊕</a>
+<a href="profile.html" class="nav-item">👤</a>
 </nav>
 
 <script>
-let currentUser;
 
-window.onload = init;
+let currentUser
+let currentCategory="all"
+let page=0
+const pageSize=10
 
-async function init() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) { location = "login-signup.html"; return; }
-    currentUser = session.user;
-    
-    fetchProducts();
-    checkNotifications();
-    
-    // Realtime notification listener
-    supabaseClient
-        .channel('schema-db-changes')
-        .on('postgres_changes', { 
-            event: 'INSERT', 
-            schema: 'public', 
-            table: 'notifications',
-            filter: `user_id=eq.${currentUser.id}` 
-        }, () => {
-            document.getElementById("notifBadge").style.display = "block";
-        })
-        .subscribe();
+window.onload=init
+
+async function init(){
+
+const {data:{session}}=await supabaseClient.auth.getSession()
+
+if(!session){
+location="login-signup.html"
+return
 }
 
-async function fetchProducts() {
-    const { data } = await supabaseClient.from("products").select("*").eq("status", "active");
-    renderProducts(data);
+currentUser=session.user
+
+loadTrending()
+loadCollegeProducts()
+loadProducts()
+
+loadChatBadge()
+checkNotifications()
+
+setupInfiniteScroll()
+
 }
 
-function renderProducts(data) {
-    const grid = document.getElementById("productGrid");
-    grid.innerHTML = "";
-    data?.forEach(item => {
-        const imgUrl = item.image_url ? item.image_url.split(",")[0] : null;
-        const card = document.createElement("div");
-        card.className = "product-card";
-        card.innerHTML = `
-            <div class="p-img-container">
-                <img src="${imgUrl || 'placeholder.png'}" loading="lazy">
-            </div>
-            <div class="p-info">
-                <div class="p-price">₹${Math.floor(item.price)}</div>
-                <p class="p-title">${item.title}</p>
-                <div class="card-actions">
-                    <button onclick="location='product_detail.html?id=${item.id}'" class="action-btn">View</button>
-                    <button onclick="sendOffer('${item.seller_id}', '${item.title}')" class="action-btn btn-offer">Offer</button>
-                </div>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
+async function loadProducts(){
+
+let query=supabaseClient
+.from("products")
+.select("*")
+.eq("status","active")
+.range(page*pageSize,(page+1)*pageSize-1)
+
+if(currentCategory!=="all"){
+query=query.eq("category",currentCategory)
 }
 
-async function sendOffer(sellerId, productTitle) {
-    if (sellerId === currentUser.id) return alert("You can't offer on your own item!");
-    
-    const offerPrice = prompt("Enter your offer price:");
-    if (!offerPrice || isNaN(offerPrice)) return;
+const {data}=await query
 
-    // Send data to your notifications table
-    const { error } = await supabaseClient.from("notifications").insert({
-        user_id: sellerId,
-        title: "New Offer Received",
-        message: `Someone offered ₹${offerPrice} for your ${productTitle}`,
-        type: "offer",
-        is_read: false
-    });
+renderProducts(data,"productGrid",true)
 
-    if (!error) alert("Offer sent to seller!");
+page++
+
 }
 
-async function checkNotifications() {
-    const { count } = await supabaseClient
-        .from("notifications")
-        .select("*", { count: 'exact', head: true })
-        .eq("user_id", currentUser.id)
-        .eq("is_read", false);
-        
-    if (count > 0) document.getElementById("notifBadge").style.display = "block";
+function renderProducts(data,gridId,append=false){
+
+const grid=document.getElementById(gridId)
+
+if(!append) grid.innerHTML=""
+
+data?.forEach(item=>{
+
+const img=item.image_url?item.image_url.split(",")[0]:"placeholder.png"
+
+const card=document.createElement("div")
+
+card.className="product-card"
+
+card.innerHTML=`
+
+<button class="wishlist" onclick="toggleWishlist('${item.id}',this)">🤍</button>
+
+<div class="p-img">
+<img src="${img}" loading="lazy">
+</div>
+
+<div class="p-info">
+<div class="p-price">₹${Math.floor(item.price)}</div>
+<p class="p-title">${item.title}</p>
+<div class="rating">⭐ ${item.rating||"New Seller"}</div>
+
+<div style="display:flex;gap:4px;margin-top:5px">
+<button onclick="viewProduct('${item.id}')">View</button>
+<button onclick="makeOffer('${item.id}','${item.seller_id}')">Offer</button>
+</div>
+
+</div>
+
+`
+
+grid.appendChild(card)
+
+})
+
 }
+
+async function toggleWishlist(productId,btn){
+
+const {data}=await supabaseClient
+.from("wishlist")
+.select("*")
+.eq("user_id",currentUser.id)
+.eq("product_id",productId)
+.single()
+
+if(data){
+
+await supabaseClient
+.from("wishlist")
+.delete()
+.eq("user_id",currentUser.id)
+.eq("product_id",productId)
+
+btn.innerHTML="🤍"
+
+}else{
+
+await supabaseClient
+.from("wishlist")
+.insert({
+user_id:currentUser.id,
+product_id:productId
+})
+
+btn.innerHTML="❤️"
+
+}
+
+}
+
+async function loadTrending(){
+
+const {data}=await supabaseClient
+.from("products")
+.select("*")
+.order("views",{ascending:false})
+.limit(6)
+
+renderProducts(data,"trendingGrid")
+
+}
+
+async function loadCollegeProducts(){
+
+const {data:user}=await supabaseClient
+.from("users")
+.select("college")
+.eq("id",currentUser.id)
+.single()
+
+const {data}=await supabaseClient
+.from("products")
+.select("*,users(college)")
+.eq("users.college",user.college)
+
+renderProducts(data,"collegeGrid")
+
+}
+
+async function makeOffer(productId,sellerId){
+
+if(sellerId===currentUser.id){
+alert("Cannot offer on your own item")
+return
+}
+
+const offer=prompt("Enter your offer price")
+
+if(!offer) return
+
+await supabaseClient.from("notifications").insert({
+user_id:sellerId,
+title:"New Offer",
+message:`Offer ₹${offer} on product`,
+type:"offer"
+})
+
+alert("Offer sent!")
+
+}
+
+function setupInfiniteScroll(){
+
+window.addEventListener("scroll",()=>{
+
+if(window.innerHeight+window.scrollY>=document.body.offsetHeight-200){
+
+loadProducts()
+
+}
+
+})
+
+}
+
+async function checkNotifications(){
+
+const {count}=await supabaseClient
+.from("notifications")
+.select("*",{count:"exact",head:true})
+.eq("user_id",currentUser.id)
+.eq("is_read",false)
+
+if(count>0){
+document.getElementById("notifBadge").style.display="block"
+}
+
+}
+
+async function loadChatBadge(){
+
+const {count}=await supabaseClient
+.from("messages")
+.select("*",{count:"exact",head:true})
+.eq("receiver_id",currentUser.id)
+.eq("is_read",false)
+
+if(count>0){
+document.querySelector(".nav-item:nth-child(2)").innerHTML="🗨 "+count
+}
+
+}
+
+document.getElementById("searchInput").addEventListener("input",async function(){
+
+const term=this.value
+
+const {data}=await supabaseClient
+.from("products")
+.select("*")
+.ilike("title","%"+term+"%")
+
+renderProducts(data,"productGrid")
+
+})
+
+function setCategory(cat){
+currentCategory=cat
+page=0
+document.getElementById("productGrid").innerHTML=""
+loadProducts()
+}
+
 </script>
+
 </body>
 </html>
