@@ -3,335 +3,331 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>DormKart - Marketplace</title>
 
 <link rel="stylesheet" href="app.css">
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
 <style>
+    :root {
+        --primary: #6366f1;
+        --accent: #f59e0b;
+        --bg-glass: rgba(255, 255, 255, 0.7);
+        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
 
-/* your original styles preserved */
+    body { background: #f8fafc; font-family: 'Inter', sans-serif; }
 
-.product-card{
-background:rgba(255,255,255,0.6);
-backdrop-filter:blur(15px);
-border-radius:24px;
-padding:15px;
-box-shadow:0 8px 20px var(--shadow-color);
-transition:transform .2s;
-position:relative;
-}
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+        padding: 10px;
+    }
 
-.wishlist-btn{
-position:absolute;
-top:10px;
-right:10px;
-border:none;
-background:white;
-border-radius:50%;
-width:32px;
-height:32px;
-cursor:pointer;
-box-shadow:0 3px 10px rgba(0,0,0,0.1);
-}
+    .product-card {
+        background: var(--bg-glass);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 20px;
+        padding: 12px;
+        box-shadow: var(--shadow);
+        position: relative;
+        transition: transform 0.2s;
+    }
 
-.college-tag{
-font-size:12px;
-color:#718096;
-margin-top:4px;
-}
+    .product-card:active { transform: scale(0.97); }
 
-.rating{
-font-size:12px;
-color:#F59E0B;
-}
+    /* Badges */
+    .badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        padding: 4px 8px;
+        border-radius: 8px;
+        font-size: 10px;
+        font-weight: bold;
+        color: white;
+        z-index: 2;
+    }
+    .badge-hot { background: #ef4444; }
+    .badge-new { background: #10b981; }
 
+    .wishlist-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 2;
+        cursor: pointer;
+    }
+
+    .p-img-container {
+        width: 100%;
+        height: 130px;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    .p-img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .p-title { font-weight: 700; font-size: 14px; margin: 0; color: #1e293b; }
+    .p-price { color: var(--primary); font-weight: 800; font-size: 16px; margin: 4px 0; }
+    .college-tag { font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px; }
+
+    /* Skeleton Loader */
+    .skeleton {
+        height: 200px;
+        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 20px;
+    }
+
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 8px;
+        border-radius: 10px;
+        border: none;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        background: #e2e8f0;
+    }
+
+    .btn-offer { background: var(--primary); color: white; }
 </style>
 </head>
 
 <body>
 
 <div class="app-container">
+    <header class="app-header">
+        <h1 class="app-title">DormKart</h1>
+    </header>
 
-<header class="app-header">
-<h1 class="app-title">DormKart</h1>
-</header>
+    <main class="content-area">
+        <div class="search-bar">
+            <input id="searchInput" placeholder="Search products, brands, or dorms...">
+        </div>
 
-<main class="content-area">
+        <div style="display:flex; gap:10px; margin-bottom:15px">
+            <select id="collegeFilter" onchange="fetchProducts()" style="flex:1">
+                <option value="all">All Colleges</option>
+                <option value="mine">My College</option>
+            </select>
 
-<div class="search-bar">
-<input id="searchInput" placeholder="Search products or college">
-</div>
+            <select id="sortSelect" onchange="fetchProducts()" style="flex:1">
+                <option value="popular">🔥 Popular</option>
+                <option value="new">✨ Newest</option>
+                <option value="priceLow">₹ Low to High</option>
+                <option value="priceHigh">₹ High to Low</option>
+            </select>
+        </div>
 
-<div style="display:flex;gap:10px;margin-bottom:15px">
+        <div class="product-grid" id="productGrid">
+            <!-- Skeletons will appear here during load -->
+        </div>
 
-<select id="collegeFilter" onchange="fetchProducts()">
-<option value="all">All Colleges</option>
-<option value="mine">My College</option>
-</select>
+        <button class="btn" style="margin-top:25px;" onclick="shuffleItems()">Shuffle Feed</button>
+    </main>
 
-<select id="sortSelect" onchange="fetchProducts()">
-<option value="popular">Popular</option>
-<option value="new">Newest</option>
-<option value="priceLow">Price Low</option>
-<option value="priceHigh">Price High</option>
-<option value="college">College</option>
-</select>
-
-</div>
-
-<div class="product-grid" id="productGrid"></div>
-
-<button class="btn" style="margin-top:25px;" onclick="shuffleItems()">Shuffle Feed</button>
-
-</main>
-
-<nav class="bottom-nav">
-
-<a href="dashboard.html" class="nav-item active">
-<span>Home</span>
-</a>
-
-<a href="chats.html" class="nav-item">
-<span>Chats</span>
-</a>
-
-<a href="add_product.html" class="nav-item">
-<span>Sell</span>
-</a>
-
-<a href="profile.html" class="nav-item">
-<span>Profile</span>
-</a>
-
-</nav>
-
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active"><span>Home</span></a>
+        <a href="chats.html" class="nav-item"><span>Chats</span></a>
+        <a href="add_product.html" class="nav-item"><span>Sell</span></a>
+        <a href="profile.html" class="nav-item"><span>Profile</span></a>
+    </nav>
 </div>
 
 <script>
+let currentUser;
+let searchTimer;
 
-let currentUser
+window.onload = init;
 
-window.onload=init
-
-async function init(){
-
-const {data:{session}}=await supabaseClient.auth.getSession()
-
-if(!session){
-location="login-signup.html"
-return
+async function init() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+        location = "login-signup.html";
+        return;
+    }
+    currentUser = session.user;
+    fetchProducts();
+    listenRealtime();
 }
 
-currentUser=session.user
+async function fetchProducts() {
+    const grid = document.getElementById("productGrid");
+    // Show skeleton loaders
+    grid.innerHTML = '<div class="skeleton"></div>'.repeat(4);
 
-fetchProducts()
+    const { data: userData } = await supabaseClient
+        .from("users")
+        .select("college")
+        .eq("id", currentUser.id)
+        .single();
 
-listenRealtime()
+    let query = supabaseClient
+        .from("products")
+        .select("*, users(college)")
+        .eq("status", "active");
 
+    const filter = document.getElementById("collegeFilter").value;
+    if (filter === "mine") {
+        query = query.eq("users.college", userData.college);
+    }
+
+    const sort = document.getElementById("sortSelect").value;
+    if (sort === "new") query = query.order("created_at", { ascending: false });
+    if (sort === "priceLow") query = query.order("price", { ascending: true });
+    if (sort === "priceHigh") query = query.order("price", { ascending: false });
+
+    const { data, error } = await query;
+    
+    if (sort === "popular") {
+        data.sort((a, b) => ((b.likes || 0) + (b.views || 0)) - ((a.likes || 0) + (a.views || 0)));
+    }
+
+    renderProducts(data);
 }
 
-async function fetchProducts(){
+async function renderProducts(data) {
+    const grid = document.getElementById("productGrid");
+    grid.innerHTML = "";
 
-const {data:userData}=await supabaseClient
-.from("users")
-.select("college")
-.eq("id",currentUser.id)
-.single()
+    if (!data || data.length === 0) {
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>No products found.</p>";
+        return;
+    }
 
-let query=supabaseClient
-.from("products")
-.select("*,users(college)")
-.eq("status","active")
+    for (const item of data) {
+        // Calculate "New" badge (less than 48h old)
+        const isNew = (new Date() - new Date(item.created_at)) < 172800000;
+        const isHot = (item.views > 20);
 
-const filter=document.getElementById("collegeFilter").value
+        let imgHtml = `<div class="p-img-container" style="background:#eee; display:flex; align-items:center; justify-content:center;">📦</div>`;
+        if (item.image_url) {
+            const firstImg = item.image_url.split(",")[0];
+            imgHtml = `<div class="p-img-container"><img src="${firstImg}" loading="lazy"></div>`;
+        }
 
-if(filter==="mine")
-query=query.eq("users.college",userData.college)
-
-const sort=document.getElementById("sortSelect").value
-
-if(sort==="new")
-query=query.order("created_at",{ascending:false})
-
-if(sort==="priceLow")
-query=query.order("price",{ascending:true})
-
-if(sort==="priceHigh")
-query=query.order("price",{ascending:false})
-
-const {data}=await query
-
-data.sort((a,b)=>{
-
-const scoreA=(a.likes||0)*2+(a.views||0)
-const scoreB=(b.likes||0)*2+(b.views||0)
-
-return scoreB-scoreA
-
-})
-
-renderProducts(data)
-
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+            ${isHot ? '<span class="badge badge-hot">🔥 HOT</span>' : ''}
+            ${isNew && !isHot ? '<span class="badge badge-new">✨ NEW</span>' : ''}
+            <button class="wishlist-btn" onclick="toggleWishlist('${item.id}', this)">🤍</button>
+            
+            ${imgHtml}
+            
+            <p class="p-title">${item.title}</p>
+            <div class="p-price">₹${Math.floor(item.price)}</div>
+            <div class="college-tag">📍 ${item.users?.college || "Global"}</div>
+            
+            <div class="card-actions">
+                <button onclick="location='product_detail.html?id=${item.id}'" class="action-btn">View</button>
+                <button onclick="makeOffer('${item.id}', ${item.price})" class="action-btn btn-offer">Offer</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    }
 }
 
-async function renderProducts(data){
+// ADVANCED: Debounced Search
+document.getElementById("searchInput").addEventListener("input", function() {
+    clearTimeout(searchTimer);
+    const term = this.value;
+    searchTimer = setTimeout(async () => {
+        if (!term) return fetchProducts();
+        
+        const { data } = await supabaseClient
+            .from("products")
+            .select("*, users(college)")
+            .or(`title.ilike.%${term}%, description.ilike.%${term}%`)
+            .eq("status", "active");
+            
+        renderProducts(data);
+    }, 400); // Wait 400ms after typing stops
+});
 
-const grid=document.getElementById("productGrid")
+// ADVANCED: Offer System
+async function makeOffer(productId, price) {
+    const amount = prompt(`The asking price is ₹${price}. What is your offer?`);
+    if (!amount || isNaN(amount)) return;
 
-grid.innerHTML=""
+    const { error } = await supabaseClient
+        .from("offers")
+        .insert({
+            product_id: productId,
+            buyer_id: currentUser.id,
+            amount: parseFloat(amount),
+            status: 'pending'
+        });
 
-for(const item of data){
-
-const rating=await getSellerRating(item.seller_id)
-
-let img=`<div class="p-img">📦</div>`
-
-if(item.image_url){
-const first=item.image_url.split(",")[0]
-img=`<img src="${first}" style="width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:12px">`
+    if (error) alert("Could not send offer.");
+    else alert("Offer sent to seller!");
 }
 
-const card=document.createElement("div")
+async function toggleWishlist(productId, btn) {
+    const { data: existing } = await supabaseClient
+        .from("wishlist")
+        .select("*")
+        .eq("user_id", currentUser.id)
+        .eq("product_id", productId)
+        .single();
 
-card.className="product-card"
-
-card.innerHTML=`
-
-<button class="wishlist-btn" onclick="toggleWishlist('${item.id}',this)">🤍</button>
-
-${img}
-
-<p class="p-title">${item.title}</p>
-
-<div class="p-price">₹${Number(item.price).toFixed(2)}</div>
-
-<div class="college-tag">🎓 ${item.users?.college||""}</div>
-
-<div class="rating">⭐ ${rating}</div>
-
-<div class="card-actions">
-
-<a href="product_detail.html?id=${item.id}" class="action-icon-btn">View</a>
-
-<button onclick="startChat('${item.id}','${item.seller_id}')" class="action-icon-btn">Chat</button>
-
-</div>
-
-`
-
-grid.appendChild(card)
-
+    if (existing) {
+        await supabaseClient.from("wishlist").delete().eq("id", existing.id);
+        btn.innerHTML = "🤍";
+    } else {
+        await supabaseClient.from("wishlist").insert({ user_id: currentUser.id, product_id: productId });
+        btn.innerHTML = "❤️";
+    }
 }
 
+function shuffleItems() {
+    const grid = document.getElementById("productGrid");
+    const cards = [...grid.children];
+    for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    grid.innerHTML = "";
+    cards.forEach(c => grid.appendChild(c));
 }
 
-async function toggleWishlist(productId,btn){
-
-const {data:existing}=await supabaseClient
-.from("wishlist")
-.select("*")
-.eq("user_id",currentUser.id)
-.eq("product_id",productId)
-.single()
-
-if(existing){
-
-await supabaseClient
-.from("wishlist")
-.delete()
-.eq("user_id",currentUser.id)
-.eq("product_id",productId)
-
-btn.innerHTML="🤍"
-
-}else{
-
-await supabaseClient
-.from("wishlist")
-.insert({user_id:currentUser.id,product_id:productId})
-
-btn.innerHTML="❤️"
-
+function listenRealtime() {
+    supabaseClient
+        .channel("public:products")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "products" }, payload => {
+            fetchProducts();
+        })
+        .subscribe();
 }
-
-}
-
-async function getSellerRating(sellerId){
-
-const {data}=await supabaseClient
-.from("reviews")
-.select("rating")
-.eq("seller_id",sellerId)
-
-if(!data||data.length===0) return "New"
-
-let total=0
-data.forEach(r=>total+=r.rating)
-
-return (total/data.length).toFixed(1)
-
-}
-
-function startChat(productId,sellerId){
-
-location=`chat_room.html?user=${sellerId}`
-
-}
-
-function shuffleItems(){
-
-const grid=document.getElementById("productGrid")
-
-const cards=[...grid.children]
-
-for(let i=cards.length-1;i>0;i--){
-
-const j=Math.floor(Math.random()*(i+1))
-
-;[cards[i],cards[j]]=[cards[j],cards[i]]
-
-}
-
-grid.innerHTML=""
-
-cards.forEach(c=>grid.appendChild(c))
-
-}
-
-function listenRealtime(){
-
-supabaseClient
-.channel("products")
-.on("postgres_changes",
-{event:"INSERT",schema:"public",table:"products"},
-payload=>{
-
-fetchProducts()
-
-})
-.subscribe()
-
-}
-
-document.getElementById("searchInput")
-.addEventListener("input",async function(){
-
-const term=this.value
-
-const {data}=await supabaseClient
-.from("products")
-.select("*,users(college)")
-.or(`title.ilike.%${term}%,users.college.ilike.%${term}%`)
-.eq("status","active")
-
-renderProducts(data)
-
-})
-
 </script>
 
 </body>
