@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DormKart - Chats</title>
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chat-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(20, 184, 166, 0.1);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chat-card:active {
+            transform: scale(0.98);
+        }
+
+        .chat-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--background), #E2E8F0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            border: 2px solid white;
+            box-shadow: 0 4px 10px rgba(20, 184, 166, 0.2);
+        }
+
+        .chat-info {
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .chat-name {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #2D3748;
+            margin-bottom: 4px;
+        }
+
+        .chat-preview {
+            color: #718096;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .chat-time {
+            font-size: 0.75rem;
+            color: #A0AEC0;
+            font-weight: 600;
+        }
+
+        .unread-badge {
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #A0AEC0;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    
+        <header class="app-header">
+            <h1 class="app-title">Messages</h1>
+            <div class="header-action">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+            </div>
+        </header>
+
+        <main class="content-area">
+            
+            <div class="chat-list" id="chatList">
+                <!-- Chats will be dynamically loaded here -->
+                <div style="text-align: center; color: #718096; padding: 20px;">
+                    Fetching messages...
+                </div>
+                
+            </div>
+
+            <!-- Optional empty state to be triggered dynamically later -->
+            <!--
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                </div>
+                <h3>No messages yet</h3>
+                <p>Start floating some items to get buyer requests!</p>
+            </div>
+            -->
+
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                <span>Home</span>
+            </a>
+            <a href="chats.html" class="nav-item active">
+                <div id="messageNav" class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                <span>Chats</span>
+            </a>
+            <a href="add_product.html" class="nav-item">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                <span>Sell</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                <span>Profile</span>
+            </a>
+        </nav>
+        
+    </div>
+
+    <!-- Supabase JS CDN and User Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    
+    <script>
+        // Check Session
+        let currentUserId = null;
+        window.onload = async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login-signup.html';
+                return;
+            }
+            currentUserId = session.user.id;
+
+            const params = new URLSearchParams(window.location.search);
+            const newChatUser = params.get('new');
+            if (newChatUser) {
+                window.location.href = `chat_room.html?user=${newChatUser}`;
+                return;
+            }
+
+            await fetchChats();
+        };
+
+        async function fetchChats() {
+            const container = document.getElementById('chatList');
+            
+            const { data, error } = await supabaseClient
+                .from('chats')
+                .select('*')
+                .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
+                .order('created_at', { ascending: false });
+
+            container.innerHTML = '';
+
+            if (error) {
+                container.innerHTML = `<div style="color:red; text-align:center;">Failed to load chats: ${error.message}</div>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        </div>
+                        <h3>No messages yet</h3>
+                        <p>Start floating some items to get buyer requests!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const convos = new Map();
+            const userIds = new Set();
+            data.forEach(msg => {
+                const otherUserId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+                if (!convos.has(otherUserId)) {
+                    convos.set(otherUserId, msg);
+                }
+                userIds.add(msg.sender_id);
+                userIds.add(msg.receiver_id);
+            });
+
+            // Fetch explicitly
+            const { data: usersData } = await supabaseClient
+                .from('users')
+                .select('id, name, avatar_url')
+                .in('id', Array.from(userIds));
+
+            const userMap = {};
+            if(usersData) {
+                usersData.forEach(u => userMap[u.id] = u);
+            }
+
+            convos.forEach((msg, otherId) => {
+                const card = document.createElement('div');
+                card.className = 'chat-card';
+                card.onclick = () => window.location.href = `chat_room.html?user=${otherId}`;
+                
+                const isSentByMe = msg.sender_id === currentUserId;
+                const otherUser = userMap[otherId];
+                const displayName = otherUser?.name || 'User';
+                const avatarUrl = otherUser?.avatar_url;
+                
+                const badgeHtml = (!isSentByMe && !msg.is_read) ? `<div class="unread-badge">New</div>` : '';
+                const d = new Date(msg.created_at);
+                const timeString = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                let avatarHtml = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+                if(avatarUrl) {
+                    avatarHtml = `<img src="${avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                }
+
+                card.innerHTML = `
+                    <div class="chat-avatar" style="padding: ${avatarUrl ? '0' : '8px'}; display:flex; align-items:center; justify-content:center; overflow:hidden; background: ${avatarUrl ? 'none' : 'linear-gradient(135deg, var(--secondary), var(--primary))'};">
+                        ${avatarHtml}
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-name">${displayName}</div>
+                        <div class="chat-preview">${isSentByMe ? 'You: ' : ''}${msg.message}</div>
+                    </div>
+                    <div class="chat-meta">
+                        <div class="chat-time">${timeString}</div>
+                        ${badgeHtml}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

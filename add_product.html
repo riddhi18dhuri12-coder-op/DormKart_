@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DormKart - Sell</title>
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .form-container {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(20, 184, 166, 0.1);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .image-upload-box {
+            width: 100%;
+            height: 150px;
+            background: rgba(20, 184, 166, 0.05);
+            border: 2px dashed rgba(20, 184, 166, 0.3);
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .image-upload-box:hover {
+            background: rgba(20, 184, 166, 0.1);
+        }
+
+        .image-upload-box span {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .image-upload-box input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #4A5568;
+            margin-bottom: 8px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.2);
+        }
+
+        .form-group textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        .price-input-wrapper {
+            position: relative;
+        }
+
+        .price-input-wrapper::before {
+            content: '$';
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #718096;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .price-input-wrapper input {
+            padding-left: 35px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .submit-btn {
+            margin-top: 10px;
+        }
+
+        .submit-btn:disabled {
+            filter: grayscale(1);
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    
+        <header class="app-header">
+            <h1 class="app-title">Float an Item</h1>
+        </header>
+
+        <main class="content-area">
+            
+            <div class="form-container">
+                <form id="addItemForm" onsubmit="handleFormSubmit(event)">
+                    
+                    <div class="image-upload-box" id="uploadBox">
+                        <span id="uploadIcon">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.6"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </span>
+                        <div id="uploadText">Select Photos (Max 5)</div>
+                        <input type="file" id="imageFile" accept="image/*" multiple onchange="previewFile()">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="title" placeholder="e.g. Calculus Textbook" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Price</label>
+                        <div class="price-input-wrapper">
+                            <input type="number" id="price" placeholder="0.00" step="0.01" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="category" required>
+                            <option value="">Select Category</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Dorm Essentials">Dorm Essentials</option>
+                            <option value="Services">Services</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Condition</label>
+                        <select id="condition">
+                            <option value="New">New</option>
+                            <option value="Like New">Like New</option>
+                            <option value="Good">Good</option>
+                            <option value="Fair">Fair</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="description" placeholder="Describe the condition, why you're floating it, etc..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn submit-btn">List on DormKart</button>
+
+                </form>
+            </div>
+
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
+                <span>Home</span>
+            </a>
+            <a href="chats.html" class="nav-item">
+                <div id="messageNav" class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                <span>Chats</span>
+            </a>
+            <a href="add_product.html" class="nav-item active">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
+                <span>Sell</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
+                <span>Profile</span>
+            </a>
+        </nav>
+        
+    </div>
+
+    <!-- Supabase JS CDN and User Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    
+    <script>
+        let currentSession = null;
+
+        // Check Session
+        window.onload = async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login-signup.html';
+                return;
+            }
+            currentSession = session;
+        };
+
+        function previewFile() {
+            const fileInput = document.getElementById('imageFile');
+            const uploadText = document.getElementById('uploadText');
+            const uploadIcon = document.getElementById('uploadIcon');
+            
+            if (fileInput.files && fileInput.files.length > 0) {
+                if (fileInput.files.length > 5) {
+                    alert("Maximum 5 photos allowed. Please re-select.");
+                    fileInput.value = ''; // clear
+                    uploadText.innerText = "Select Photos (Max 5)";
+                    uploadIcon.innerText = "📷";
+                    return;
+                }
+                uploadText.innerText = `${fileInput.files.length} Photo(s) Selected`;
+                uploadIcon.innerText = "✔️";
+            }
+        }
+
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            const btn = document.querySelector('.submit-btn');
+            btn.innerHTML = "Floating Item...";
+            btn.disabled = true;
+
+            try {
+                // Upload Multiple Images
+                const fileInput = document.getElementById('imageFile');
+                let publicUrls = [];
+                
+                if (fileInput.files && fileInput.files.length > 0) {
+                    for (let i = 0; i < fileInput.files.length; i++) {
+                        const file = fileInput.files[i];
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `${Math.random()}.${fileExt}`;
+                        const filePath = `${currentSession.user.id}/${fileName}`;
+
+                        const { error: uploadError } = await supabaseClient.storage
+                            .from('product-images')
+                            .upload(filePath, file);
+
+                        if (uploadError) throw uploadError;
+
+                        const { data } = supabaseClient.storage.from('product-images').getPublicUrl(filePath);
+                        publicUrls.push(data.publicUrl);
+                    }
+                }
+
+                // Join URLs by comma for text column
+                const commaSeparatedUrls = publicUrls.length > 0 ? publicUrls.join(',') : null;
+
+                // Insert into products
+                const productData = {
+                    seller_id: currentSession.user.id,
+                    title: document.getElementById('title').value,
+                    price: parseFloat(document.getElementById('price').value),
+                    category: document.getElementById('category').value,
+                    condition: document.getElementById('condition').value || null,
+                    description: document.getElementById('description').value || null,
+                    image_url: commaSeparatedUrls,
+                    status: 'active'
+                };
+
+                const { error: insertError } = await supabaseClient
+                    .from('products')
+                    .insert([productData]);
+
+                if (insertError) throw insertError;
+
+                alert("Success! Your item is now floating in the marketplace.");
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                alert("Error: " + error.message);
+                btn.innerHTML = "List on DormKart";
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>DormKart</title>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #A8DCAB, #519755);
+            color: white;
+            flex-direction: column;
+            font-family: Segoe UI, sans-serif;
+        }
+
+        .logo-container {
+            text-align: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="logo-container">
+
+        <i class="material-icons" style="font-size:80px;">storefront</i>
+
+        <h1 style="font-size:32px;margin-top:10px;letter-spacing:1px;">
+            DormKart
+        </h1>
+
+        <p style="margin-top:5px;opacity:0.9;">
+            Loading your campus...
+        </p>
+
+    </div>
+
+    <script>
+
+        setTimeout(function () {
+
+            window.location.href = "login-signup.html"
+
+        }, 5000)
+
+    </script>
+
+</body>
+
+</html>

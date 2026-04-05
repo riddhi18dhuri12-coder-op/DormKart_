@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DormKart - Login / Signup</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Segoe UI, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F0FDFA;
+        }
+
+        .container {
+            width: 850px;
+            height: 500px;
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .left {
+            flex: 1;
+            background: linear-gradient(135deg, #A8DCAB, #519755);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .left h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .left p {
+            opacity: 0.9;
+        }
+
+        .right {
+            flex: 1;
+            padding: 40px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tabs button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: #eee;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .tabs button.active {
+            background: #519755;
+            color: white;
+            font-weight: 700;
+        }
+
+        .form {
+            display: none;
+            flex-direction: column;
+        }
+
+        .form.active {
+            display: flex;
+        }
+
+        input {
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button.submit {
+            padding: 12px;
+            border: none;
+            background: linear-gradient(135deg, #A8DCAB, #519755);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button.submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 151, 85, 0.3);
+        }
+
+        .message {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left">
+            <h1>DormKart</h1>
+            <p>Smart Campus Marketplace</p>
+        </div>
+
+        <div class="right">
+
+            <div class="tabs">
+                <button id="loginTab" class="active">Login</button>
+                <button id="signupTab">Sign Up</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+
+            <div id="loginForm" class="form active">
+
+                <input type="email" id="loginEmail" placeholder="College Email">
+
+                <input type="password" id="loginPassword" placeholder="Password">
+
+                <button class="submit" onclick="login()">Login</button>
+
+                <div id="loginMsg" class="message"></div>
+
+            </div>
+
+            <!-- SIGNUP FORM -->
+
+            <div id="signupForm" class="form">
+
+                <input type="email" id="signupEmail" placeholder="College Email">
+
+                <input type="password" id="signupPassword" placeholder="Password">
+
+                <button class="submit" onclick="signup()">Create Account</button>
+
+                <div id="signupMsg" class="message"></div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+
+        const loginTab = document.getElementById("loginTab")
+        const signupTab = document.getElementById("signupTab")
+
+        const loginForm = document.getElementById("loginForm")
+        const signupForm = document.getElementById("signupForm")
+
+        loginTab.onclick = () => {
+
+            loginTab.classList.add("active")
+            signupTab.classList.remove("active")
+
+            loginForm.classList.add("active")
+            signupForm.classList.remove("active")
+
+        }
+
+        signupTab.onclick = () => {
+
+            signupTab.classList.add("active")
+            loginTab.classList.remove("active")
+
+            signupForm.classList.add("active")
+            loginForm.classList.remove("active")
+
+        }
+
+        async function signup() {
+
+            const email = document.getElementById("signupEmail").value
+            const password = document.getElementById("signupPassword").value
+
+            const msg = document.getElementById("signupMsg")
+
+            if (!email || !password) {
+
+                msg.style.color = "red"
+                msg.innerText = "Enter email and password"
+                return
+
+            }
+
+            msg.innerText = "Creating account..."
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email: email,
+                password: password
+            })
+
+            if (error) {
+
+                msg.style.color = "red"
+                msg.innerText = error.message
+                return
+
+            }
+
+            const user = data.user
+
+            await supabaseClient
+                .from("users")
+                .upsert({
+                    id: user.id,
+                    email: user.email
+                })
+
+            msg.style.color = "green"
+            msg.innerText = "Signup successful! Redirecting..."
+
+            setTimeout(() => {
+                window.location = "profile.html"
+            }, 1500)
+
+        }
+
+        async function login() {
+
+            const email = document.getElementById("loginEmail").value
+            const password = document.getElementById("loginPassword").value
+
+            const msg = document.getElementById("loginMsg")
+
+            if (!email || !password) {
+
+                msg.style.color = "red"
+                msg.innerText = "Enter email and password"
+                return
+
+            }
+
+            msg.innerText = "Logging in..."
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            })
+
+            if (error) {
+
+                msg.style.color = "red"
+                msg.innerText = error.message
+                return
+
+            }
+
+            msg.style.color = "green"
+            msg.innerText = "Login successful! Redirecting..."
+
+            setTimeout(() => {
+                window.location = "dashboard.html"
+            }, 1000)
+
+        }
+
+        async function checkSession() {
+
+            const { data } = await supabaseClient.auth.getSession()
+
+            if (data.session) {
+                window.location = "dashboard.html"
+            }
+
+        }
+
+        checkSession()
+
+    </script>
+
+</body>
+
+</html>

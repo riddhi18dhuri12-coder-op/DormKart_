@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DormKart - Seller Profile</title>
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .back-nav {
+            padding: 20px;
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .seller-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 20px;
+        }
+
+        .s-avatar {
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .s-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3748;
+        }
+
+        .s-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 10px;
+            color: #718096;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 0 20px 15px 20px;
+            color: #2D3748;
+            border-bottom: 2px solid rgba(20, 184, 166, 0.2);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .horizontal-scroll {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 0 20px 20px 20px;
+            scrollbar-width: none;
+        }
+        .horizontal-scroll::-webkit-scrollbar { display: none; }
+
+        .mini-card {
+            min-width: 150px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 10px;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            cursor: pointer;
+        }
+
+        .mc-img {
+            height: 100px;
+            background: #E2E8F0;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mc-title { font-weight: 600; font-size: 0.85rem; color:#2D3748; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mc-price { color: var(--primary); font-weight: 700; }
+
+        /* Review Section */
+        .review-list {
+            padding: 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            padding: 15px;
+            border: 1px solid rgba(20, 184, 166, 0.1);
+        }
+
+        .r-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .r-stars { color: #F6E05E; font-size: 1.1rem; }
+        .r-date { color: #A0AEC0; font-size: 0.75rem; font-weight: 600; }
+        .r-text { color: #4A5568; font-size: 0.9rem; line-height: 1.5; }
+
+        /* Add Review Form */
+        .add-review-box {
+            margin: 0 20px 40px 20px;
+            background: rgba(20, 184, 166, 0.05);
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px dashed rgba(20, 184, 166, 0.3);
+        }
+
+        .add-review-box select, .add-review-box textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="app-container">
+    
+        <div class="back-nav" onclick="window.history.back()" style="display:flex; align-items:center; gap:5px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Back
+        </div>
+
+        <div class="seller-header">
+            <div class="s-avatar">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </div>
+            <div class="s-name" id="sellerName">Loading...</div>
+            <div class="s-stats">
+                <div style="display:flex; align-items:center; justify-content:center; gap:5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                    <span id="avgRating">-</span>/5 Rating
+                </div>
+                <div style="display:flex; align-items:center; justify-content:center; gap:5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                    <span id="itemCount">0</span> Active Items
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Items for Sale</div>
+        <div class="horizontal-scroll" id="sellerItems">
+            <div style="color:#A0AEC0;">Fetching items...</div>
+        </div>
+
+        <div class="section-title">Verified Reviews</div>
+        <div class="review-list" id="reviewContainer">
+            <div style="color:#A0AEC0;">Fetching reviews...</div>
+        </div>
+
+        <div class="add-review-box" id="addReviewFormArea" style="display:none;">
+            <p style="font-weight:700; color:#2D3748; margin-bottom:10px;">Leave a Review</p>
+            <select id="r-rating">
+                <option value="5">Excellent</option>
+                <option value="4">Good</option>
+                <option value="3">Average</option>
+                <option value="2">Fair</option>
+                <option value="1">Poor</option>
+            </select>
+            <textarea id="r-text" rows="3" placeholder="How was the transaction?"></textarea>
+            <button class="btn" onclick="submitReview()" id="submitRevBtn">Post Review</button>
+        </div>
+        
+    </div>
+
+    <!-- Supabase JS CDN and User Config -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    
+    <script>
+        let currentUserId = null;
+        let targetSellerId = null;
+
+        window.onload = async () => {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login-signup.html';
+                return;
+            }
+            currentUserId = session.user.id;
+
+            const urlParams = new URLSearchParams(window.location.search);
+            targetSellerId = urlParams.get('id');
+            
+            if(!targetSellerId) {
+                alert("No seller specified.");
+                window.history.back();
+                return;
+            }
+
+            if(targetSellerId !== currentUserId) {
+                document.getElementById('addReviewFormArea').style.display = 'block';
+            }
+
+            fetchSellerData();
+            fetchSellerItems();
+            fetchReviews();
+        };
+
+        async function fetchSellerData() {
+            const { data } = await supabaseClient.from('users').select('name, avatar_url').eq('id', targetSellerId).single();
+            if (data) {
+                if(data.name) document.getElementById('sellerName').innerText = data.name;
+                else document.getElementById('sellerName').innerText = "Verified Seller";
+                
+                if(data.avatar_url) {
+                    const avatarDiv = document.querySelector('.s-avatar');
+                    avatarDiv.innerHTML = `<img src="${data.avatar_url}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+                    avatarDiv.style.background = 'none';
+                }
+            }
+        }
+
+        async function fetchSellerItems() {
+            const { data, error, count } = await supabaseClient
+                .from('products')
+                .select('*', { count: 'exact' })
+                .eq('seller_id', targetSellerId)
+                .eq('status', 'active');
+            
+            if(count) document.getElementById('itemCount').innerText = count;
+
+            const container = document.getElementById('sellerItems');
+            if(error || !data || data.length === 0) {
+                container.innerHTML = `<div style="color:#A0AEC0;">No active listings found.</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            data.forEach(item => {
+                let imgHtml = `<div class="mc-img"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg></div>`;
+                if(item.image_url) {
+                    const primary = item.image_url.split(',')[0].trim();
+                    imgHtml = `<img src="${primary}" style="width:100%; height:100Px; object-fit:cover; border-radius:12px; margin-bottom:10px;">`;
+                }
+
+                const card = document.createElement('div');
+                card.className = 'mini-card';
+                card.onclick = () => window.location.href = `product_detail.html?id=${item.id}`;
+                card.innerHTML = `
+                    ${imgHtml}
+                    <div class="mc-title">${item.title}</div>
+                    <div class="mc-price">$${Number(item.price).toFixed(2)}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        async function fetchReviews() {
+            const container = document.getElementById('reviewContainer');
+            // Assuming the `reviews` table was created manually in SQL execution based on the implementation plan!
+            const { data, error } = await supabaseClient
+                .from('reviews')
+                .select('*')
+                .eq('seller_id', targetSellerId)
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                container.innerHTML = `<div style="color:#A0AEC0;">Reviews table might not be active yet.</div>`;
+                return;
+            }
+
+            if(!data || data.length === 0) {
+                container.innerHTML = `<div style="color:#A0AEC0;">No reviews yet. Be the first!</div>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            let totalScore = 0;
+            data.forEach(rev => {
+                totalScore += rev.rating;
+                const stars = '<svg width="12" height="12" viewBox="0 0 24 24" fill="var(--primary)" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:2px"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>'.repeat(rev.rating);
+                const dateStr = new Date(rev.created_at).toLocaleDateString();
+                
+                const card = document.createElement('div');
+                card.className = 'review-card';
+                card.innerHTML = `
+                    <div class="r-header">
+                        <div class="r-stars">${stars}</div>
+                        <div class="r-date">${dateStr}</div>
+                    </div>
+                    <div class="r-text">${rev.comment || 'No comment provided.'}</div>
+                `;
+                container.appendChild(card);
+            });
+
+            const avg = (totalScore / data.length).toFixed(1);
+            document.getElementById('avgRating').innerText = avg;
+        }
+
+        async function submitReview() {
+            const rating = parseInt(document.getElementById('r-rating').value);
+            const text = document.getElementById('r-text').value;
+            const btn = document.getElementById('submitRevBtn');
+
+            btn.disabled = true;
+            btn.innerHTML = "Posting...";
+
+            const { error } = await supabaseClient.from('reviews').insert([{
+                seller_id: targetSellerId,
+                buyer_id: currentUserId,
+                rating: rating,
+                comment: text
+            }]);
+
+            if(error) {
+                alert("Failed to post review. Ensure the reviews table is created in Supabase.");
+                btn.disabled = false;
+                btn.innerHTML = "Post Review";
+            } else {
+                alert("Review posted!");
+                document.getElementById('r-text').value = '';
+                fetchReviews(); // reload
+                btn.disabled = false;
+                btn.innerHTML = "Post Review";
+            }
+        }
+    </script>
+</body>
+</html>
