@@ -44,6 +44,11 @@ background:#14b8a6;
 margin:auto;
 overflow:hidden;
 cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+color:white;
+font-weight:bold;
 }
 
 .avatar img{
@@ -95,6 +100,12 @@ gap:10px;
 border:1px solid #eee;
 padding:10px;
 border-radius:10px;
+}
+
+.product img{
+width:100%;
+border-radius:8px;
+margin-bottom:6px;
 }
 
 </style>
@@ -227,14 +238,13 @@ return
 currentUser=session.user
 
 loadProfile()
-
 loadListings()
-
 loadWishlist()
-
 loadTransactions()
 
 }
+
+/* PROFILE LOAD */
 
 async function loadProfile(){
 
@@ -261,7 +271,33 @@ if(data.avatar_url){
 avatarBox.innerHTML=`<img src="${data.avatar_url}">`
 }
 
+/* TOTAL VIEWS */
+
+const {data:viewsData}=await supabaseClient
+.from("products")
+.select("views")
+.eq("seller_id",currentUser.id)
+
+let totalViews=0
+
+viewsData?.forEach(p=>{
+totalViews+=p.views || 0
+})
+
+statViews.innerText=totalViews
+
+/* WISHLIST COUNT */
+
+const {count}=await supabaseClient
+.from("wishlist")
+.select("*",{count:"exact",head:true})
+.eq("user_id",currentUser.id)
+
+statWishlist.innerText=count || 0
+
 }
+
+/* ENABLE EDIT */
 
 function enableEdit(){
 
@@ -274,6 +310,8 @@ saveBtn.style.display="block"
 editBtn.style.display="none"
 
 }
+
+/* SAVE PROFILE */
 
 async function saveProfile(){
 
@@ -293,12 +331,15 @@ location.reload()
 
 }
 
+/* LOAD LISTINGS */
+
 async function loadListings(){
 
 const {data}=await supabaseClient
 .from("products")
 .select("*")
 .eq("seller_id",currentUser.id)
+.eq("status","active")
 .limit(6)
 
 listingGrid.innerHTML=""
@@ -306,16 +347,34 @@ listingGrid.innerHTML=""
 data?.forEach(p=>{
 
 listingGrid.innerHTML+=`
+
 <div class="product">
+
+<img src="${p.image_url || ''}">
+
 <b>${p.title}</b>
+
 <br>
+
 ₹${p.price}
+
+<br>
+
+<small>${p.condition || ''}</small>
+
+<br>
+
+👁 ${p.views || 0} ❤️ ${p.likes || 0}
+
 </div>
+
 `
 
 })
 
 }
+
+/* LOAD WISHLIST */
 
 async function loadWishlist(){
 
@@ -330,17 +389,29 @@ data?.forEach(w=>{
 
 const p=w.products
 
+if(!p) return
+
 wishlistGrid.innerHTML+=`
+
 <div class="product">
+
+<img src="${p.image_url || ''}">
+
 <b>${p.title}</b>
+
 <br>
+
 ₹${p.price}
+
 </div>
+
 `
 
 })
 
 }
+
+/* LOAD TRANSACTIONS */
 
 async function loadTransactions(){
 
@@ -361,6 +432,39 @@ transactionsBox.innerHTML+=`
 })
 
 }
+
+/* AVATAR UPLOAD */
+
+avatarUpload.onchange=async function(){
+
+const file=this.files[0]
+if(!file)return
+
+const fileName=currentUser.id+"-"+Date.now()
+
+const {error}=await supabaseClient.storage
+.from("dormkart-assets")
+.upload("avatars/"+fileName,file)
+
+if(error){
+alert(error.message)
+return
+}
+
+const {data}=supabaseClient.storage
+.from("dormkart-assets")
+.getPublicUrl("avatars/"+fileName)
+
+await supabaseClient
+.from("users")
+.update({avatar_url:data.publicUrl})
+.eq("id",currentUser.id)
+
+location.reload()
+
+}
+
+/* LOGOUT */
 
 async function logout(){
 
