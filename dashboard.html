@@ -10,352 +10,442 @@
 
 <style>
 :root {
-    --primary:#519755;
-    --secondary:#A8DCAB;
-    --accent-warm:#DBAAA7;
-    --accent-cool:#BE91BE;
-    --bg-light:#fdfaf9;
-    --border:#dbdbdb;
+  --primary: #519755;
+  --secondary: #A8DCAB;
+  --accent-warm: #DBAAA7;
+  --accent-cool: #BE91BE;
+  --bg-light: #fdfaf9;
+  --border: #dbdbdb;
 }
 
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-
-body{
-background-color:var(--bg-light);
-font-family:-apple-system,sans-serif;
-margin:0;
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* HEADER */
-
-.app-header{
-background:white;
-height:55px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 15px;
-border-bottom:1px solid var(--border);
-position:sticky;
-top:0;
-z-index:1000;
+body {
+  background-color: var(--bg-light);
+  font-family: -apple-system, sans-serif;
+  margin: 0;
 }
 
-.app-header h1{
-font-size:18px;
-font-weight:800;
-color:var(--primary);
-margin:0;
+/* ── HEADER ── */
+
+.app-header {
+  background: white;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 15px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.notif-btn{
-background:none;
-border:none;
-font-size:22px;
-cursor:pointer;
-position:relative;
-padding:5px;
+.app-header h1 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0;
 }
 
-.notif-badge{
-position:absolute;
-top:5px;
-right:2px;
-width:10px;
-height:10px;
-background:#ef4444;
-border-radius:50%;
-border:2px solid white;
-display:none;
+.notif-btn {
+  background: none;
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  position: relative;
+  padding: 5px;
 }
 
-/* GRID SMALLER (3 per row) */
-
-.product-grid{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:3px;
-padding-bottom:100px;
+.notif-badge {
+  position: absolute;
+  top: 5px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  background: #ef4444;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: none;
 }
 
-.product-card{
-background:white;
-position:relative;
-overflow:hidden;
-display:flex;
-flex-direction:column;
+/* ── GRID ── */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  padding-bottom: 100px;
 }
 
-.p-img-container{
-width:100%;
-aspect-ratio:1/1;
-overflow:hidden;
-background:#f0f0f0;
+/* ── PRODUCT CARD ── */
+
+.product-card {
+  background: white;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: opacity 0.15s;
 }
 
-.p-img-container img{
-width:100%;
-height:100%;
-object-fit:cover;
+.product-card:active {
+  opacity: 0.85;
 }
 
-.p-info{
-padding:6px;
+.p-img-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: #f0f0f0;
 }
 
-.p-price{
-font-weight:800;
-font-size:14px;
+.p-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.p-title{
-font-size:11px;
-margin:3px 0;
-display:-webkit-box;
--webkit-line-clamp:1;
--webkit-box-orient:vertical;
-overflow:hidden;
+.p-info {
+  padding: 6px;
 }
 
-/* views text */
-
-.p-views{
-font-size:10px;
-color:#777;
+.p-price {
+  font-weight: 800;
+  font-size: 14px;
 }
 
-/* ACTION BUTTONS */
-
-.card-actions{
-display:flex;
-gap:4px;
-margin-top:4px;
+.p-title {
+  font-size: 11px;
+  margin: 3px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.action-btn{
-flex:1;
-padding:5px 0;
-border-radius:4px;
-border:1px solid var(--border);
-font-size:10px;
-font-weight:700;
-text-transform:uppercase;
-cursor:pointer;
+.p-views {
+  font-size: 10px;
+  color: #777;
 }
 
-.btn-offer{
-background:var(--primary);
-color:white;
-border:none;
+/* ── ACTION BUTTONS ── */
+
+.card-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
 }
 
-/* BOTTOM NAV */
-
-.bottom-nav{
-position:fixed;
-bottom:0;
-width:100%;
-height:60px;
-background:white;
-display:flex;
-justify-content:space-around;
-align-items:center;
-border-top:1px solid var(--border);
-z-index:1000;
+.action-btn {
+  flex: 1;
+  padding: 5px 0;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  background: white;
 }
 
-.nav-item{
-text-decoration:none;
-color:#8e8e8e;
-font-size:24px;
+.btn-offer {
+  background: var(--primary);
+  color: white;
+  border: none;
 }
 
-.nav-item.active{
-color:var(--primary);
+/* ── SKELETON LOADING ── */
+
+.skeleton-card {
+  background: white;
+  display: flex;
+  flex-direction: column;
 }
 
+.skeleton-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+.skeleton-text {
+  height: 12px;
+  margin: 6px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── EMPTY STATE ── */
+
+.empty-state {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.empty-state p { margin: 8px 0 0; font-size: 14px; }
+
+/* ── BOTTOM NAV ── */
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  z-index: 1000;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #8e8e8e;
+  font-size: 24px;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
 </style>
 </head>
 
 <body>
 
 <header class="app-header">
-<div style="width:32px;"></div>
-<h1>DORMKART</h1>
-
-<button class="notif-btn" onclick="location='notifications.html'">
-🔔
-<div id="notifBadge" class="notif-badge"></div>
-</button>
-
+  <div style="width:32px;"></div>
+  <h1>DORMKART</h1>
+  <button class="notif-btn" onclick="location='notifications.html'" aria-label="Notifications">
+    🔔
+    <div id="notifBadge" class="notif-badge"></div>
+  </button>
 </header>
 
 <main>
-<div class="product-grid" id="productGrid"></div>
+  <div class="product-grid" id="productGrid"></div>
 </main>
 
 <nav class="bottom-nav">
-
-<a href="dashboard.html" class="nav-item active">⌂</a>
-<a href="chats.html" class="nav-item">🗨</a>
-<a href="add_product.html" class="nav-item">⊕</a>
-<a href="profile.html" class="nav-item">👤</a>
-
+  <a href="dashboard.html"   class="nav-item active" aria-label="Home">⌂</a>
+  <a href="chats.html"       class="nav-item"        aria-label="Chats">🗨</a>
+  <a href="add_product.html" class="nav-item"        aria-label="Add product">⊕</a>
+  <a href="profile.html"     class="nav-item"        aria-label="Profile">👤</a>
 </nav>
 
 <script>
+let currentUser = null;
 
-let currentUser
+window.onload = init;
 
-window.onload=init
+async function init() {
+  try {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      location = "login-signup.html";
+      return;
+    }
+    currentUser = session.user;
 
-async function init(){
-
-const {data:{session}}=await supabaseClient.auth.getSession()
-
-if(!session){
-location="login-signup.html"
-return
+    showSkeletons();
+    await Promise.all([fetchProducts(), checkNotifications()]);
+    subscribeToNotifications();
+  } catch (err) {
+    console.error("Init error:", err);
+  }
 }
 
-currentUser=session.user
+// ── SKELETONS ──
 
-fetchProducts()
-checkNotifications()
-
-supabaseClient
-.channel('schema-db-changes')
-.on('postgres_changes',{
-event:'INSERT',
-schema:'public',
-table:'notifications',
-filter:`user_id=eq.${currentUser.id}`
-},()=>{
-document.getElementById("notifBadge").style.display="block"
-})
-.subscribe()
-
+function showSkeletons(count = 9) {
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = Array.from({ length: count }, () => `
+    <div class="skeleton-card">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-text" style="width:60%"></div>
+      <div class="skeleton-text" style="width:40%"></div>
+    </div>
+  `).join("");
 }
 
-/* TRENDING LOGIC: views must be >20 */
+// ── FETCH & RENDER ──
 
-async function fetchProducts(){
+async function fetchProducts() {
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select("id, title, price, image_url, views, seller_id")
+    .eq("status", "active")
+    .order("created_at", { ascending: false });
 
-const {data}=await supabaseClient
-.from("products")
-.select("*")
-.eq("status","active")
+  if (error) {
+    console.error("Fetch error:", error);
+    renderEmpty();
+    return;
+  }
 
-renderProducts(data)
-
+  renderProducts(data ?? []);
 }
 
-function renderProducts(data){
+function renderProducts(items) {
+  const grid = document.getElementById("productGrid");
+  grid.innerHTML = "";
 
-const grid=document.getElementById("productGrid")
+  if (!items.length) {
+    renderEmpty();
+    return;
+  }
 
-grid.innerHTML=""
-
-data?.forEach(item=>{
-
-const imgUrl=item.image_url?item.image_url.split(",")[0]:null
-
-const card=document.createElement("div")
-
-card.className="product-card"
-
-card.innerHTML=`
-
-<div class="p-img-container">
-<img src="${imgUrl || 'placeholder.png'}" loading="lazy">
-</div>
-
-<div class="p-info">
-
-<div class="p-price">₹${Math.floor(item.price)}</div>
-
-<p class="p-title">${item.title}</p>
-
-<div class="p-views">👁 ${item.views || 0} views</div>
-
-<div class="card-actions">
-
-<button onclick="openProduct('${item.id}')" class="action-btn">View</button>
-
-<button onclick="sendOffer('${item.seller_id}','${item.title}')" class="action-btn btn-offer">Offer</button>
-
-</div>
-
-</div>
-`
-
-grid.appendChild(card)
-
-})
-
+  const fragment = document.createDocumentFragment();
+  items.forEach(item => fragment.appendChild(createCard(item)));
+  grid.appendChild(fragment);
 }
 
-/* VIEW COUNT INCREMENT */
-
-async function openProduct(productId){
-
-const {data}=await supabaseClient
-.from("products")
-.select("views")
-.eq("id",productId)
-.single()
-
-const newViews=(data.views || 0)+1
-
-await supabaseClient
-.from("products")
-.update({views:newViews})
-.eq("id",productId)
-
-location=`product_detail.html?id=${productId}`
-
+function renderEmpty() {
+  document.getElementById("productGrid").innerHTML = `
+    <div class="empty-state">
+      <div style="font-size:40px">📦</div>
+      <p>No listings yet. Be the first to sell!</p>
+    </div>
+  `;
 }
 
-/* OFFER SYSTEM */
+function createCard(item) {
+  const imgSrc = item.image_url ? item.image_url.split(",")[0] : "placeholder.png";
 
-async function sendOffer(sellerId,productTitle){
+  const card = document.createElement("div");
+  card.className = "product-card";
 
-if(sellerId===currentUser.id)
-return alert("You can't offer on your own item!")
+  // Image
+  const imgWrap = document.createElement("div");
+  imgWrap.className = "p-img-container";
+  const img = document.createElement("img");
+  img.src = imgSrc;
+  img.loading = "lazy";
+  img.alt = item.title;
+  img.onerror = () => { img.src = "placeholder.png"; };
+  imgWrap.appendChild(img);
 
-const offerPrice=prompt("Enter your offer price:")
+  // Info
+  const info = document.createElement("div");
+  info.className = "p-info";
 
-if(!offerPrice || isNaN(offerPrice)) return
+  const price = document.createElement("div");
+  price.className = "p-price";
+  price.textContent = `₹${Math.floor(item.price)}`;
 
-const {error}=await supabaseClient
-.from("notifications")
-.insert({
-user_id:sellerId,
-title:"New Offer Received",
-message:`Someone offered ₹${offerPrice} for your ${productTitle}`,
-type:"offer",
-is_read:false
-})
+  const title = document.createElement("p");
+  title.className = "p-title";
+  title.textContent = item.title;
 
-if(!error) alert("Offer sent to seller!")
+  const views = document.createElement("div");
+  views.className = "p-views";
+  views.textContent = `👁 ${item.views ?? 0} views`;
 
+  const actions = document.createElement("div");
+  actions.className = "card-actions";
+
+  const viewBtn = document.createElement("button");
+  viewBtn.className = "action-btn";
+  viewBtn.textContent = "View";
+  viewBtn.onclick = () => openProduct(item.id);
+
+  const offerBtn = document.createElement("button");
+  offerBtn.className = "action-btn btn-offer";
+  offerBtn.textContent = "Offer";
+  offerBtn.onclick = () => sendOffer(item.seller_id, item.title);
+
+  actions.append(viewBtn, offerBtn);
+  info.append(price, title, views, actions);
+  card.append(imgWrap, info);
+
+  return card;
 }
 
-/* NOTIFICATION CHECK */
+// ── VIEW COUNT ──
 
-async function checkNotifications(){
-
-const {count}=await supabaseClient
-.from("notifications")
-.select("*",{count:'exact',head:true})
-.eq("user_id",currentUser.id)
-.eq("is_read",false)
-
-if(count>0)
-document.getElementById("notifBadge").style.display="block"
-
+async function openProduct(productId) {
+  // Fire-and-forget view increment; don't block navigation
+  supabaseClient.rpc("increment_views", { product_id: productId }).catch(() => {});
+  location = `product_detail.html?id=${productId}`;
 }
 
+// ── OFFER SYSTEM ──
+
+async function sendOffer(sellerId, productTitle) {
+  if (sellerId === currentUser.id) {
+    alert("You can't make an offer on your own listing!");
+    return;
+  }
+
+  const raw = prompt(`Enter your offer price for "${productTitle}":`);
+  if (raw === null) return;                   // user cancelled
+
+  const offerPrice = Number(raw.trim());
+  if (!offerPrice || offerPrice <= 0) {
+    alert("Please enter a valid price.");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("notifications")
+    .insert({
+      user_id: sellerId,
+      title: "New Offer Received",
+      message: `Someone offered ₹${offerPrice} for your ${productTitle}`,
+      type: "offer",
+      is_read: false,
+    });
+
+  if (error) {
+    alert("Couldn't send offer. Please try again.");
+    console.error("Offer error:", error);
+  } else {
+    alert("Offer sent to seller! 🎉");
+  }
+}
+
+// ── NOTIFICATIONS ──
+
+async function checkNotifications() {
+  const { count, error } = await supabaseClient
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", currentUser.id)
+    .eq("is_read", false);
+
+  if (!error && count > 0) showBadge();
+}
+
+function subscribeToNotifications() {
+  supabaseClient
+    .channel("schema-db-changes")
+    .on("postgres_changes", {
+      event: "INSERT",
+      schema: "public",
+      table: "notifications",
+      filter: `user_id=eq.${currentUser.id}`,
+    }, showBadge)
+    .subscribe();
+}
+
+function showBadge() {
+  document.getElementById("notifBadge").style.display = "block";
+}
 </script>
 
 </body>
