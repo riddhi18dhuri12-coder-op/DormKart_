@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>DormKart - Discovery</title>
+<title>DormKart - Marketplace</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
 <style>
     :root {
+        /* Palette from your image */
         --primary: #519755;      /* Forest Green */
         --secondary: #A8DCAB;    /* Sage Green */
-        --bg-light: #ffffff;     
-        --text-main: #262626;    
-        --text-muted: #8e8e8e;   
+        --accent-warm: #DBAAA7;  /* Muted Rose */
+        --accent-cool: #BE91BE;  /* Soft Lavender */
+        --bg-light: #fdfaf9;
         --border: #dbdbdb;
     }
 
@@ -22,207 +23,123 @@
 
     body { 
         background-color: var(--bg-light); 
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        color: var(--text-main);
+        font-family: -apple-system, sans-serif;
         margin: 0;
     }
 
-    /* HEADER: Slim & Professional */
+    /* HEADER with Notification Bell */
     .app-header {
         background: white;
-        height: 50px;
+        height: 55px;
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        padding: 0 15px;
         border-bottom: 1px solid var(--border);
         position: sticky;
         top: 0;
         z-index: 1000;
     }
-    .app-header h1 { font-size: 18px; font-weight: 800; color: var(--primary); margin: 0; letter-spacing: -0.5px; }
-
-    /* SEARCH: Inset look */
-    .search-bar { padding: 10px; background: #fff; }
-    .search-bar input {
-        width: 100%;
-        padding: 10px 14px;
-        border-radius: 10px;
+    .app-header h1 { font-size: 18px; font-weight: 800; color: var(--primary); margin: 0; }
+    
+    .notif-btn {
+        background: none;
         border: none;
-        background: #efefef;
-        font-size: 14px;
-        outline: none;
+        font-size: 22px;
+        cursor: pointer;
+        position: relative;
+        padding: 5px;
+    }
+    .notif-badge {
+        position: absolute;
+        top: 5px;
+        right: 2px;
+        width: 10px;
+        height: 10px;
+        background: #ef4444;
+        border-radius: 50%;
+        border: 2px solid white;
+        display: none;
     }
 
-    /* FILTERS: Tight row */
-    .filter-row {
-        display: flex;
-        padding: 0 10px 10px;
-        border-bottom: 1px solid var(--border);
-        gap: 10px;
-    }
-    select {
-        flex: 1;
-        padding: 8px;
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: #fff;
-        font-size: 12px;
-        font-weight: 600;
-        color: var(--text-main);
-    }
-
-    /* THE GRID: High Density Instagram Style */
+    /* THE GRID: Instagram/Pinterest High Density */
     .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 2px; 
+        gap: 2px;
         padding-bottom: 100px;
     }
 
-    /* THE CARD */
     .product-card {
         background: white;
         position: relative;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        overflow: hidden;
     }
 
-    .wishlist-btn {
-        position: absolute;
-        top: 10px; right: 10px;
-        background: none;
-        border: none;
-        color: white;
-        z-index: 10;
-        font-size: 20px;
-        filter: drop-shadow(0 0 3px rgba(0,0,0,0.4));
-        cursor: pointer;
-    }
-
-    /* Force Square Images */
     .p-img-container {
         width: 100%;
-        aspect-ratio: 1 / 1; 
-        background: #fafafa;
+        aspect-ratio: 1 / 1;
         overflow: hidden;
+        background: #f0f0f0;
     }
-    .p-img-container img { 
-        width: 100%; 
-        height: 100%; 
-        object-fit: cover; 
-    }
+    .p-img-container img { width: 100%; height: 100%; object-fit: cover; }
 
-    /* Info Bar */
-    .p-info { 
-        padding: 8px;
-    }
-    
-    .p-price { 
-        font-weight: 800; 
-        font-size: 15px;
-        margin-bottom: 2px;
-    }
+    .p-info { padding: 8px; }
+    .p-price { font-weight: 800; font-size: 15px; color: var(--text-dark); }
+    .p-title { font-size: 12px; margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
 
-    .p-title { 
-        font-size: 12px;
-        color: var(--text-main);
-        margin: 0 0 4px 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 1; 
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .college-tag { 
-        font-size: 10px;
-        color: var(--text-muted);
-        margin-bottom: 8px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* ACTIONS: Compact Action Row */
-    .card-actions { 
-        display: flex; 
-        gap: 4px; 
-    }
+    /* ACTION BUTTONS */
+    .card-actions { display: flex; gap: 4px; margin-top: 5px; }
     .action-btn {
-        flex: 1; 
-        padding: 7px 0;
-        border: 1px solid var(--border);
+        flex: 1;
+        padding: 6px 0;
         border-radius: 4px;
+        border: 1px solid var(--border);
         font-size: 10px;
         font-weight: 700;
         text-transform: uppercase;
-        background: white;
         cursor: pointer;
     }
-    .btn-offer { 
-        background: var(--primary); 
-        color: white; 
-        border: none; 
-    }
+    .btn-offer { background: var(--primary); color: white; border: none; }
 
-    /* SKELETON LOADERS */
-    .skeleton {
-        aspect-ratio: 1 / 1;
-        background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-    }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-    /* FLAT BOTTOM NAVIGATION */
+    /* BOTTOM NAV (Flat Style) */
     .bottom-nav {
         position: fixed; bottom: 0; width: 100%; height: 60px;
         background: white; display: flex; justify-content: space-around;
         align-items: center; border-top: 1px solid var(--border);
         z-index: 1000;
     }
-    .nav-item { text-decoration: none; display: flex; flex-direction: column; align-items: center; color: #262626; flex: 1; }
+    .nav-item { text-decoration: none; color: #8e8e8e; font-size: 24px; }
     .nav-item.active { color: var(--primary); }
-    .nav-icon { font-size: 24px; }
 </style>
 </head>
 
 <body>
 
 <header class="app-header">
+    <div style="width: 32px;"></div>
     <h1>DORMKART</h1>
+    <button class="notif-btn" onclick="location='notifications.html'">
+        🔔
+        <div id="notifBadge" class="notif-badge"></div>
+    </button>
 </header>
 
 <main>
-    <div class="search-bar">
-        <input id="searchInput" placeholder="Search for items or dorms...">
-    </div>
-
-    <div class="filter-row">
-        <select id="collegeFilter" onchange="fetchProducts()">
-            <option value="all">All Campuses</option>
-            <option value="mine">My Campus</option>
-        </select>
-        <select id="sortSelect" onchange="fetchProducts()">
-            <option value="new">Newest</option>
-            <option value="priceLow">Price: Low</option>
-            <option value="priceHigh">Price: High</option>
-        </select>
-    </div>
-
     <div class="product-grid" id="productGrid"></div>
 </main>
 
 <nav class="bottom-nav">
-    <a href="dashboard.html" class="nav-item active"><span class="nav-icon">⌂</span></a>
-    <a href="chats.html" class="nav-item"><span class="nav-icon">🗨</span></a>
-    <a href="add_product.html" class="nav-item"><span class="nav-icon">⊕</span></a>
-    <a href="profile.html" class="nav-item"><span class="nav-icon">👤</span></a>
+    <a href="dashboard.html" class="nav-item active">⌂</a>
+    <a href="chats.html" class="nav-item">🗨</a>
+    <a href="add_product.html" class="nav-item">⊕</a>
+    <a href="profile.html" class="nav-item">👤</a>
 </nav>
 
 <script>
 let currentUser;
-let searchTimer;
 
 window.onload = init;
 
@@ -230,49 +147,46 @@ async function init() {
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) { location = "login-signup.html"; return; }
     currentUser = session.user;
+    
     fetchProducts();
+    checkNotifications();
+    
+    // Realtime notification listener
+    supabaseClient
+        .channel('schema-db-changes')
+        .on('postgres_changes', { 
+            event: 'INSERT', 
+            schema: 'public', 
+            table: 'notifications',
+            filter: `user_id=eq.${currentUser.id}` 
+        }, () => {
+            document.getElementById("notifBadge").style.display = "block";
+        })
+        .subscribe();
 }
 
 async function fetchProducts() {
-    const grid = document.getElementById("productGrid");
-    grid.innerHTML = '<div class="skeleton"></div>'.repeat(6);
-
-    let query = supabaseClient
-        .from("products").select("*, users(college)").eq("status", "active");
-
-    const sort = document.getElementById("sortSelect").value;
-    if (sort === "new") query = query.order("created_at", { ascending: false });
-    if (sort === "priceLow") query = query.order("price", { ascending: true });
-    if (sort === "priceHigh") query = query.order("price", { ascending: false });
-
-    const { data } = await query;
+    const { data } = await supabaseClient.from("products").select("*").eq("status", "active");
     renderProducts(data);
 }
 
 function renderProducts(data) {
     const grid = document.getElementById("productGrid");
     grid.innerHTML = "";
-    if (!data || data.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center; padding: 50px;'>Nothing here yet.</p>";
-        return;
-    }
-
-    data.forEach(item => {
+    data?.forEach(item => {
         const imgUrl = item.image_url ? item.image_url.split(",")[0] : null;
         const card = document.createElement("div");
         card.className = "product-card";
         card.innerHTML = `
-            <button class="wishlist-btn" onclick="this.innerHTML='❤️'">🤍</button>
             <div class="p-img-container">
-                ${imgUrl ? `<img src="${imgUrl}" loading="lazy">` : `<div style="height:100%; display:flex; align-items:center; justify-content:center; background:#eee;">📦</div>`}
+                <img src="${imgUrl || 'placeholder.png'}" loading="lazy">
             </div>
             <div class="p-info">
                 <div class="p-price">₹${Math.floor(item.price)}</div>
                 <p class="p-title">${item.title}</p>
-                <div class="college-tag">📍 ${item.users?.college || "Global"}</div>
                 <div class="card-actions">
                     <button onclick="location='product_detail.html?id=${item.id}'" class="action-btn">View</button>
-                    <button onclick="makeOffer('${item.id}', ${item.price})" class="action-btn btn-offer">Offer</button>
+                    <button onclick="sendOffer('${item.seller_id}', '${item.title}')" class="action-btn btn-offer">Offer</button>
                 </div>
             </div>
         `;
@@ -280,22 +194,32 @@ function renderProducts(data) {
     });
 }
 
-document.getElementById("searchInput").addEventListener("input", function() {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(async () => {
-        const term = this.value;
-        if (!term) return fetchProducts();
-        const { data } = await supabaseClient
-            .from("products").select("*, users(college)")
-            .or(`title.ilike.%${term}%, description.ilike.%${term}%`)
-            .eq("status", "active");
-        renderProducts(data);
-    }, 450);
-});
+async function sendOffer(sellerId, productTitle) {
+    if (sellerId === currentUser.id) return alert("You can't offer on your own item!");
+    
+    const offerPrice = prompt("Enter your offer price:");
+    if (!offerPrice || isNaN(offerPrice)) return;
 
-async function makeOffer(id, price) {
-    const amt = prompt(`Enter your offer for ₹${price} listing:`);
-    if(amt && !isNaN(amt)) alert("Offer sent successfully!");
+    // Send data to your notifications table
+    const { error } = await supabaseClient.from("notifications").insert({
+        user_id: sellerId,
+        title: "New Offer Received",
+        message: `Someone offered ₹${offerPrice} for your ${productTitle}`,
+        type: "offer",
+        is_read: false
+    });
+
+    if (!error) alert("Offer sent to seller!");
+}
+
+async function checkNotifications() {
+    const { count } = await supabaseClient
+        .from("notifications")
+        .select("*", { count: 'exact', head: true })
+        .eq("user_id", currentUser.id)
+        .eq("is_read", false);
+        
+    if (count > 0) document.getElementById("notifBadge").style.display = "block";
 }
 </script>
 </body>
