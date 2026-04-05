@@ -11,83 +11,124 @@
 
 <style>
     :root {
-        --primary: #6366f1;
-        --accent: #f59e0b;
-        --bg-glass: rgba(255, 255, 255, 0.7);
-        --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --primary: #519755;      /* Forest Green */
+        --secondary: #A8DCAB;    /* Sage Green */
+        --accent-warm: #DBAAA7;  /* Muted Rose */
+        --accent-cool: #BE91BE;  /* Soft Lavender */
+        --bg-light: #fdfaf9;     /* Off-white */
+        --text-dark: #2d3436;
+        --shadow: 0 8px 24px rgba(81, 151, 85, 0.12);
     }
 
-    body { background: #f8fafc; font-family: 'Inter', sans-serif; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+    body { 
+        background-color: var(--bg-light); 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: var(--text-dark);
+        margin: 0;
+    }
+
+    .app-header {
+        background: var(--primary);
+        color: white;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .search-bar { padding: 15px; }
+    .search-bar input {
+        width: 100%;
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: 1px solid var(--secondary);
+        outline: none;
+        font-size: 14px;
+    }
+
+    .filter-row {
+        display: flex;
+        gap: 10px;
+        padding: 0 15px 15px;
+    }
+
+    select {
+        flex: 1;
+        padding: 10px;
+        border-radius: 12px;
+        border: 1px solid var(--secondary);
+        background: white;
+        font-size: 13px;
+    }
 
     .product-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-        padding: 10px;
+        gap: 15px;
+        padding: 15px;
     }
 
     .product-card {
-        background: var(--bg-glass);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background: white;
         border-radius: 20px;
         padding: 12px;
         box-shadow: var(--shadow);
         position: relative;
-        transition: transform 0.2s;
+        border: 1px solid rgba(168, 220, 171, 0.3);
     }
 
-    .product-card:active { transform: scale(0.97); }
-
-    /* Badges */
+    /* Badge & Wishlist */
     .badge {
         position: absolute;
-        top: 8px;
-        left: 8px;
-        padding: 4px 8px;
+        top: 8px; left: 8px;
+        padding: 4px 10px;
         border-radius: 8px;
         font-size: 10px;
-        font-weight: bold;
-        color: white;
+        font-weight: 800;
         z-index: 2;
     }
-    .badge-hot { background: #ef4444; }
-    .badge-new { background: #10b981; }
+    .badge-hot { background: var(--accent-warm); color: #6d413e; }
+    .badge-new { background: var(--secondary); color: #2d5a30; }
 
     .wishlist-btn {
         position: absolute;
-        top: 8px;
-        right: 8px;
+        top: 8px; right: 8px;
         background: white;
-        border: none;
+        border: 1px solid var(--accent-cool);
+        color: var(--accent-cool);
         border-radius: 50%;
-        width: 30px;
-        height: 30px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        width: 32px; height: 32px;
         z-index: 2;
-        cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
     }
 
     .p-img-container {
-        width: 100%;
-        height: 130px;
-        border-radius: 14px;
+        width: 100%; height: 110px;
+        border-radius: 15px;
         overflow: hidden;
         margin-bottom: 10px;
+        background: #f0f3f0;
     }
+    .p-img-container img { width: 100%; height: 100%; object-fit: cover; }
 
-    .p-img-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
+    .p-title { font-weight: 600; font-size: 14px; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .p-price { color: var(--primary); font-weight: 800; font-size: 16px; margin: 5px 0; }
+    .college-tag { font-size: 11px; color: #7f8c8d; margin-bottom: 8px; }
+
+    .card-actions { display: flex; gap: 6px; }
+    .action-btn {
+        flex: 1; padding: 7px 0;
+        border-radius: 8px; border: none;
+        font-size: 11px; font-weight: 600;
     }
+    .btn-view { background: var(--accent-cool); color: white; }
+    .btn-offer { background: var(--primary); color: white; }
 
-    .p-title { font-weight: 700; font-size: 14px; margin: 0; color: #1e293b; }
-    .p-price { color: var(--primary); font-weight: 800; font-size: 16px; margin: 4px 0; }
-    .college-tag { font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 4px; }
-
-    /* Skeleton Loader */
+    /* Skeleton Loading */
     .skeleton {
         height: 200px;
         background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
@@ -95,30 +136,60 @@
         animation: shimmer 1.5s infinite;
         border-radius: 20px;
     }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    @keyframes shimmer {
-        0% { background-position: 200% 0; }
-        100% { background-position: -200% 0; }
-    }
-
-    .card-actions {
+    /* BOTTOM NAVIGATION STYLES */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 75px;
+        background: white;
         display: flex;
-        gap: 8px;
-        margin-top: 10px;
+        justify-content: space-around;
+        align-items: center;
+        border-top: 1px solid rgba(168, 220, 171, 0.4);
+        padding: 0 5px;
+        z-index: 1000;
     }
 
-    .action-btn {
+    .nav-item {
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        color: #94a3b8;
         flex: 1;
-        padding: 8px;
-        border-radius: 10px;
-        border: none;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        background: #e2e8f0;
     }
 
-    .btn-offer { background: var(--primary); color: white; }
+    .nav-item.active { color: var(--primary); }
+    .nav-icon { font-size: 20px; margin-bottom: 2px; }
+    .nav-label { font-size: 10px; font-weight: 600; }
+
+    /* Floating Sell Button */
+    .sell-fab {
+        text-decoration: none;
+        position: relative;
+        top: -18px;
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+
+    .fab-circle {
+        width: 60px; height: 60px;
+        background-color: #f1f8f1;
+        border: 2px solid var(--secondary);
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(81, 151, 85, 0.25);
+    }
+    .fab-plus { color: var(--primary); font-size: 22px; font-weight: bold; line-height: 1; }
+    .fab-text { color: var(--primary); font-size: 9px; font-weight: 800; text-transform: uppercase; }
+
 </style>
 </head>
 
@@ -126,40 +197,53 @@
 
 <div class="app-container">
     <header class="app-header">
-        <h1 class="app-title">DormKart</h1>
+        <h1 style="margin:0; font-size: 20px; letter-spacing: 1px;">DormKart</h1>
     </header>
 
-    <main class="content-area">
+    <main style="padding-bottom: 100px;">
         <div class="search-bar">
-            <input id="searchInput" placeholder="Search products, brands, or dorms...">
+            <input id="searchInput" placeholder="Search by item or college...">
         </div>
 
-        <div style="display:flex; gap:10px; margin-bottom:15px">
-            <select id="collegeFilter" onchange="fetchProducts()" style="flex:1">
+        <div class="filter-row">
+            <select id="collegeFilter" onchange="fetchProducts()">
                 <option value="all">All Colleges</option>
-                <option value="mine">My College</option>
+                <option value="mine">My Campus</option>
             </select>
-
-            <select id="sortSelect" onchange="fetchProducts()" style="flex:1">
+            <select id="sortSelect" onchange="fetchProducts()">
                 <option value="popular">🔥 Popular</option>
                 <option value="new">✨ Newest</option>
-                <option value="priceLow">₹ Low to High</option>
-                <option value="priceHigh">₹ High to Low</option>
+                <option value="priceLow">₹ Price: Low</option>
+                <option value="priceHigh">₹ Price: High</option>
             </select>
         </div>
 
-        <div class="product-grid" id="productGrid">
-            <!-- Skeletons will appear here during load -->
-        </div>
-
-        <button class="btn" style="margin-top:25px;" onclick="shuffleItems()">Shuffle Feed</button>
+        <div class="product-grid" id="productGrid"></div>
     </main>
 
     <nav class="bottom-nav">
-        <a href="dashboard.html" class="nav-item active"><span>Home</span></a>
-        <a href="chats.html" class="nav-item"><span>Chats</span></a>
-        <a href="add_product.html" class="nav-item"><span>Sell</span></a>
-        <a href="profile.html" class="nav-item"><span>Profile</span></a>
+        <a href="dashboard.html" class="nav-item active">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-label">Home</span>
+        </a>
+        <a href="chats.html" class="nav-item">
+            <span class="nav-icon">🗨</span>
+            <span class="nav-label">Chats</span>
+        </a>
+        <a href="add_product.html" class="sell-fab">
+            <div class="fab-circle">
+                <span class="fab-plus">+</span>
+                <span class="fab-text">Sell</span>
+            </div>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🛒</span>
+            <span class="nav-label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+        </a>
     </nav>
 </div>
 
@@ -171,10 +255,7 @@ window.onload = init;
 
 async function init() {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-        location = "login-signup.html";
-        return;
-    }
+    if (!session) { location = "login-signup.html"; return; }
     currentUser = session.user;
     fetchProducts();
     listenRealtime();
@@ -182,153 +263,94 @@ async function init() {
 
 async function fetchProducts() {
     const grid = document.getElementById("productGrid");
-    // Show skeleton loaders
     grid.innerHTML = '<div class="skeleton"></div>'.repeat(4);
 
     const { data: userData } = await supabaseClient
-        .from("users")
-        .select("college")
-        .eq("id", currentUser.id)
-        .single();
+        .from("users").select("college").eq("id", currentUser.id).single();
 
     let query = supabaseClient
-        .from("products")
-        .select("*, users(college)")
-        .eq("status", "active");
+        .from("products").select("*, users(college)").eq("status", "active");
 
     const filter = document.getElementById("collegeFilter").value;
-    if (filter === "mine") {
-        query = query.eq("users.college", userData.college);
-    }
+    if (filter === "mine") query = query.eq("users.college", userData.college);
 
     const sort = document.getElementById("sortSelect").value;
     if (sort === "new") query = query.order("created_at", { ascending: false });
     if (sort === "priceLow") query = query.order("price", { ascending: true });
     if (sort === "priceHigh") query = query.order("price", { ascending: false });
 
-    const { data, error } = await query;
-    
+    const { data } = await query;
     if (sort === "popular") {
         data.sort((a, b) => ((b.likes || 0) + (b.views || 0)) - ((a.likes || 0) + (a.views || 0)));
     }
-
     renderProducts(data);
 }
 
-async function renderProducts(data) {
+function renderProducts(data) {
     const grid = document.getElementById("productGrid");
     grid.innerHTML = "";
-
     if (!data || data.length === 0) {
-        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center;'>No products found.</p>";
+        grid.innerHTML = "<p style='grid-column: 1/-1; text-align:center; padding: 40px;'>No items found.</p>";
         return;
     }
 
-    for (const item of data) {
-        // Calculate "New" badge (less than 48h old)
+    data.forEach(item => {
         const isNew = (new Date() - new Date(item.created_at)) < 172800000;
         const isHot = (item.views > 20);
-
-        let imgHtml = `<div class="p-img-container" style="background:#eee; display:flex; align-items:center; justify-content:center;">📦</div>`;
-        if (item.image_url) {
-            const firstImg = item.image_url.split(",")[0];
-            imgHtml = `<div class="p-img-container"><img src="${firstImg}" loading="lazy"></div>`;
-        }
+        const imgUrl = item.image_url ? item.image_url.split(",")[0] : null;
 
         const card = document.createElement("div");
         card.className = "product-card";
         card.innerHTML = `
-            ${isHot ? '<span class="badge badge-hot">🔥 HOT</span>' : ''}
-            ${isNew && !isHot ? '<span class="badge badge-new">✨ NEW</span>' : ''}
+            ${isHot ? '<span class="badge badge-hot">Popular</span>' : (isNew ? '<span class="badge badge-new">New</span>' : '')}
             <button class="wishlist-btn" onclick="toggleWishlist('${item.id}', this)">🤍</button>
-            
-            ${imgHtml}
-            
+            <div class="p-img-container">
+                ${imgUrl ? `<img src="${imgUrl}" loading="lazy">` : `<div style="display:flex;height:100%;align-items:center;justify-content:center;">📦</div>`}
+            </div>
             <p class="p-title">${item.title}</p>
             <div class="p-price">₹${Math.floor(item.price)}</div>
-            <div class="college-tag">📍 ${item.users?.college || "Global"}</div>
-            
+            <div class="college-tag">🎓 ${item.users?.college || "General"}</div>
             <div class="card-actions">
-                <button onclick="location='product_detail.html?id=${item.id}'" class="action-btn">View</button>
+                <button onclick="location='product_detail.html?id=${item.id}'" class="action-btn btn-view">View</button>
                 <button onclick="makeOffer('${item.id}', ${item.price})" class="action-btn btn-offer">Offer</button>
             </div>
         `;
         grid.appendChild(card);
-    }
+    });
 }
 
-// ADVANCED: Debounced Search
+// Debounced Search Logic
 document.getElementById("searchInput").addEventListener("input", function() {
     clearTimeout(searchTimer);
     const term = this.value;
     searchTimer = setTimeout(async () => {
         if (!term) return fetchProducts();
-        
         const { data } = await supabaseClient
-            .from("products")
-            .select("*, users(college)")
+            .from("products").select("*, users(college)")
             .or(`title.ilike.%${term}%, description.ilike.%${term}%`)
             .eq("status", "active");
-            
         renderProducts(data);
-    }, 400); // Wait 400ms after typing stops
+    }, 450);
 });
 
-// ADVANCED: Offer System
 async function makeOffer(productId, price) {
-    const amount = prompt(`The asking price is ₹${price}. What is your offer?`);
+    const amount = prompt(`Asking price: ₹${price}. Enter offer:`);
     if (!amount || isNaN(amount)) return;
-
-    const { error } = await supabaseClient
-        .from("offers")
-        .insert({
-            product_id: productId,
-            buyer_id: currentUser.id,
-            amount: parseFloat(amount),
-            status: 'pending'
-        });
-
-    if (error) alert("Could not send offer.");
-    else alert("Offer sent to seller!");
+    const { error } = await supabaseClient.from("offers").insert({
+        product_id: productId, buyer_id: currentUser.id, amount: parseFloat(amount), status: 'pending'
+    });
+    if (!error) alert("Offer sent!");
 }
 
-async function toggleWishlist(productId, btn) {
-    const { data: existing } = await supabaseClient
-        .from("wishlist")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .eq("product_id", productId)
-        .single();
-
-    if (existing) {
-        await supabaseClient.from("wishlist").delete().eq("id", existing.id);
-        btn.innerHTML = "🤍";
-    } else {
-        await supabaseClient.from("wishlist").insert({ user_id: currentUser.id, product_id: productId });
-        btn.innerHTML = "❤️";
-    }
-}
-
-function shuffleItems() {
-    const grid = document.getElementById("productGrid");
-    const cards = [...grid.children];
-    for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
-    }
-    grid.innerHTML = "";
-    cards.forEach(c => grid.appendChild(c));
+async function toggleWishlist(id, btn) {
+    btn.innerHTML = btn.innerHTML === "🤍" ? "❤️" : "🤍";
 }
 
 function listenRealtime() {
-    supabaseClient
-        .channel("public:products")
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "products" }, payload => {
-            fetchProducts();
-        })
+    supabaseClient.channel("public:products")
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "products" }, () => fetchProducts())
         .subscribe();
 }
 </script>
-
 </body>
 </html>
