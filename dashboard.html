@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>DormKart - Marketplace</title>
 
-<link rel="stylesheet" href="app.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
@@ -124,6 +123,7 @@
         flex: 1; padding: 7px 0;
         border-radius: 8px; border: none;
         font-size: 11px; font-weight: 600;
+        cursor: pointer;
     }
     .btn-view { background: var(--accent-cool); color: white; }
     .btn-offer { background: var(--primary); color: white; }
@@ -138,18 +138,18 @@
     }
     @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-    /* BOTTOM NAVIGATION STYLES */
+    /* FLAT BOTTOM NAVIGATION */
     .bottom-nav {
         position: fixed;
         bottom: 0;
         width: 100%;
-        height: 75px;
+        height: 65px;
         background: white;
         display: flex;
         justify-content: space-around;
         align-items: center;
-        border-top: 1px solid rgba(168, 220, 171, 0.4);
-        padding: 0 5px;
+        border-top: 1px solid rgba(168, 220, 171, 0.3);
+        padding: 0 10px;
         z-index: 1000;
     }
 
@@ -158,37 +158,25 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        color: #94a3b8;
+        color: #94a3b8; /* Muted Blue-Gray */
         flex: 1;
+        transition: color 0.2s;
     }
 
-    .nav-item.active { color: var(--primary); }
-    .nav-icon { font-size: 20px; margin-bottom: 2px; }
-    .nav-label { font-size: 10px; font-weight: 600; }
-
-    /* Floating Sell Button */
-    .sell-fab {
-        text-decoration: none;
-        position: relative;
-        top: -18px;
-        flex: 1;
-        display: flex;
-        justify-content: center;
+    .nav-item.active {
+        color: var(--primary);
     }
 
-    .fab-circle {
-        width: 60px; height: 60px;
-        background-color: #f1f8f1;
-        border: 2px solid var(--secondary);
-        border-radius: 50%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 15px rgba(81, 151, 85, 0.25);
+    .nav-icon {
+        font-size: 22px;
+        margin-bottom: 2px;
+        line-height: 1;
     }
-    .fab-plus { color: var(--primary); font-size: 22px; font-weight: bold; line-height: 1; }
-    .fab-text { color: var(--primary); font-size: 9px; font-weight: 800; text-transform: uppercase; }
+
+    .nav-label {
+        font-size: 11px;
+        font-weight: 600;
+    }
 
 </style>
 </head>
@@ -200,9 +188,9 @@
         <h1 style="margin:0; font-size: 20px; letter-spacing: 1px;">DormKart</h1>
     </header>
 
-    <main style="padding-bottom: 100px;">
+    <main style="padding-bottom: 80px;">
         <div class="search-bar">
-            <input id="searchInput" placeholder="Search by item or college...">
+            <input id="searchInput" placeholder="Search products or colleges...">
         </div>
 
         <div class="filter-row">
@@ -221,24 +209,28 @@
         <div class="product-grid" id="productGrid"></div>
     </main>
 
-   <nav class="bottom-nav">
-            <a href="dashboard.html" class="nav-item">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
-                <span>Home</span>
-            </a>
-            <a href="chats.html" class="nav-item">
-                <div id="messageNav" class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                <span>Chats</span>
-            </a>
-            <a href="add_product.html" class="nav-item active">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
-                <span>Sell</span>
-            </a>
-            <a href="profile.html" class="nav-item">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-                <span>Profile</span>
-            </a>
-        </nav>
+    <nav class="bottom-nav">
+        <a href="dashboard.html" class="nav-item active">
+            <span class="nav-icon">⌂</span>
+            <span class="nav-label">Home</span>
+        </a>
+        <a href="chats.html" class="nav-item">
+            <span class="nav-icon">🗨</span>
+            <span class="nav-label">Chats</span>
+        </a>
+        <a href="add_product.html" class="nav-item">
+            <span class="nav-icon">⊕</span>
+            <span class="nav-label">Sell</span>
+        </a>
+        <a href="#" class="nav-item">
+            <span class="nav-icon">🛒</span>
+            <span class="nav-label">Orders</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">Profile</span>
+        </a>
+    </nav>
 </div>
 
 <script>
@@ -313,7 +305,6 @@ function renderProducts(data) {
     });
 }
 
-// Debounced Search Logic
 document.getElementById("searchInput").addEventListener("input", function() {
     clearTimeout(searchTimer);
     const term = this.value;
