@@ -70,6 +70,7 @@ background:var(--primary-dark);
 --nav-height:70px;
 }
 
+  
 /* DARK MODE */
 
 body.dark{
@@ -362,7 +363,7 @@ fetchProducts()
 async function fetchProducts() {
         const { data, error } = await supabaseClient
             .from('products')
-            .select(`*, seller:users(id, name, college, is_verified, avatar_url)`)
+            .select(`*, seller:users(id, name, college, is_verified, avatar_url, upi_id)`)
             .eq('status', 'active');
         if (error) return console.error(error);
         allProducts = data;
@@ -460,12 +461,31 @@ function showDetails(p) {
             </div>
             <div class="btn-row">
                 <button class="btn" style="background:#e2e8f0;" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message</button>
-                <button class="btn btn-buy" onclick="alert('Redirecting...')">Buy Now</button>
+            <button class="btn btn-buy" onclick="openUPI(${p.price}, '${p.seller?.upi_id}')">Buy Now</button>
             </div>
         `;
         modal.style.display = 'flex';
     }
+function openUPI(price, upiId){
 
+if(!upiId){
+alert("Seller has not added a UPI ID yet.");
+return;
+}
+
+const upiLink = `upi://pay?pa=${upiId}&pn=DormKart&am=${price}&cu=INR`;
+
+const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+
+document.getElementById("upiAmount").innerText = "Amount: ₹" + price;
+
+document.getElementById("upiQR").src = qr;
+
+document.getElementById("upiLink").href = upiLink;
+
+document.getElementById("upiModal").style.display = "flex";
+
+}
     function moveSlide(direction, total) {
         const wrapper = document.getElementById('sliderWrapper');
         currentImgIndex = (currentImgIndex + direction + total) % total;
