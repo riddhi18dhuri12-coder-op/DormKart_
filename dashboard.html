@@ -162,30 +162,39 @@
 </nav>
 
 <script>
-  
+    // Link the client from your config.js to the 'supabase' variable used in this script
+    const supabase = supabaseClient; 
 
     // Store products in a global variable for smart search
     let productsList = [];
     let userCollege = "";
 
     async function init() {
-        // 2. Auth Check
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
+        console.log("Initializing DormKart Dashboard...");
+        
+        // 1. Auth Check
+        const { data: { session }, error: authError } = await supabase.auth.getSession();
+        
+        if (authError || !session) {
+            console.log("No active session, redirecting to login...");
             window.location.href = "login-signup.html";
             return;
         }
 
-        // 3. Get User Profile for Smart Search
-        const { data: userProfile } = await supabase
-            .from('users')
-            .select('college')
-            .eq('id', session.user.id)
-            .single();
-        
-        userCollege = userProfile?.college || "";
+        // 2. Get User Profile for Smart Search
+        try {
+            const { data: userProfile } = await supabase
+                .from('users')
+                .select('college')
+                .eq('id', session.user.id)
+                .single();
+            
+            userCollege = userProfile?.college || "";
+        } catch (err) {
+            console.warn("Could not fetch user college profile:", err);
+        }
 
-        // 4. Load Data
+        // 3. Load Products
         fetchProducts();
         setupRealtime();
     }
@@ -194,6 +203,7 @@
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching campus deals...</div>';
 
+        // Note: Using a simpler join to ensure items show even if seller data is missing
         const { data, error } = await supabase
             .from('products')
             .select(`*, seller:users(college)`)
@@ -201,18 +211,20 @@
             .eq('is_sold', false);
 
         if (error) {
-            console.error("Supabase Error:", error);
-            grid.innerHTML = 'Error loading products.';
+            console.error("Supabase Fetch Error:", error);
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px; color:red;">Error loading products. Check console.</div>';
             return;
         }
 
-        // Store products globally
-        productsList = data;
+        console.log("Products Loaded:", data);
+        productsList = data || [];
 
         // Smart Sort: Display user's college items first
         productsList.sort((a, b) => {
-            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
-            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
+            const aCollege = a.seller?.college || "";
+            const bCollege = b.seller?.college || "";
+            if (aCollege === userCollege && bCollege !== userCollege) return -1;
+            if (aCollege !== userCollege && bCollege === userCollege) return 1;
             return 0;
         });
 
@@ -233,12 +245,11 @@
             card.className = 'product-card';
             card.onclick = () => window.location.href = `product-view.html?id=${product.id}`;
             
-            // Handle null images with a simple color placeholder
-            const firstImage = product.image_url ? product.image_url.split(',')[0] : 'placeholder.jpg';
+            const firstImage = product.image_url ? product.image_url.split(',')[0] : 'https://via.placeholder.com/150';
 
             card.innerHTML = `
                 <div class="p-img-container">
-                    <img src="${firstImage}" loading="lazy" onerror="this.src='placeholder.jpg'">
+                    <img src="${firstImage}" loading="lazy" onerror="this.src='https://via.placeholder.com/150'">
                 </div>
                 <div class="p-info">
                     <div class="p-price">₹${Math.floor(product.price)}</div>
@@ -252,32 +263,19 @@
         });
     }
 
-    // --- Search Logic (Real-time Filter) ---
+    // Search Logic
     const searchInput = document.getElementById('searchInput');
     searchInput.addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase().trim();
-        
         if (!query) {
-            renderProductsList(productsList); // Reset to original list
+            renderProductsList(productsList);
             return;
         }
-
-        const filteredProducts = productsList.filter(p => {
-            // Priority: Title, then Seller College, then Description
-            const titleMatch = p.title.toLowerCase().includes(query);
-            const collegeMatch = (p.seller?.college || '').toLowerCase().includes(query);
-            const descMatch = (p.description || '').toLowerCase().includes(query);
-            return titleMatch || collegeMatch || descMatch;
-        });
-
-        // Smart re-sort on search: prioritize filtered college results
-        filteredProducts.sort((a, b) => {
-            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
-            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
-            return 0;
-        });
-
-        renderProductsList(filteredProducts);
+        const filtered = productsList.filter(p => 
+            p.title.toLowerCase().includes(query) || 
+            (p.seller?.college || '').toLowerCase().includes(query)
+        );
+        renderProductsList(filtered);
     });
 
     function toggleDarkMode() {
@@ -285,10 +283,8 @@
         localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
 
-    // Load theme preference
     if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
 
-    // (Add a minimal setupRealtime if needed, or leave it empty for now)
     function setupRealtime() {}
 
     window.onload = init;
