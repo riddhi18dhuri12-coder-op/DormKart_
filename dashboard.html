@@ -153,8 +153,92 @@
 </nav>
 
 <script>
-    let allProducts = [];
-    let currentImgIndex = 0;
+  let productsList = [];
+    let userCollege = "";
+
+    async function init() {
+        // 2. Auth Check
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = "login-signup.html";
+            return;
+        }
+
+        // 3. Get User Profile for Smart Search
+        const { data: userProfile } = await supabase
+            .from('users')
+            .select('college')
+            .eq('id', session.user.id)
+            .single();
+        
+        userCollege = userProfile?.college || "";
+
+        // 4. Load Data
+        fetchProducts();
+        setupRealtime();
+    }
+
+    async function fetchProducts() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching campus deals...</div>';
+
+        const { data, error } = await supabase
+            .from('products')
+            .select(`*, seller:users(college)`)
+            .eq('status', 'active')
+            .eq('is_sold', false);
+
+        if (error) {
+            console.error("Supabase Error:", error);
+            grid.innerHTML = 'Error loading products.';
+            return;
+        }
+
+        // Store products globally
+        productsList = data;
+
+        // Smart Sort: Display user's college items first
+        productsList.sort((a, b) => {
+            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
+            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
+            return 0;
+        });
+
+        renderProductsList(productsList);
+    }
+
+    function renderProductsList(products) {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = '';
+
+        if (products.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">No deals found.</div>';
+            return;
+        }
+
+        products.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.onclick = () => window.location.href = `product-view.html?id=${product.id}`;
+            
+            // Handle null images with a simple color placeholder
+            const firstImage = product.image_url ? product.image_url.split(',')[0] : 'placeholder.jpg';
+
+            card.innerHTML = `
+                <div class="p-img-container">
+                    <img src="${firstImage}" loading="lazy" onerror="this.src='placeholder.jpg'">
+                </div>
+                <div class="p-info">
+                    <div class="p-price">₹${Math.floor(product.price)}</div>
+                    <div class="p-title">${product.title}</div>
+                    <div class="p-location">
+                        📍 ${product.seller?.college || 'Campus'}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
 
     // Apply theme immediately on load
     function applySavedTheme() {
