@@ -473,6 +473,71 @@ function showDetails(p) {
         document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentImgIndex));
     }
 
+
+// Get seller id from URL
+const urlParams = new URLSearchParams(window.location.search);
+const sellerId = urlParams.get("id");
+
+async function loadProfile() {
+
+    if (!sellerId) return;
+
+    // Fetch seller details
+    const { data: user, error } = await supabaseClient
+        .from("users")
+        .select("*")
+        .eq("id", sellerId)
+        .single();
+
+    if (error) {
+        console.error(error);
+        return;
+    }
+
+    // Set profile info
+    document.getElementById("name").innerText = user.name || "Seller";
+    document.getElementById("college").innerText = user.college || "";
+    
+    if (user.avatar_url) {
+        document.getElementById("avatar").src = user.avatar_url;
+    }
+
+    // Fetch seller products
+    const { data: products } = await supabaseClient
+        .from("products")
+        .select("*")
+        .eq("seller_id", sellerId)
+        .eq("status", "active");
+
+    renderSellerProducts(products);
+}
+
+/* Render seller products */
+
+function renderSellerProducts(products){
+
+    const grid = document.getElementById("sellerProducts");
+    grid.innerHTML = "";
+
+    products.forEach(p => {
+
+        const card = document.createElement("div");
+
+        const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.jpg";
+
+        card.innerHTML = `
+            <img src="${img}" style="width:100%;height:120px;object-fit:cover;">
+            <div style="padding:8px;">
+                <div>₹${p.price}</div>
+                <div style="font-size:12px;color:gray;">${p.title}</div>
+            </div>
+        `;
+
+        grid.appendChild(card);
+    });
+}
+
+window.onload = loadProfile;
 /* DARK MODE */
 
 function applySavedTheme(){
@@ -489,6 +554,7 @@ document.getElementById("themeBtn").innerText="☀️"
 
 }
 
+  
 function toggleDarkMode(){
 
 const isDark=document.body.classList.toggle("dark")
