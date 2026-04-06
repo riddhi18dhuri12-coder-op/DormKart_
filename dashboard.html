@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DormKart • Campus Marketplace</title>
+    <title>DormKart • Marketplace</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
@@ -16,8 +16,8 @@
             --bg: #f8fafc;
             --card-bg: #ffffff;
             --border: #e2e8f0;
+            --header-height: 100px; /* Adjusted to fit the search bar */
             --nav-height: 70px;
-            --accent: #f59e0b; /* Coin Gold */
         }
 
         html.dark {
@@ -30,65 +30,65 @@
             background: var(--bg);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: var(--text);
-            padding-bottom: calc(var(--nav-height) + 30px);
+            padding-top: var(--header-height); /* Ensure main content is visible below the fixed header */
+            padding-bottom: calc(var(--nav-height) + 20px);
         }
 
-        /* Header & Coins */
+        /* --- Updated Header with Search Bar --- */
         .app-header {
-            background: var(--card-bg); height: 64px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000;
+            background: var(--card-bg); height: var(--header-height); 
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 16px; border-bottom: 1px solid var(--border); position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
         }
+
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .logo { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, var(--primary), #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        .coin-balance {
-            background: #fffbeb; border: 1px solid #fef3c7; padding: 5px 12px;
-            border-radius: 20px; display: flex; align-items: center; gap: 6px;
-            font-size: 13px; font-weight: 700; color: #b45309;
+        .header-icons span { font-size: 20px; cursor: pointer; margin-left: 12px; position: relative; }
+
+        .search-container {
+            width: 100%; display: flex; border: 1px solid var(--border); border-radius: 99px;
+            overflow: hidden; background: var(--bg);
+        }
+        .search-input {
+            flex: 1; padding: 10px 16px; border: none; background: transparent; color: var(--text); font-size: 14px;
+        }
+        .search-input:focus { outline: none; }
+        .search-btn {
+            background: transparent; border: none; padding: 10px 16px; color: var(--text-light); cursor: pointer;
         }
 
-        /* Smart Filter Banner */
-        .smart-banner {
-            margin: 16px; padding: 12px; background: #eff6ff; border-radius: 12px;
-            border: 1px solid #dbeafe; color: #1e40af; font-size: 12px; display: flex; align-items: center; gap: 8px;
-        }
-
-        /* Product Grid */
+        /* --- Updated Product Grid with Smaller Sizes --- */
         .product-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns, now smaller on mobile */
+            gap: 12px;
+            padding: 12px 16px; /* Reduced padding from 16px */
         }
 
         .product-card {
-            background: var(--card-bg); border-radius: 16px; overflow: hidden;
-            border: 1px solid var(--border); position: relative; transition: 0.2s;
+            background: var(--card-bg);
+            border-radius: 10px; /* Reduced from 12px */
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
         }
 
-        .sold-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 16px; z-index: 10;
-            backdrop-filter: blur(2px); text-transform: uppercase;
-        }
-
-        .p-img-container { aspect-ratio: 1/1; background: #eee; overflow: hidden; }
+        .p-img-container { aspect-ratio: 1/1; position: relative; background: #eee; }
         .p-img-container img { width:100%; height:100%; object-fit: cover; }
         
-        .p-info { padding: 12px; }
-        .p-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-        .p-price { font-size: 17px; font-weight: 800; }
-        .p-title { font-size: 13px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .verified-badge {
-            background: #dcfce7; color: #166534; font-size: 10px; font-weight: 700;
-            padding: 2px 6px; border-radius: 4px;
+        .p-info { padding: 8px; } /* Reduced from 10px */
+        .p-price { font-size: 16px; font-weight: 800; color: var(--text); } /* Reduced from 18px */
+        .p-title { font-size: 12px; color: var(--text-light); margin: 2px 0 4px; display: -webkit-box; -webkit-line-clamp: 1; overflow: hidden; } /* Reduced from 13px */
+        .p-location { font-size: 10px; color: var(--text-light); display: flex; align-items: center; gap: 4px; text-transform: capitalize; } /* Reduced from 11px */
+
+        /* Safety Notification for Chat Flow */
+        .safety-banner {
+            background: #fffbeb; border: 1px solid #fef3c7; color: #b45309;
+            padding: 10px 16px; font-size: 12px; font-weight: 600; border-radius: 8px; margin: 0 16px 12px;
         }
 
-        /* Safety Banner in Modal */
-        .safety-tip {
-            background: #fff1f2; border: 1px solid #ffe4e6; color: #be123c;
-            padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 15px;
-        }
-
-        /* Bottom Nav */
+        /* Bottom Nav (same as previous) */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
             background: var(--card-bg); border-top: 1px solid var(--border);
@@ -97,227 +97,199 @@
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600;
+            color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600; gap: 4px;
         }
         .nav-item.active { color: var(--primary-dark); }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
-        
+        .nav-item svg { width: 22px; height: 22px; }
         .nav-sell {
-            background: var(--primary); width: 52px; height: 52px; border-radius: 50%;
+            background: var(--primary); width: 50px; height: 50px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            margin-top: -35px; border: 5px solid var(--bg); color: white !important;
+            margin-top: -35px; border: 4px solid var(--bg);
             box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
+            color: white !important;
         }
 
-        /* Modal */
-        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
-        .modal-content { background: var(--card-bg); width: 100%; border-radius: 24px 24px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 100px; }
-        .modal-img { width: 100%; height: 300px; object-fit: cover; }
-        .modal-body { padding: 20px; }
-        .btn-row { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px; background: var(--card-bg); display: flex; gap: 10px; border-top: 1px solid var(--border); }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
-        .btn-msg { background: #e2e8f0; color: var(--text); }
-        .btn-buy { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
 <header class="app-header">
-    <div class="logo">DormKart</div>
-    <div style="display:flex; gap:12px; align-items:center;">
-        <div class="coin-balance">🪙 <span id="coinCount">0</span></div>
-        <button onclick="toggleDarkMode()" style="background:none; border:none; font-size:18px;">🌙</button>
+    <div class="header-top">
+        <div class="logo">DormKart</div>
+        <div class="header-icons">
+            <span onclick="toggleDarkMode()">🌓</span>
+            <span onclick="location.href='notifications.html'">
+                🔔<div id="notifBadge" style="display:none; position:absolute; top:-2px; right:-2px; width:8px; height:8px; background:red; border-radius:50%;"></div>
+            </span>
+        </div>
+    </div>
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search textbooks, dorm decor...">
+        <button class="search-btn">🔍</button>
     </div>
 </header>
 
-<div id="smartBanner" class="smart-banner" style="display:none;">
-    <span>🚀</span> Showing items from <strong id="myCollegeName">...</strong> first
-</div>
-
-<main>
-    <div class="product-grid" id="productGrid">
-        <!-- Products load here -->
+<main id="app-content">
+    
+    <div class="safety-banner">
+        🛡️ Meet in public campus spots for safe transactions.
     </div>
+
+    <div class="product-grid" id="productGrid">
+        </div>
 </main>
 
-<!-- Product Detail Modal -->
-<div id="productModal">
-    <div class="modal-content" id="modalContent">
-        <!-- Dynamic Content -->
-    </div>
-</div>
-
-<!-- Bottom Navigation -->
 <nav class="bottom-nav">
     <a href="dashboard.html" class="nav-item active">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-        <span>Home</span>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.97 2.59a1.5 1.5 0 00-1.94 0l-9.5 8.13a.75.75 0 10.97 1.15l1.01-.86v9.19c0 1.1.9 2 2 2h3.5a.75.75 0 00.75-.75v-5.5c0-.14.11-.25.25-.25h3a.25.25 0 01.25.25v5.5c0 .41.34.75.75.75h3.5c1.1 0 2-.9 2-2v-9.19l1.01.86a.75.75 0 10.97-1.15l-9.5-8.13z"/></svg>
+        Home
     </a>
     <a href="chats.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
-        <span>Chats</span>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 17.1V20a1 1 0 001 1h14a1 1 0 001-1v-2.9a8.97 8.97 0 003-6.1c0-5-4-9-9-9S4 6.1 4 11.1c0 2.4.9 4.6 2.4 6.1.1.1.2.2.3.2.1 0 .2.1.2.2L6 20c.1.1.3.1.4.1.2 0 .3-.1.4-.2l.6-.6c.1-.1.2-.2.3-.3.1-.1.2-.2.3-.2zM12 4.1c3.8 0 7 3.1 7 7 0 3.1-2.1 5.8-5 6.7v-2c0-.5-.4-.9-.9-.9h-2.2c-.5 0-.9.4-.9.9v2C7.1 16.9 5 14.2 5 11.1 5 7.2 8.1 4.1 12 4.1z"/></svg>
+        Chats
     </a>
     <a href="sell.html" class="nav-item nav-sell">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
     </a>
     <a href="my-ads.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-        <span>My Ads</span>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 1h-2a2 2 0 00-2 2v2H9V3a2 2 0 00-2-2H5a2 2 0 00-2 2v18a2 2 0 002 2h2a2 2 0 002-2v-2h6v2a2 2 0 002 2h2a2 2 0 002-2V3a2 2 0 00-2-2zM7 19H5v-2h2v2zm0-4H5v-2h2v2zm0-4H5V9h2v2zm0-4H5V5h2v2zm12 12h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V9h2v2zm0-4h-2V5h2v2z"/></svg>
+        My Ads
     </a>
     <a href="profile.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-        <span>Profile</span>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 11a4 4 0 100-8 4 4 0 000 8zm0 2c-4.4 0-8 3.6-8 8v1h16v-1c0-4.4-3.6-8-8-8z"/></svg>
+        Profile
     </a>
 </nav>
 
 <script>
-   
-    let currentUser = null;
+  
+
+    // Store products in a global variable for smart search
+    let productsList = [];
     let userCollege = "";
 
     async function init() {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) return window.location.href = "login-signup.html";
-        currentUser = session.user;
-
-        // Fetch user profile (Coins & College)
-        const { data: profile } = await supabaseClient
-            .from('users')
-            .select('college, coins')
-            .eq('id', currentUser.id)
-            .single();
-
-        if (profile) {
-            userCollege = profile.college;
-            document.getElementById('coinCount').textContent = profile.coins || 0;
-            if(userCollege) {
-                document.getElementById('smartBanner').style.display = 'flex';
-                document.getElementById('myCollegeName').textContent = userCollege;
-            }
+        // 2. Auth Check
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = "login-signup.html";
+            return;
         }
 
+        // 3. Get User Profile for Smart Search
+        const { data: userProfile } = await supabase
+            .from('users')
+            .select('college')
+            .eq('id', session.user.id)
+            .single();
+        
+        userCollege = userProfile?.college || "";
+
+        // 4. Load Data
         fetchProducts();
         setupRealtime();
     }
 
     async function fetchProducts() {
         const grid = document.getElementById('productGrid');
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px;">Fetching deals...</p>';
+        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching campus deals...</div>';
 
-        const { data, error } = await supabaseClient
+        const { data, error } = await supabase
             .from('products')
-            .select(`*, seller:users(college, is_verified)`)
+            .select(`*, seller:users(college)`)
             .eq('status', 'active')
-            .order('created_at', { ascending: false });
+            .eq('is_sold', false);
 
-        if (error) return console.error(error);
+        if (error) {
+            console.error("Supabase Error:", error);
+            grid.innerHTML = 'Error loading products.';
+            return;
+        }
 
-        // Smart Search: Sort by user's college first
-        const sorted = data.sort((a, b) => {
-            if (a.seller?.college === userCollege && b.seller?.college !== userCollege) return -1;
-            if (a.seller?.college !== userCollege && b.seller?.college === userCollege) return 1;
+        // Store products globally
+        productsList = data;
+
+        // Smart Sort: Display user's college items first
+        productsList.sort((a, b) => {
+            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
+            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
             return 0;
         });
 
-        renderGrid(sorted);
+        renderProductsList(productsList);
     }
 
-    function renderGrid(products) {
+    function renderProductsList(products) {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '';
 
-        products.forEach(p => {
+        if (products.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">No deals found.</div>';
+            return;
+        }
+
+        products.forEach(product => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.id = `prod-${p.id}`;
-            const firstImg = p.image_url ? p.image_url.split(',')[0] : 'https://via.placeholder.com/300';
+            card.onclick = () => window.location.href = `product-view.html?id=${product.id}`;
             
+            // Handle null images with a simple color placeholder
+            const firstImage = product.image_url ? product.image_url.split(',')[0] : 'placeholder.jpg';
+
             card.innerHTML = `
-                ${p.is_sold ? '<div class="sold-overlay">Sold</div>' : ''}
-                <div class="p-img-container"><img src="${firstImg}"></div>
+                <div class="p-img-container">
+                    <img src="${firstImage}" loading="lazy" onerror="this.src='placeholder.jpg'">
+                </div>
                 <div class="p-info">
-                    <div class="p-top">
-                        <span class="p-price">₹${Math.floor(p.price)}</span>
-                        ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+                    <div class="p-price">₹${Math.floor(product.price)}</div>
+                    <div class="p-title">${product.title}</div>
+                    <div class="p-location">
+                        📍 ${product.seller?.college || 'Campus'}
                     </div>
-                    <div class="p-title">${p.title}</div>
-                    <div style="font-size:10px; color:var(--text-light); margin-top:4px;">📍 ${p.seller?.college || 'Campus'}</div>
                 </div>
             `;
-            card.onclick = () => showDetails(p);
             grid.appendChild(card);
         });
     }
 
-    function showDetails(p) {
-        const modal = document.getElementById('productModal');
-        const content = document.getElementById('modalContent');
-        const firstImg = p.image_url ? p.image_url.split(',')[0] : 'https://via.placeholder.com/300';
+    // --- Search Logic (Real-time Filter) ---
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase().trim();
+        
+        if (!query) {
+            renderProductsList(productsList); // Reset to original list
+            return;
+        }
 
-        content.innerHTML = `
-            <div style="position:relative;">
-                <button onclick="closeModal()" style="position:absolute; top:15px; left:15px; background:white; border-radius:50%; width:35px; height:35px; border:none; font-weight:bold; z-index:10;">✕</button>
-                <img src="${firstImg}" class="modal-img">
-            </div>
-            <div class="modal-body">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <h1 style="font-size:24px; margin-bottom:5px;">₹${p.price}</h1>
-                        <p style="font-size:16px; font-weight:500;">${p.title}</p>
-                    </div>
-                    ${p.seller?.is_verified ? '<span class="verified-badge" style="padding:5px 10px;">Verified Student</span>' : ''}
-                </div>
-                
-                <div class="safety-tip">
-                    🛡️ <strong>Safety Tip:</strong> Meet at public campus spots like the Library or Canteen. Do not pay before seeing the item.
-                </div>
+        const filteredProducts = productsList.filter(p => {
+            // Priority: Title, then Seller College, then Description
+            const titleMatch = p.title.toLowerCase().includes(query);
+            const collegeMatch = (p.seller?.college || '').toLowerCase().includes(query);
+            const descMatch = (p.description || '').toLowerCase().includes(query);
+            return titleMatch || collegeMatch || descMatch;
+        });
 
-                <div style="margin-top:20px;">
-                    <h4 style="font-size:14px; color:var(--text-light);">Description</h4>
-                    <p style="margin-top:8px; line-height:1.5;">${p.description || 'No description provided.'}</p>
-                </div>
+        // Smart re-sort on search: prioritize filtered college results
+        filteredProducts.sort((a, b) => {
+            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
+            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
+            return 0;
+        });
 
-                <div style="margin-top:20px; padding:15px; background:var(--bg); border-radius:12px; display:flex; align-items:center; gap:12px;">
-                    <div style="width:45px; height:45px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">${p.seller?.college?.charAt(0) || 'S'}</div>
-                    <div>
-                        <div style="font-weight:600;">Campus Seller</div>
-                        <div style="font-size:12px; color:var(--text-light);">${p.seller?.college}</div>
-                    </div>
-                </div>
-            </div>
-            <div class="btn-row">
-                <button class="btn btn-msg" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message</button>
-                <button class="btn btn-buy" onclick="alert('Proceeding to UPI Payment...')">Buy Now</button>
-            </div>
-        `;
-        modal.style.display = 'flex';
-    }
-
-    function closeModal() {
-        document.getElementById('productModal').style.display = 'none';
-    }
-
-    function setupRealtime() {
-        // Listen for products being sold
-        supabaseClient
-            .channel('any')
-            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'products' }, payload => {
-                if (payload.new.is_sold) {
-                    const card = document.getElementById(`prod-${payload.new.id}`);
-                    if (card && !card.querySelector('.sold-overlay')) {
-                        const div = document.createElement('div');
-                        div.className = 'sold-overlay';
-                        div.innerText = 'Just Sold';
-                        card.appendChild(div);
-                    }
-                }
-            })
-            .subscribe();
-    }
+        renderProductsList(filteredProducts);
+    });
 
     function toggleDarkMode() {
         document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     }
+
+    // Load theme preference
+    if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+
+    // (Add a minimal setupRealtime if needed, or leave it empty for now)
+    function setupRealtime() {}
 
     window.onload = init;
 </script>
