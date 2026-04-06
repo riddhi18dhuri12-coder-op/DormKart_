@@ -1,96 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DormKart • Campus Marketplace</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
 
-    <style>
-        :root {
-            --primary: #4ade80;
-            --primary-dark: #22c55e;
-            --text: #0f172a;
-            --text-light: #64748b;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --border: #e2e8f0;
-            --nav-height: 70px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        /* --- Global Dark Mode Variables --- */
-        body.dark {
-            --text: #f1f5f9; 
-            --text-light: #94a3b8; 
-            --bg: #0f172a; 
-            --card-bg: #1e2937; 
-            --border: #334155;
-        }
+<title>DormKart • Campus Marketplace</title>
 
-        * { box-sizing: border-box; margin:0; padding:0; -webkit-tap-highlight-color: transparent; }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 
-        body {
-            background: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            color: var(--text);
-            padding-bottom: calc(var(--nav-height) + 30px);
-            transition: background 0.3s, color 0.3s;
-        }
+<style>
 
-        /* Header */
-        .app-header {
-            background: var(--card-bg); height: 64px; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 1000;
-        }
-        .logo { font-size: 22px; font-weight: 800; background: linear-gradient(90deg, var(--primary), #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* Filter Bar Styles */
-        .filter-bar {
-            display: flex; gap: 8px; padding: 12px 16px; overflow-x: auto; white-space: nowrap;
-            scrollbar-width: none; /* Hide scrollbar for Firefox */
-        }
-        .filter-bar::-webkit-scrollbar { display: none; } /* Hide scrollbar for Chrome/Safari */
+:root{
+--primary:#4ade80;
+--primary-dark:#22c55e;
+--text:#0f172a;
+--text-light:#64748b;
+--bg:#f8fafc;
+--card-bg:#ffffff;
+--border:#e2e8f0;
+--nav-height:70px;
+}
 
-        .filter-item {
-            padding: 8px 14px; border: 1px solid var(--border); border-radius: 20px;
-            background: var(--card-bg); font-size: 13px; font-weight: 600; cursor: pointer;
-        }
+/* DARK MODE */
 
-        /* Image Slider */
-        .slider-container { position: relative; width: 100%; height: 300px; overflow: hidden; background: #000; }
-        .slider-wrapper { display: flex; transition: transform 0.3s ease-out; height: 100%; }
-        .slider-wrapper img { min-width: 100%; width: 100%; height: 100%; object-fit: contain; }
-        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 32px; height: 32px; border-radius: 50%; z-index: 10; font-weight: bold; }
+body.dark{
+--text:#f1f5f9;
+--text-light:#94a3b8;
+--bg:#0f172a;
+--card-bg:#1e2937;
+--border:#334155;
+}
 
-       /* Product Grid */
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 columns like OLX/Amazon Mobile */
-            gap: 12px;
-            padding: 16px;
-        }
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
 
-        .product-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-            display: flex;
-            flex-direction: column;
-        }
+body{
+background:var(--bg);
+font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+color:var(--text);
+padding-bottom:calc(var(--nav-height) + 30px);
+}
 
-        .p-img-container { aspect-ratio: 1/1; position: relative; background: #eee; }
-        .p-img-container img { width:100%; height:100%; object-fit: cover; }
-        
-        .p-info { padding: 10px; }
-        .p-price { font-size: 18px; font-weight: 800; color: var(--text); }
-        .p-title { font-size: 13px; color: var(--text-light); margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 1; overflow: hidden; }
-        .p-location { font-size: 11px; color: var(--text-light); display: flex; align-items: center; gap: 4px; }
-/* Modal & UI Elements */
-        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
-        .modal-content { background: var(--card-bg); width: 100%; border-radius: 20px 20px 0 0; max-height: 90vh; overflow-y: auto; }
-        /* Bottom Nav Styling */
+/* HEADER */
+
+.app-header{
+background:var(--card-bg);
+height:64px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 16px;
+border-bottom:1px solid var(--border);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+font-size:22px;
+font-weight:800;
+background:linear-gradient(90deg,var(--primary),#10b981);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+/* SEARCH */
+
+.search-box{
+padding:12px 16px;
+}
+
+.search-box input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid var(--border);
+background:var(--card-bg);
+color:var(--text);
+}
+
+/* FILTER BAR */
+
+.filter-bar{
+display:flex;
+gap:8px;
+padding:0 16px 12px;
+}
+
+.filter-item{
+padding:8px 14px;
+border:1px solid var(--border);
+border-radius:20px;
+background:var(--card-bg);
+font-size:13px;
+}
+
+/* PRODUCT GRID */
+
+.product-grid{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+padding:16px;
+}
+
+.product-card{
+background:var(--card-bg);
+border-radius:12px;
+overflow:hidden;
+border:1px solid var(--border);
+}
+
+.p-img-container{
+aspect-ratio:1/1;
+background:#eee;
+}
+
+.p-img-container img{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+
+.p-info{
+padding:10px;
+}
+
+.p-price{
+font-size:18px;
+font-weight:800;
+}
+
+.p-title{
+font-size:13px;
+color:var(--text-light);
+margin:4px 0;
+}
+
+.p-location{
+font-size:11px;
+color:var(--text-light);
+}
+
+/* MODAL */
+
+#productModal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.8);
+display:none;
+z-index:3000;
+align-items:flex-end;
+}
+
+.modal-content{
+background:var(--card-bg);
+width:100%;
+border-radius:24px 24px 0 0;
+max-height:90vh;
+overflow-y:auto;
+padding-bottom:80px;
+}
+
+/* SLIDER */
+
+.slider-container{
+position:relative;
+width:100%;
+height:300px;
+overflow:hidden;
+background:#000;
+}
+
+.slider-wrapper{
+display:flex;
+transition:transform .3s;
+height:100%;
+}
+
+.slider-wrapper img{
+min-width:100%;
+object-fit:contain;
+}
+
+.slider-btn{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:rgba(255,255,255,.8);
+border:none;
+width:32px;
+height:32px;
+border-radius:50%;
+}
+  /* Bottom Nav Styling */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
             background: var(--card-bg); border-top: 1px solid var(--border);
@@ -111,52 +219,52 @@
             box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
         }
 
-        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
-        .modal-content { background: var(--card-bg); width: 100%; border-radius: 24px 24px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 80px; }
-    </style>
+</style>
 </head>
-<body id="bodyTag">
+
+<body>
 
 <header class="app-header">
-    <div class="logo">DormKart</div>
-    <div style="display:flex; gap:12px; align-items:center;">
-        <button onclick="toggleDarkMode()" id="themeBtn" style="background:none; border:none; font-size:20px;">🌙</button>
-    </div>
+
+<div class="logo">DormKart</div>
+
+<button onclick="toggleDarkMode()" id="themeBtn" style="background:none;border:none;font-size:20px;">
+🌙
+</button>
+
 </header>
 
-<div style="padding: 12px 16px;">
-    <input id="searchInput" placeholder="Search products..." style="width:100%; padding:12px; border:1px solid var(--border); border-radius:10px; background:var(--card-bg); color:var(--text);">
+<div class="search-box">
+<input id="searchInput" placeholder="Search products...">
 </div>
 
 <div class="filter-bar">
-    <select id="categoryFilter" class="filter-item">
-        <option value="">All Categories</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Books">Books</option>
-        <option value="Dorm Essentials">Dorm Essentials</option>
-        <option value="Fashion">Fashion</option>
-    </select>
-    <select id="priceSort" class="filter-item">
-        <option value="">Sort: Price</option>
-        <option value="low">Low to High</option>
-        <option value="high">High to Low</option>
-    </select>
+
+<select id="categoryFilter" class="filter-item">
+<option value="">All Categories</option>
+<option value="Electronics">Electronics</option>
+<option value="Books">Books</option>
+<option value="Dorm Essentials">Dorm Essentials</option>
+<option value="Fashion">Fashion</option>
+</select>
+
+<select id="priceSort" class="filter-item">
+<option value="">Sort: Price</option>
+<option value="low">Low to High</option>
+<option value="high">High to Low</option>
+</select>
+
 </div>
 
-<main id="app-content">
-    <div style="padding: 16px 16px 0;">
-        <div style="background: linear-gradient(90deg, #22c55e, #10b981); padding: 15px; border-radius: 12px; color: white;">
-            <h4 style="margin-bottom: 4px;">Student-to-Student Deals</h4>
-            <p style="font-size: 12px; opacity: 0.9;">Safe, verified campus marketplace.</p>
-        </div>
-    </div>
+<main>
 
-    <div class="product-grid" id="productGrid">
-        </div>
+<div class="product-grid" id="productGrid"></div>
+
 </main>
-<div id="productModal"><div class="modal-content" id="modalContent"></div></div>
 
-    
+<div id="productModal">
+<div class="modal-content" id="modalContent"></div>
+</div>
 
 <nav class="bottom-nav">
     <a href="dashboard.html" class="nav-item">
@@ -167,8 +275,7 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
         <span>Chats</span>
     </a>
-   <!-- Updated Link to add_product.html -->
-    <a href="add_product.html" class="nav-item nav-sell">
+    <a href="sell.html" class="nav-item nav-sell">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </a>
     <a href="my-ads.html" class="nav-item">
@@ -182,201 +289,202 @@
 </nav>
 
 <script>
-  let productsList = [];
-    let userCollege = "";
 
-    async function init() {
-        // 2. Auth Check
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) {
-            window.location.href = "login-signup.html";
-            return;
-        }
+const supabaseClient=supabase.createClient(CONFIG.supabaseUrl,CONFIG.supabaseKey)
 
-        // 3. Get User Profile for Smart Search
-        const { data: userProfile } = await supabase
-            .from('users')
-            .select('college')
-            .eq('id', session.user.id)
-            .single();
-        
-        userCollege = userProfile?.college || "";
+let allProducts=[]
+let currentImgIndex=0
 
-        // 4. Load Data
-        fetchProducts();
-        setupRealtime();
-    }
+/* INIT */
 
-    async function fetchProducts() {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">Fetching campus deals...</div>';
+async function init(){
 
-        const { data, error } = await supabase
-            .from('products')
-            .select(`*, seller:users(college)`)
-            .eq('status', 'active')
-            .eq('is_sold', false);
+applySavedTheme()
 
-        if (error) {
-            console.error("Supabase Error:", error);
-            grid.innerHTML = 'Error loading products.';
-            return;
-        }
+const {data:{session}}=await supabaseClient.auth.getSession()
 
-        // Store products globally
-        productsList = data;
+if(!session){
+location.href="login-signup.html"
+return
+}
 
-        // Smart Sort: Display user's college items first
-        productsList.sort((a, b) => {
-            if (a.seller.college === userCollege && b.seller.college !== userCollege) return -1;
-            if (a.seller.college !== userCollege && b.seller.college === userCollege) return 1;
-            return 0;
-        });
+fetchProducts()
 
-        renderProductsList(productsList);
-    }
+}
 
-    function renderProductsList(products) {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '';
+/* FETCH PRODUCTS */
 
-        if (products.length === 0) {
-            grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:20px;">No deals found.</div>';
-            return;
-        }
+async function fetchProducts(){
 
-        products.forEach(product => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.onclick = () => window.location.href = `product-view.html?id=${product.id}`;
-            
-            // Handle null images with a simple color placeholder
-            const firstImage = product.image_url ? product.image_url.split(',')[0] : 'placeholder.jpg';
+const {data,error}=await supabaseClient
+.from("products")
+.select(`*,seller:users(name,college,id)`)
+.eq("status","active")
 
-            card.innerHTML = `
-                <div class="p-img-container">
-                    <img src="${firstImage}" loading="lazy" onerror="this.src='placeholder.jpg'">
-                </div>
-                <div class="p-info">
-                    <div class="p-price">₹${Math.floor(product.price)}</div>
-                    <div class="p-title">${product.title}</div>
-                    <div class="p-location">
-                        📍 ${product.seller?.college || 'Campus'}
-                    </div>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
+if(error) return
 
-    // Apply theme immediately on load
-    function applySavedTheme() {
-        const theme = localStorage.getItem('theme');
-        if (theme === 'dark') {
-            document.body.classList.add('dark');
-            document.getElementById('themeBtn').innerText = '☀️';
-        }
-    }
+allProducts=data
 
-    function toggleDarkMode() {
-        const isDark = document.body.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        document.getElementById('themeBtn').innerText = isDark ? '☀️' : '🌙';
-    }
+renderGrid(data)
 
-    async function init() {
-        applySavedTheme();
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) return location.href = "login-signup.html";
-        fetchProducts();
-    }
+}
 
-    async function fetchProducts() {
-        const { data, error } = await supabaseClient
-            .from('products')
-            .select(`*, seller:users(name, college, id)`)
-            .eq('status', 'active');
-        
-        if (!error) {
-            allProducts = data;
-            renderGrid(data);
-        }
-    }
+/* RENDER GRID */
 
-    function renderGrid(products) {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '';
-        products.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
-            card.innerHTML = `
-                <div class="p-img-container"><img src="${img}"></div>
-                <div class="p-info">
-                    <div class="p-price">₹${p.price}</div>
-                    <div class="p-title">${p.title}</div>
-                </div>
-            `;
-            card.onclick = () => showDetails(p);
-            grid.appendChild(card);
-        });
-    }
+function renderGrid(products){
 
-    // Fixed Search & Filtering Logic
-    function applyFilters() {
-        let filtered = [...allProducts];
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const category = document.getElementById('categoryFilter').value;
-        const sort = document.getElementById('priceSort').value;
+const grid=document.getElementById("productGrid")
 
-        if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search));
-        if (category) filtered = filtered.filter(p => p.category === category);
-        if (sort === 'low') filtered.sort((a,b) => a.price - b.price);
-        if (sort === 'high') filtered.sort((a,b) => b.price - a.price);
+grid.innerHTML=""
 
-        renderGrid(filtered);
-    }
+products.forEach(p=>{
 
-    document.getElementById('searchInput').addEventListener('input', applyFilters);
-    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
-    document.getElementById('priceSort').addEventListener('change', applyFilters);
+const card=document.createElement("div")
 
-    function showDetails(p) {
-        const modal = document.getElementById('productModal');
-        const content = document.getElementById('modalContent');
-        const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
-        currentImgIndex = 0;
+card.className="product-card"
 
-        content.innerHTML = `
-            <div class="slider-container">
-                <button onclick="document.getElementById('productModal').style.display='none'" style="position:absolute;top:10px;left:10px;z-index:20;background:white;border-radius:50%;width:30px;height:30px;border:none;">✕</button>
-                <div class="slider-wrapper" id="sliderWrapper">${images.map(url => `<img src="${url.trim()}">`).join('')}</div>
-                ${images.length > 1 ? `<button class="slider-btn" style="left:5px;" onclick="moveSlide(-1,${images.length})">❮</button>
-                <button class="slider-btn" style="right:5px;" onclick="moveSlide(1,${images.length})">❯</button>` : ''}
-            </div>
-            <div class="modal-body">
-                <h2>₹${p.price}</h2>
-                <p>${p.title}</p>
-                <hr style="margin:15px 0; opacity:0.1;">
-                <div onclick="location.href='profile.html?id=${p.seller?.id}'" style="cursor:pointer; display:flex; align-items:center; gap:10px;">
-                    <div style="background:var(--primary); width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white;">${p.seller?.name?.charAt(0)}</div>
-                    <div>
-                        <div style="font-weight:700;">${p.seller?.name}</div>
-                        <div style="font-size:12px; color:var(--text-light);">${p.seller?.college}</div>
-                    </div>
-                </div>
-            </div>
-        `;
-        modal.style.display = 'flex';
-    }
+const img=p.image_url?p.image_url.split(",")[0]:"placeholder.jpg"
 
-    function moveSlide(dir, total) {
-        const wrapper = document.getElementById('sliderWrapper');
-        currentImgIndex = (currentImgIndex + dir + total) % total;
-        wrapper.style.transform = `translateX(-${currentImgIndex * 100}%)`;
-    }
+card.innerHTML=`
 
-    window.onload = init;
+<div class="p-img-container">
+<img src="${img}">
+</div>
+
+<div class="p-info">
+
+<div class="p-price">₹${p.price}</div>
+
+<div class="p-title">${p.title}</div>
+
+<div class="p-location">
+📍 ${p.seller?.college||"Campus"}
+</div>
+
+</div>
+`
+
+card.onclick=()=>showDetails(p)
+
+grid.appendChild(card)
+
+})
+
+}
+
+/* FILTERS */
+
+function applyFilters(){
+
+let filtered=[...allProducts]
+
+const search=document.getElementById("searchInput").value.toLowerCase()
+const category=document.getElementById("categoryFilter").value
+const sort=document.getElementById("priceSort").value
+
+if(search) filtered=filtered.filter(p=>p.title.toLowerCase().includes(search))
+
+if(category) filtered=filtered.filter(p=>p.category===category)
+
+if(sort==="low") filtered.sort((a,b)=>a.price-b.price)
+
+if(sort==="high") filtered.sort((a,b)=>b.price-a.price)
+
+renderGrid(filtered)
+
+}
+
+document.getElementById("searchInput").addEventListener("input",applyFilters)
+document.getElementById("categoryFilter").addEventListener("change",applyFilters)
+document.getElementById("priceSort").addEventListener("change",applyFilters)
+
+/* MODAL */
+
+function showDetails(p){
+
+const modal=document.getElementById("productModal")
+const content=document.getElementById("modalContent")
+
+const images=p.image_url?p.image_url.split(","):["placeholder.jpg"]
+
+currentImgIndex=0
+
+content.innerHTML=`
+
+<div class="slider-container">
+
+<button onclick="document.getElementById('productModal').style.display='none'"
+style="position:absolute;top:10px;left:10px;z-index:20;background:white;border-radius:50%;width:30px;height:30px;border:none;">✕</button>
+
+<div class="slider-wrapper" id="sliderWrapper">
+
+${images.map(url=>`<img src="${url.trim()}">`).join("")}
+
+</div>
+
+${images.length>1?`
+
+<button class="slider-btn" style="left:5px;" onclick="moveSlide(-1,${images.length})">❮</button>
+
+<button class="slider-btn" style="right:5px;" onclick="moveSlide(1,${images.length})">❯</button>
+
+`:""}
+
+</div>
+
+<div style="padding:20px">
+
+<h2>₹${p.price}</h2>
+
+<p>${p.title}</p>
+
+</div>
+
+`
+
+modal.style.display="flex"
+
+}
+
+function moveSlide(dir,total){
+
+const wrapper=document.getElementById("sliderWrapper")
+
+currentImgIndex=(currentImgIndex+dir+total)%total
+
+wrapper.style.transform=`translateX(-${currentImgIndex*100}%)`
+
+}
+
+/* DARK MODE */
+
+function applySavedTheme(){
+
+const theme=localStorage.getItem("theme")
+
+if(theme==="dark"){
+
+document.body.classList.add("dark")
+
+document.getElementById("themeBtn").innerText="☀️"
+
+}
+
+}
+
+function toggleDarkMode(){
+
+const isDark=document.body.classList.toggle("dark")
+
+localStorage.setItem("theme",isDark?"dark":"light")
+
+document.getElementById("themeBtn").innerText=isDark?"☀️":"🌙"
+
+}
+
+window.onload=init
+
 </script>
+
 </body>
 </html>
