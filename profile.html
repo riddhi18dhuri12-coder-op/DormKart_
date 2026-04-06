@@ -1,524 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DormKart • Profile</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        :root {
+            --primary: #4ade80;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #1a1a1a;
+            --border: #f0f0f0;
+            --gray: #888888;
+            --nav-height: 70px;
+        }
 
-<title>DormKart Profile</title>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding-bottom: calc(var(--nav-height) + 40px);
+        }
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="config.js"></script>
-<style>
-body{
-font-family:'Inter',sans-serif;
-background:linear-gradient(135deg,#e6f4ea,#f4f9f5);
-margin:0;
-}
+        /* --- HEADER --- */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
 
-.container{
-max-width:900px;
-margin:auto;
-padding:20px;
-}
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
 
-/* CARD STYLE (same as home page cards) */
+        .coin-widget {
+            background: #fff8e6;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 700;
+            color: #b45309;
+            font-size: 14px;
+        }
 
-.card{
-background:rgba(255,255,255,0.7);
-backdrop-filter:blur(10px);
-border-radius:20px;
-padding:20px;
-margin-bottom:20px;
-border:1px solid rgba(0,0,0,0.05);
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
-}
+        /* --- CONTAINER & CARDS --- */
+        .container { max-width: 600px; margin: auto; padding: 20px; }
 
-/* PROFILE HEADER */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
 
-.profile-header{
-text-align:center;
-}
+        .profile-header { text-align: center; }
+        .avatar {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, #4CAF50, #6BCB77);
+            margin: 0 auto 15px; overflow: hidden; display: flex;
+            align-items: center; justify-content: center; color: white;
+            font-weight: 600; cursor: pointer; border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-.avatar{
-width:100px;
-height:100px;
-border-radius:50%;
-background:linear-gradient(135deg,#4CAF50,#6BCB77);
-margin:auto;
-overflow:hidden;
-cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-font-weight:600;
-font-size:14px;
-}
+        .stats { display: flex; justify-content: space-around; margin-top: 15px; }
+        .stat { text-align: center; }
+        .stat h2 { margin: 0; color: #2E7D32; font-size: 18px; }
+        .stat p { margin: 2px 0 0; font-size: 12px; color: var(--gray); }
 
-.avatar img{
-width:100%;
-height:100%;
-object-fit:cover;
-}
+        /* --- FORMS --- */
+        label { display: block; font-size: 12px; font-weight: 700; color: var(--gray); margin-bottom: 5px; margin-top: 15px; }
+        input, textarea {
+            width: 100%; padding: 12px; border-radius: 12px;
+            border: 1px solid var(--border); background: #fdfdfd; font-family: inherit;
+        }
 
-/* ANALYTICS */
+        button {
+            width: 100%; padding: 14px; border: none; border-radius: 12px;
+            cursor: pointer; background: var(--primary); color: white;
+            font-weight: 700; margin-top: 20px; transition: 0.2s;
+        }
 
-.stats{
-display:flex;
-justify-content:space-between;
-margin-top:20px;
-}
+        /* --- GRID --- */
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
+        .product-item { background: #fff; border-radius: 12px; padding: 8px; border: 1px solid var(--border); }
+        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
 
-.stat{
-text-align:center;
-flex:1;
-}
-
-.stat h2{
-margin:0;
-color:#2E7D32;
-font-size:20px;
-}
-
-/* BUTTONS */
-
-button{
-padding:10px 16px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-background:linear-gradient(135deg,#4CAF50,#66BB6A);
-color:white;
-font-weight:600;
-box-shadow:0 6px 14px rgba(76,175,80,0.25);
-}
-
-button:hover{
-transform:scale(0.98);
-}
-
-/* INPUT */
-
-input,textarea{
-width:100%;
-padding:10px;
-border-radius:10px;
-border:1px solid rgba(0,0,0,0.1);
-margin-top:5px;
-background:rgba(255,255,255,0.8);
-}
-
-/* GRID */
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
-gap:12px;
-}
-
-/* PRODUCT CARD */
-
-.product{
-background:white;
-border-radius:14px;
-padding:10px;
-box-shadow:0 4px 12px rgba(0,0,0,0.06);
-transition:0.2s;
-}
-
-.product:hover{
-transform:translateY(-3px);
-}
-
-.product img{
-width:100%;
-border-radius:10px;
-margin-bottom:6px;
-}
-</style>
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: white; display: flex; justify-content: space-around;
+            padding: 10px 0; border-top: 1px solid #eee; z-index: 1000;
+        }
+        .nav-item { text-align: center; text-decoration: none; color: #888; font-size: 11px; font-weight: 600; }
+        .nav-item.active { color: var(--primary); }
+        .add-btn {
+            background: var(--primary); width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-top: -30px; box-shadow: 0 4px 15px rgba(74, 222, 128, 0.4);
+            color: white; font-size: 30px; text-decoration: none;
+        }
+    </style>
 </head>
 
 <body>
 
+<nav class="top-nav">
+    <div class="logo">DormKart</div>
+    <div class="coin-widget">🪙 <span id="coinBalance">0</span></div>
+</nav>
+
 <div class="container">
+    <div class="card profile-header">
+        <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">Upload</div>
+        <input type="file" id="avatarUpload" hidden>
+        <h2 id="displayName" style="margin: 10px 0 5px;">Loading...</h2>
+        <p id="collegeText" style="color: var(--gray); font-size: 14px; margin: 0;"></p>
+        
+        <div class="stats">
+            <div class="stat"><h2 id="statProducts">0</h2><p>Ads</p></div>
+            <div class="stat"><h2 id="statViews">0</h2><p>Views</p></div>
+            <div class="stat"><h2 id="statSales">0</h2><p>Sold</p></div>
+        </div>
+    </div>
 
-<!-- PROFILE HEADER -->
+    <div class="card">
+        <h3>Edit Profile</h3>
+        <label>Full Name</label>
+        <input id="nameInput" placeholder="Enter your name">
+        <label>College</label>
+        <input id="collegeInput" placeholder="Your University">
+        <label>Bio</label>
+        <textarea id="bioInput" rows="2" placeholder="Tell buyers about yourself"></textarea>
+        <button onclick="saveProfile()">Save Changes</button>
+    </div>
 
-<div class="card profile-header">
+    <div class="card">
+        <h3>My Active Ads</h3>
+        <div id="listingGrid" class="grid"></div>
+    </div>
 
-<div class="avatar" onclick="avatarUpload.click()" id="avatarBox">
-Upload
+    <button style="background: #fee2e2; color: #ef4444; box-shadow: none;" onclick="logout()">Logout</button>
 </div>
 
-<input type="file" id="avatarUpload" hidden>
-
-<h2 id="displayName">Loading...</h2>
-<p id="collegeText"></p>
-
-<button id="editBtn" onclick="enableEdit()">Edit Profile</button>
-
-</div>
-
-<!-- ANALYTICS -->
-
-<div class="card">
-
-<h3>Seller Analytics</h3>
-
-<div class="stats">
-
-<div class="stat">
-<h2 id="statSales">0</h2>
-<p>Sales</p>
-</div>
-
-<div class="stat">
-<h2 id="statProducts">0</h2>
-<p>Products</p>
-</div>
-
-<div class="stat">
-<h2 id="statViews">0</h2>
-<p>Views</p>
-</div>
-
-<div class="stat">
-<h2 id="statWishlist">0</h2>
-<p>Wishlist</p>
-</div>
- <nav class="bottom-nav">
-            <a href="dashboard.html" class="nav-item">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg></div>
-                <span>Home</span>
-            </a>
-            <a href="chats.html" class="nav-item">
-                <div id="messageNav" class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
-                <span>Chats</span>
-            </a>
-            <a href="add_product.html" class="nav-item active">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg></div>
-                <span>Sell</span>
-            </a>
-            <a href="profile.html" class="nav-item">
-                <div class="nav-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></div>
-                <span>Profile</span>
-            </a>
-        </nav>
-</div>
-
-</div>
-
-<!-- PROFILE EDIT -->
-
-<div class="card">
-
-<h3>Profile Info</h3>
-
-<label>Name</label>
-<input id="nameInput" disabled>
-
-<label>College</label>
-<input id="collegeInput" disabled>
-
-<label>Bio</label>
-<textarea id="bioInput" disabled></textarea>
-
-<label>UPI</label>
-<input id="upiInput" disabled>
-
-<button id="saveBtn" style="display:none" onclick="saveProfile()">Save</button>
-
-</div>
-
-<!-- ACTIVE LISTINGS -->
-
-<div class="card">
-
-<h3>My Listings</h3>
-
-<div id="listingGrid" class="grid"></div>
-
-</div>
-
-<!-- SAVED ITEMS -->
-
-<div class="card">
-
-<h3>Saved Items</h3>
-
-<div id="wishlistGrid" class="grid"></div>
-
-</div>
-
-<!-- TRANSACTIONS -->
-
-<div class="card">
-
-<h3>Transactions</h3>
-
-<div id="transactionsBox"></div>
-
-</div>
-
-<button onclick="logout()">Logout</button>
-
-</div>
+<nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">🏠<br>Home</a>
+    <a href="chats.html" class="nav-item">💬<br>Chats</a>
+    <a href="add_product.html" class="add-btn">+</a>
+    <a href="my_ads.html" class="nav-item">🎒<br>My Ads</a>
+    <a href="profile.html" class="nav-item active">👤<br>Profile</a>
+</nav>
 
 <script>
-
-let currentUser
-
-window.onload=init
-
-async function init(){
-
-const {data:{session}}=await supabaseClient.auth.getSession()
-
-if(!session){
-location="login-signup.html"
-return
-}
-
-currentUser=session.user
-
-loadProfile()
-loadListings()
-loadWishlist()
-loadTransactions()
-
-}
-
-/* PROFILE LOAD */
-
-async function loadProfile(){
-
-const {data}=await supabaseClient
-.from("users")
-.select("*")
-.eq("id",currentUser.id)
-.single()
-
-if(!data)return
-
-displayName.innerText=data.name || currentUser.email
-collegeText.innerText=data.college || ""
-
-nameInput.value=data.name || ""
-collegeInput.value=data.college || ""
-bioInput.value=data.bio || ""
-upiInput.value=data.upi_id || ""
-
-statSales.innerText=data.total_sales || 0
-statProducts.innerText=data.total_products || 0
-
-if(data.avatar_url){
-avatarBox.innerHTML=`<img src="${data.avatar_url}">`
-}
-
-/* TOTAL VIEWS */
-
-const {data:viewsData}=await supabaseClient
-.from("products")
-.select("views")
-.eq("seller_id",currentUser.id)
-
-let totalViews=0
-
-viewsData?.forEach(p=>{
-totalViews+=p.views || 0
-})
-
-statViews.innerText=totalViews
-
-/* WISHLIST COUNT */
-
-const {count}=await supabaseClient
-.from("wishlist")
-.select("*",{count:"exact",head:true})
-.eq("user_id",currentUser.id)
-
-statWishlist.innerText=count || 0
-
-}
-
-/* ENABLE EDIT */
-
-function enableEdit(){
-
-nameInput.disabled=false
-collegeInput.disabled=false
-bioInput.disabled=false
-upiInput.disabled=false
-
-saveBtn.style.display="block"
-editBtn.style.display="none"
-
-}
-
-/* SAVE PROFILE */
-
-async function saveProfile(){
-
-await supabaseClient
-.from("users")
-.update({
-name:nameInput.value,
-college:collegeInput.value,
-bio:bioInput.value,
-upi_id:upiInput.value
-})
-.eq("id",currentUser.id)
-
-alert("Profile Saved")
-
-location.reload()
-
-}
-
-/* LOAD LISTINGS */
-
-async function loadListings(){
-
-const {data}=await supabaseClient
-.from("products")
-.select("*")
-.eq("seller_id",currentUser.id)
-.eq("status","active")
-.limit(6)
-
-listingGrid.innerHTML=""
-
-data?.forEach(p=>{
-
-listingGrid.innerHTML+=`
-
-<div class="product">
-
-<img src="${p.image_url || ''}">
-
-<b>${p.title}</b>
-
-<br>
-
-₹${p.price}
-
-<br>
-
-<small>${p.condition || ''}</small>
-
-<br>
-
-👁 ${p.views || 0} ❤️ ${p.likes || 0}
-
-</div>
-
-`
-
-})
-
-}
-
-/* LOAD WISHLIST */
-
-async function loadWishlist(){
-
-const {data}=await supabaseClient
-.from("wishlist")
-.select("products(*)")
-.eq("user_id",currentUser.id)
-
-wishlistGrid.innerHTML=""
-
-data?.forEach(w=>{
-
-const p=w.products
-
-if(!p) return
-
-wishlistGrid.innerHTML+=`
-
-<div class="product">
-
-<img src="${p.image_url || ''}">
-
-<b>${p.title}</b>
-
-<br>
-
-₹${p.price}
-
-</div>
-
-`
-
-})
-
-}
-
-/* LOAD TRANSACTIONS */
-
-async function loadTransactions(){
-
-const {data}=await supabaseClient
-.from("transactions")
-.select("*")
-.or(`buyer_id.eq.${currentUser.id},seller_id.eq.${currentUser.id}`)
-.limit(5)
-
-transactionsBox.innerHTML=""
-
-data?.forEach(t=>{
-
-transactionsBox.innerHTML+=`
-<p>₹${t.amount} - ${t.status}</p>
-`
-
-})
-
-}
-
-/* AVATAR UPLOAD */
-
-avatarUpload.onchange=async function(){
-
-const file=this.files[0]
-if(!file)return
-
-const fileName=currentUser.id+"-"+Date.now()
-
-const {error}=await supabaseClient.storage
-.from("dormkart-assets")
-.upload("avatars/"+fileName,file)
-
-if(error){
-alert(error.message)
-return
-}
-
-const {data}=supabaseClient.storage
-.from("dormkart-assets")
-.getPublicUrl("avatars/"+fileName)
-
-await supabaseClient
-.from("users")
-.update({avatar_url:data.publicUrl})
-.eq("id",currentUser.id)
-
-location.reload()
-
-}
-
-/* LOGOUT */
-
-async function logout(){
-
-await supabaseClient.auth.signOut()
-
-location="index.html"
-
-}
-
+    let currentUser;
+
+    async function init() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return location.href = "login-signup.html";
+        currentUser = session.user;
+
+        loadProfile();
+        loadListings();
+    }
+
+    async function loadProfile() {
+        const { data } = await supabaseClient.from("users").select("*").eq("id", currentUser.id).single();
+        if (!data) return;
+
+        document.getElementById('displayName').innerText = data.name || "Student";
+        document.getElementById('collegeText').innerText = data.college || "No College Set";
+        document.getElementById('coinBalance').innerText = data.coins || 0;
+        
+        document.getElementById('nameInput').value = data.name || "";
+        document.getElementById('collegeInput').value = data.college || "";
+        document.getElementById('bioInput').value = data.bio || "";
+
+        if (data.avatar_url) {
+            document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}">`;
+        }
+    }
+
+    async function saveProfile() {
+        const { error } = await supabaseClient.from("users").update({
+            name: document.getElementById('nameInput').value,
+            college: document.getElementById('collegeInput').value,
+            bio: document.getElementById('bioInput').value
+        }).eq('id', currentUser.id);
+
+        if (!error) alert("Profile updated!");
+        location.reload();
+    }
+
+    async function loadListings() {
+        const { data } = await supabaseClient.from("products").select("*").eq("seller_id", currentUser.id).eq("status", "active");
+        const grid = document.getElementById('listingGrid');
+        grid.innerHTML = "";
+        
+        data?.forEach(p => {
+            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+            grid.innerHTML += `
+                <div class="product-item">
+                    <img src="${img}">
+                    <div style="font-weight:700; margin-top:5px;">₹${p.price}</div>
+                    <div style="font-size:11px; color:#888;">${p.title}</div>
+                </div>
+            `;
+        });
+        document.getElementById('statProducts').innerText = data?.length || 0;
+    }
+
+    async function logout() {
+        await supabaseClient.auth.signOut();
+        location.href = "login-signup.html";
+    }
+
+    window.onload = init;
 </script>
 
 </body>
