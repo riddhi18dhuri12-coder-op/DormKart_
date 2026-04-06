@@ -63,14 +63,33 @@
         .slider-wrapper img { min-width: 100%; width: 100%; height: 100%; object-fit: contain; }
         .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.8); border: none; width: 32px; height: 32px; border-radius: 50%; z-index: 10; font-weight: bold; }
 
-        /* Grid & Cards */
-        .product-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; padding: 0 16px; }
-        .product-card { background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; }
-        .p-img-container { aspect-ratio: 1/1; background: #eee; }
-        .p-img-container img { width: 100%; height: 100%; object-fit: cover; }
-        .p-info { padding: 10px; }
-        .p-price { font-size: 16px; font-weight: 800; }
+       /* Product Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns like OLX/Amazon Mobile */
+            gap: 12px;
+            padding: 16px;
+        }
 
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .p-img-container { aspect-ratio: 1/1; position: relative; background: #eee; }
+        .p-img-container img { width:100%; height:100%; object-fit: cover; }
+        
+        .p-info { padding: 10px; }
+        .p-price { font-size: 18px; font-weight: 800; color: var(--text); }
+        .p-title { font-size: 13px; color: var(--text-light); margin: 4px 0; display: -webkit-box; -webkit-line-clamp: 1; overflow: hidden; }
+        .p-location { font-size: 11px; color: var(--text-light); display: flex; align-items: center; gap: 4px; }
+/* Modal & UI Elements */
+        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
+        .modal-content { background: var(--card-bg); width: 100%; border-radius: 20px 20px 0 0; max-height: 90vh; overflow-y: auto; }
         /* Bottom Nav Styling */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
