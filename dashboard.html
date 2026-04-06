@@ -448,7 +448,7 @@ function showDetails(p) {
                     <h4 style="font-size:14px; color:gray;">Description</h4>
                     <p style="margin-top:8px;">${p.description || 'No description provided.'}</p>
                 </div>
-                <div onclick="window.location.href='profile.html?id=${p.seller?.id}'" style="margin-top:20px; padding:15px; background:#f1f5f9; border-radius:12px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+                <div onclick="window.location.href='profile.html?id=${p.seller_id}'" style="margin-top:20px; padding:15px; background:#f1f5f9; border-radius:12px; display:flex; align-items:center; gap:12px; cursor:pointer;">
                     <div style="width:45px; height:45px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; overflow:hidden;">
                         ${p.seller?.avatar_url ? `<img src="${p.seller.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : p.seller?.name?.charAt(0) || 'S'}
                     </div>
