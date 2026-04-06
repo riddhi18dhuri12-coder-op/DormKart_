@@ -125,6 +125,8 @@
             <p id="displayCollegeText">-</p>
             <label>Bio</label>
             <p id="displayBioText">-</p>
+            <label>UPI ID</label>
+<p id="displayUpiText">Not set</p>
         </div>
 
         <div id="infoEdit" class="edit-form">
@@ -134,6 +136,8 @@
             <input id="collegeInput">
             <label>Bio</label>
             <textarea id="bioInput" rows="2"></textarea>
+            <label>UPI ID</label>
+<input id="upiInput" placeholder="example@upi">
             <div style="display:flex; gap:10px;">
                 <button class="btn-primary" onclick="saveProfile()">Save</button>
                 <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)">Cancel</button>
@@ -141,11 +145,16 @@
         </div>
     </div>
 
-    <div class="card">
-        <h3>My Active Ads</h3>
-        <div id="listingGrid" class="grid"></div>
-    </div>
+  <div class="card">
+<h3>My Wishlist</h3>
+<div id="wishlistGrid" class="grid"></div>
+</div>
 
+    <div class="card">
+<h3>My Orders</h3>
+<div id="ordersGrid" class="grid"></div>
+</div>
+    
     <button style="background: #fee2e2; color: #ef4444; border:none; width:100%; padding:14px; border-radius:12px; font-weight:700; margin-bottom: 20px;" onclick="logout()">Logout</button>
 </div>
 
@@ -180,7 +189,9 @@
         if (!session) return location.href = "login-signup.html";
         currentUser = session.user;
         loadProfile();
-        loadListings();
+       loadProfile();
+loadWishlist();
+loadOrders();
     }
 
     async function loadProfile() {
@@ -192,11 +203,14 @@
         document.getElementById('displayNameText').innerText = data.name || "Not set";
         document.getElementById('displayCollegeText').innerText = data.college || "Not set";
         document.getElementById('displayBioText').innerText = data.bio || "No bio added";
+        document.getElementById('displayUpiText').innerText = data.upi_id || "Not set";
+
 
         document.getElementById('nameInput').value = data.name || "";
         document.getElementById('collegeInput').value = data.college || "";
         document.getElementById('bioInput').value = data.bio || "";
-
+        document.getElementById('upiInput').value = data.upi_id || "";
+        
         if (data.avatar_url) {
             document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}">`;
         }
@@ -212,7 +226,8 @@
         const { error } = await supabaseClient.from("users").update({
             name: document.getElementById('nameInput').value,
             college: document.getElementById('collegeInput').value,
-            bio: document.getElementById('bioInput').value
+          bio: document.getElementById('bioInput').value,
+upi_id: document.getElementById('upiInput').value
         }).eq('id', currentUser.id);
 
         if (error) alert(error.message);
@@ -243,6 +258,65 @@
     }
 
     window.onload = init;
+
+    async function loadWishlist(){
+
+const { data } = await supabaseClient
+.from("wishlist")
+.select("product:products(*)")
+.eq("user_id", currentUser.id);
+
+const grid = document.getElementById("wishlistGrid");
+
+grid.innerHTML = "";
+
+data?.forEach(item=>{
+
+const p = item.product;
+
+const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+
+grid.innerHTML += `
+<div class="product-item">
+<img src="${img}">
+<div style="font-weight:700;">₹${p.price}</div>
+<div style="font-size:11px;color:gray;">${p.title}</div>
+</div>
+`;
+
+});
+
+}
+
+    async function loadOrders(){
+
+const { data } = await supabaseClient
+.from("orders")
+.select("product:products(*)")
+.eq("buyer_id", currentUser.id);
+
+const grid = document.getElementById("ordersGrid");
+
+grid.innerHTML="";
+
+data?.forEach(item=>{
+
+const p = item.product;
+
+const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+
+grid.innerHTML += `
+<div class="product-item">
+<img src="${img}">
+<div style="font-weight:700;">₹${p.price}</div>
+<div style="font-size:11px;color:gray;">${p.title}</div>
+</div>
+`;
+
+});
+
+}
+    
 </script>
 </body>
 </html>
