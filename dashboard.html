@@ -17,7 +17,6 @@
             --card-bg: #ffffff;
             --border: #e2e8f0;
             --nav-height: 70px;
-            --accent: #f59e0b; /* Coin Gold */
         }
 
         html.dark {
@@ -46,78 +45,74 @@
             font-size: 13px; font-weight: 700; color: #b45309;
         }
 
-        /* Smart Filter Banner */
-        .smart-banner {
-            margin: 16px; padding: 12px; background: #eff6ff; border-radius: 12px;
-            border: 1px solid #dbeafe; color: #1e40af; font-size: 12px; display: flex; align-items: center; gap: 8px;
+        /* Image Slider Styles */
+        .slider-container {
+            position: relative; width: 100%; height: 350px;
+            overflow: hidden; background: #000;
         }
+        .slider-wrapper {
+            display: flex; transition: transform 0.3s ease-out; height: 100%;
+        }
+        .slider-wrapper img {
+            min-width: 100%; width: 100%; height: 100%; object-fit: contain;
+        }
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.8); border: none;
+            width: 36px; height: 36px; border-radius: 50%;
+            font-weight: bold; cursor: pointer; z-index: 15;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .prev-btn { left: 10px; }
+        .next-btn { right: 10px; }
+        .slider-dots {
+            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 15;
+        }
+        .dot {
+            width: 8px; height: 8px; background: rgba(255,255,255,0.5);
+            border-radius: 50%; transition: 0.3s;
+        }
+        .dot.active { background: var(--primary); transform: scale(1.2); }
 
-        /* Product Grid */
+        /* Grid */
         .product-grid {
-            display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; padding: 0 16px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; padding: 0 16px;
         }
-
         .product-card {
             background: var(--card-bg); border-radius: 16px; overflow: hidden;
             border: 1px solid var(--border); position: relative; transition: 0.2s;
         }
-
-        .sold-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 900; font-size: 16px; z-index: 10;
-            backdrop-filter: blur(2px); text-transform: uppercase;
-        }
-
         .p-img-container { aspect-ratio: 1/1; background: #eee; overflow: hidden; }
         .p-img-container img { width:100%; height:100%; object-fit: cover; }
-        
         .p-info { padding: 12px; }
-        .p-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .p-price { font-size: 17px; font-weight: 800; }
         .p-title { font-size: 13px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        .verified-badge {
-            background: #dcfce7; color: #166534; font-size: 10px; font-weight: 700;
-            padding: 2px 6px; border-radius: 4px;
-        }
 
-        /* Safety Banner in Modal */
-        .safety-tip {
-            background: #fff1f2; border: 1px solid #ffe4e6; color: #be123c;
-            padding: 10px; border-radius: 10px; font-size: 12px; margin-top: 15px;
-        }
+        /* Modal Styles */
+        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
+        .modal-content { background: var(--card-bg); width: 100%; border-radius: 24px 24px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 100px; }
+        .modal-body { padding: 20px; }
+        .btn-row { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px; background: var(--card-bg); display: flex; gap: 10px; border-top: 1px solid var(--border); }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
+        .btn-buy { background: var(--primary); color: white; }
 
         /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
             background: var(--card-bg); border-top: 1px solid var(--border);
             display: flex; justify-content: space-around; align-items: center; z-index: 2000;
-            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600;
         }
         .nav-item.active { color: var(--primary-dark); }
-        .nav-item svg { width: 24px; height: 24px; margin-bottom: 4px; }
-        
         .nav-sell {
             background: var(--primary); width: 52px; height: 52px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             margin-top: -35px; border: 5px solid var(--bg); color: white !important;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
         }
-
-        /* Modal */
-        #productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; z-index: 3000; align-items: flex-end; }
-        .modal-content { background: var(--card-bg); width: 100%; border-radius: 24px 24px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 100px; }
-        .modal-img { width: 100%; height: 300px; object-fit: cover; }
-        .modal-body { padding: 20px; }
-        .btn-row { position: fixed; bottom: 0; left: 0; width: 100%; padding: 16px; background: var(--card-bg); display: flex; gap: 10px; border-top: 1px solid var(--border); }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
-        .btn-msg { background: #e2e8f0; color: var(--text); }
-        .btn-buy { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
@@ -130,45 +125,18 @@
     </div>
 </header>
 
-<!-- Search + Filters -->
 <div style="display:flex; gap:10px; padding:12px 16px; flex-wrap:wrap;">
-
-<input id="searchInput"
-placeholder="Search products..."
-style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;">
-
-<select id="priceFilter" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
-<option value="">Price</option>
-<option value="low">Low → High</option>
-<option value="high">High → Low</option>
-</select>
-
-<select id="viewFilter" style="padding:10px; border:1px solid var(--border); border-radius:8px;">
-<option value="">Views</option>
-<option value="popular">Most Viewed</option>
-<option value="least">Least Viewed</option>
-</select>
-
-</div>
-    
-<div id="smartBanner" class="smart-banner" style="display:none;">
-    <span>🚀</span> Showing items from <strong id="myCollegeName">...</strong> first
+    <input id="searchInput" placeholder="Search products..." style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;">
 </div>
 
 <main>
-    <div class="product-grid" id="productGrid">
-        <!-- Products load here -->
-    </div>
+    <div class="product-grid" id="productGrid"></div>
 </main>
 
-<!-- Product Detail Modal -->
 <div id="productModal">
-    <div class="modal-content" id="modalContent">
-        <!-- Dynamic Content -->
-    </div>
+    <div class="modal-content" id="modalContent"></div>
 </div>
 
-<!-- Bottom Navigation -->
 <nav class="bottom-nav">
     <a href="dashboard.html" class="nav-item active">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -178,7 +146,6 @@ style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;"
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
         <span>Chats</span>
     </a>
-   <!-- Updated Link to add_product.html -->
     <a href="add_product.html" class="nav-item nav-sell">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </a>
@@ -194,75 +161,39 @@ style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;"
 
 <script>
     let currentUser = null;
-    let userCollege = "";
+    let allProducts = [];
+    let currentImgIndex = 0;
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return window.location.href = "login-signup.html";
         currentUser = session.user;
-
-        // Fetch user profile (Coins & College)
-        const { data: profile } = await supabaseClient
-            .from('users')
-            .select('college, coins')
-            .eq('id', currentUser.id)
-            .single();
-
-        if (profile) {
-            userCollege = profile.college;
-            document.getElementById('coinCount').textContent = profile.coins || 0;
-            if(userCollege) {
-                document.getElementById('smartBanner').style.display = 'flex';
-                document.getElementById('myCollegeName').textContent = userCollege;
-            }
-        }
-
         fetchProducts();
-        setupRealtime();
     }
 
     async function fetchProducts() {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px;">Fetching deals...</p>';
-
         const { data, error } = await supabaseClient
             .from('products')
-            .select(`*, seller:users(college, is_verified)`)
-            .eq('status', 'active')
-            .order('created_at', { ascending: false });
-
+            .select(`*, seller:users(id, name, college, is_verified, avatar_url)`)
+            .eq('status', 'active');
         if (error) return console.error(error);
-
-        // Smart Search: Sort by user's college first
-        const sorted = data.sort((a, b) => {
-            if (a.seller?.college === userCollege && b.seller?.college !== userCollege) return -1;
-            if (a.seller?.college !== userCollege && b.seller?.college === userCollege) return 1;
-            return 0;
-        });
-
-        renderGrid(sorted);
+        allProducts = data;
+        renderGrid(data);
     }
 
     function renderGrid(products) {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '';
-
         products.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            card.id = `prod-${p.id}`;
-            const firstImg = p.image_url ? p.image_url.split(',')[0] : 'https://via.placeholder.com/300';
-            
+            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
             card.innerHTML = `
-                ${p.is_sold ? '<div class="sold-overlay">Sold</div>' : ''}
-                <div class="p-img-container"><img src="${firstImg}"></div>
+                <div class="p-img-container"><img src="${img}"></div>
                 <div class="p-info">
-                    <div class="p-top">
-                        <span class="p-price">₹${Math.floor(p.price)}</span>
-                        ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
-                    </div>
+                    <div class="p-price">₹${Math.floor(p.price)}</div>
                     <div class="p-title">${p.title}</div>
-                    <div style="font-size:10px; color:var(--text-light); margin-top:4px;">📍 ${p.seller?.college || 'Campus'}</div>
+                    <div style="font-size:10px; color:gray;">📍 ${p.seller?.college || 'Campus'}</div>
                 </div>
             `;
             card.onclick = () => showDetails(p);
@@ -273,148 +204,59 @@ style="flex:1; padding:10px; border:1px solid var(--border); border-radius:8px;"
     function showDetails(p) {
         const modal = document.getElementById('productModal');
         const content = document.getElementById('modalContent');
-        const firstImg = p.image_url ? p.image_url.split(',')[0] : 'https://via.placeholder.com/300';
+        currentImgIndex = 0;
+        const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
+        const slidesHTML = images.map(url => `<img src="${url.trim()}">`).join('');
+        const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
 
         content.innerHTML = `
-            <div style="position:relative;">
-                <button onclick="closeModal()" style="position:absolute; top:15px; left:15px; background:white; border-radius:50%; width:35px; height:35px; border:none; font-weight:bold; z-index:10;">✕</button>
-                <img src="${firstImg}" class="modal-img">
+            <div class="slider-container">
+                <button onclick="closeModal()" style="position:absolute; top:15px; left:15px; background:white; border-radius:50%; width:35px; height:35px; border:none; font-weight:bold; z-index:20;">✕</button>
+                ${images.length > 1 ? `
+                    <button class="slider-btn prev-btn" onclick="moveSlide(-1, ${images.length})">❮</button>
+                    <button class="slider-btn next-btn" onclick="moveSlide(1, ${images.length})">❯</button>
+                    <div class="slider-dots">${dotsHTML}</div>
+                ` : ''}
+                <div class="slider-wrapper" id="sliderWrapper">${slidesHTML}</div>
             </div>
             <div class="modal-body">
-                <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                    <div>
-                        <h1 style="font-size:24px; margin-bottom:5px;">₹${p.price}</h1>
-                        <p style="font-size:16px; font-weight:500;">${p.title}</p>
-                    </div>
-                    ${p.seller?.is_verified ? '<span class="verified-badge" style="padding:5px 10px;">Verified Student</span>' : ''}
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h1 style="font-size:24px;">₹${Math.floor(p.price)}</h1>
+                    ${p.seller?.is_verified ? '<span class="verified-badge">Verified Student</span>' : ''}
                 </div>
-                
-                <div class="safety-tip">
-                    🛡️ <strong>Safety Tip:</strong> Meet at public campus spots like the Library or Canteen. Do not pay before seeing the item.
-                </div>
-
+                <p style="font-size:16px; font-weight:500; margin-bottom:10px;">${p.title}</p>
+                <div class="safety-tip">🛡️ Meet at public campus spots like the Library or Canteen.</div>
                 <div style="margin-top:20px;">
-                    <h4 style="font-size:14px; color:var(--text-light);">Description</h4>
-                    <p style="margin-top:8px; line-height:1.5;">${p.description || 'No description provided.'}</p>
+                    <h4 style="font-size:14px; color:gray;">Description</h4>
+                    <p style="margin-top:8px;">${p.description || 'No description provided.'}</p>
                 </div>
-
-                <div style="margin-top:20px; padding:15px; background:var(--bg); border-radius:12px; display:flex; align-items:center; gap:12px;">
-                    <div style="width:45px; height:45px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-weight:bold;">${p.seller?.college?.charAt(0) || 'S'}</div>
+                <div onclick="window.location.href='profile.html?id=${p.seller?.id}'" style="margin-top:20px; padding:15px; background:#f1f5f9; border-radius:12px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+                    <div style="width:45px; height:45px; background:var(--primary); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; overflow:hidden;">
+                        ${p.seller?.avatar_url ? `<img src="${p.seller.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : p.seller?.name?.charAt(0) || 'S'}
+                    </div>
                     <div>
-                        <div style="font-weight:600;">Campus Seller</div>
-                        <div style="font-size:12px; color:var(--text-light);">${p.seller?.college}</div>
+                        <div style="font-weight:600;">${p.seller?.name || 'Anonymous Seller'}</div>
+                        <div style="font-size:12px; color:gray;">${p.seller?.college || 'Verified Campus'}</div>
                     </div>
                 </div>
             </div>
             <div class="btn-row">
-                <button class="btn btn-msg" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message</button>
-                <button class="btn btn-buy" onclick="alert('Proceeding to UPI Payment...')">Buy Now</button>
+                <button class="btn" style="background:#e2e8f0;" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message</button>
+                <button class="btn btn-buy" onclick="alert('Redirecting...')">Buy Now</button>
             </div>
         `;
         modal.style.display = 'flex';
     }
 
-    function closeModal() {
-        document.getElementById('productModal').style.display = 'none';
+    function moveSlide(direction, total) {
+        const wrapper = document.getElementById('sliderWrapper');
+        currentImgIndex = (currentImgIndex + direction + total) % total;
+        wrapper.style.transform = `translateX(-${currentImgIndex * 100}%)`;
+        document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentImgIndex));
     }
 
-    function setupRealtime() {
-        // Listen for products being sold
-        supabaseClient
-            .channel('any')
-            .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'products' }, payload => {
-                if (payload.new.is_sold) {
-                    const card = document.getElementById(`prod-${payload.new.id}`);
-                    if (card && !card.querySelector('.sold-overlay')) {
-                        const div = document.createElement('div');
-                        div.className = 'sold-overlay';
-                        div.innerText = 'Just Sold';
-                        card.appendChild(div);
-                    }
-                }
-            })
-            .subscribe();
-    }
-
-    function toggleDarkMode() {
-        document.documentElement.classList.toggle('dark');
-    }
-
-let allProducts = [];
-
-/* Modify fetchProducts slightly */
-async function fetchProducts() {
-
-const grid = document.getElementById('productGrid');
-
-grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:50px;">Fetching deals...</p>';
-
-const { data, error } = await supabaseClient
-.from('products')
-.select(`*, seller:users(college, is_verified)`)
-.eq('status','active')
-.order('created_at',{ascending:false});
-
-if(error) return console.error(error);
-
-allProducts = data;
-
-const sorted = data.sort((a,b)=>{
-if(a.seller?.college === userCollege && b.seller?.college !== userCollege) return -1;
-if(a.seller?.college !== userCollege && b.seller?.college === userCollege) return 1;
-return 0;
-});
-
-renderGrid(sorted);
-}
-
-/* SEARCH */
-document.getElementById("searchInput").addEventListener("input",applyFilters);
-
-/* PRICE FILTER */
-document.getElementById("priceFilter").addEventListener("change",applyFilters);
-
-/* VIEW FILTER */
-document.getElementById("viewFilter").addEventListener("change",applyFilters);
-
-function applyFilters(){
-
-let filtered=[...allProducts];
-
-const search=document.getElementById("searchInput").value.toLowerCase();
-const price=document.getElementById("priceFilter").value;
-const views=document.getElementById("viewFilter").value;
-
-/* search */
-if(search){
-filtered=filtered.filter(p=>
-p.title.toLowerCase().includes(search) ||
-(p.description||"").toLowerCase().includes(search)
-);
-}
-
-/* price sort */
-if(price==="low"){
-filtered.sort((a,b)=>a.price-b.price);
-}
-
-if(price==="high"){
-filtered.sort((a,b)=>b.price-a.price);
-}
-
-/* views sort */
-if(views==="popular"){
-filtered.sort((a,b)=>(b.views||0)-(a.views||0));
-}
-
-if(views==="least"){
-filtered.sort((a,b)=>(a.views||0)-(b.views||0));
-}
-
-renderGrid(filtered);
-
-}
-    
+    function closeModal() { document.getElementById('productModal').style.display = 'none'; }
+    function toggleDarkMode() { document.documentElement.classList.toggle('dark'); }
     window.onload = init;
 </script>
 </body>
