@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>DormKart • My Wishlist</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -11,7 +12,7 @@
     <style>
         :root {
             --primary: #4ade80;
-            --primary-dark: #22c55e;
+            --primary-dark: #059669;
             --text: #0f172a;
             --text-light: #64748b;
             --bg: #f8fafc;
@@ -24,54 +25,87 @@
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
             margin: 0;
-            padding: 20px;
-            padding-bottom: calc(var(--nav-height) + 40px); /* Space for bottom nav */
+            padding-bottom: calc(var(--nav-height) + 40px);
             color: var(--text);
         }
 
-        /* Header Styling */
-        .header-area { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
-        .back-btn { 
-            background: white; border: 1px solid var(--border); 
-            border-radius: 12px; padding: 8px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
+        /* 1. Lush Emerald Gradient Header */
+        .header-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 20px 50px;
+            color: white;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            position: relative;
         }
 
-        /* Search & Filter Controls */
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        .search-wrapper { flex: 1; }
-        input#searchInput {
-            width: 100%; padding: 12px 15px; border-radius: 12px;
-            border: 1px solid var(--border); box-sizing: border-box;
-            font-family: inherit; font-size: 14px; background: white;
-        }
-        select#sortFilter {
-            padding: 10px; border-radius: 12px; border: 1px solid var(--border);
-            background: white; font-family: inherit; font-size: 14px; outline: none;
-        }
-
-        /* Wishlist Grid */
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .product-item { 
-            background: white; border-radius: 15px; padding: 8px; 
-            border: 1px solid var(--border); position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-        }
-        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 10px; object-fit: cover; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; }
         
-        .price { font-weight: 800; font-size: 16px; margin-top: 8px; color: var(--text); }
-        .title { font-size: 12px; color: var(--text-light); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .back-btn { 
+            background: rgba(255,255,255,0.2); border: none; 
+            border-radius: 12px; padding: 8px; cursor: pointer; color: white;
+        }
+
+        .view-toggle-btn {
+            background: white; border: none; color: var(--primary-dark);
+            padding: 8px 15px; border-radius: 10px; font-size: 12px;
+            font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* Search Bar */
+        .search-container { padding: 0 20px; margin-top: -25px; z-index: 10; position: relative; }
+        input#searchInput {
+            width: 100%; padding: 15px 20px; border-radius: 15px;
+            border: 1px solid var(--border); box-sizing: border-box;
+            font-family: inherit; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* 2. Grid & List Layout Logic */
+        .wishlist-container { padding: 20px; }
+        
+        .grid { 
+            display: grid; 
+            gap: 15px; 
+            grid-template-columns: repeat(2, 1fr); /* Default Grid */
+            transition: all 0.3s ease;
+        }
+
+        /* List View Mode */
+        .grid.list-view { grid-template-columns: 1fr; }
+
+        .product-item { 
+            background: white; border-radius: 20px; padding: 10px; 
+            border: 1px solid var(--border); position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
+        }
+
+        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 15px; object-fit: cover; }
+
+        /* Side-by-side List Styling */
+        .grid.list-view .product-item { display: flex; align-items: center; gap: 15px; }
+        .grid.list-view .product-item img { width: 90px; height: 90px; }
+        .grid.list-view .item-details { flex: 1; }
+
+        .price { font-weight: 800; font-size: 18px; margin-top: 8px; color: var(--text); }
+        .title { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+
+        /* 3. View Product Button */
+        .view-prod-btn {
+            width: 100%; padding: 10px; margin-top: 10px;
+            background: #f1f5f9; color: var(--text); border: none;
+            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+        }
 
         .heart-btn {
-            position: absolute; top: 12px; right: 12px; background: white;
-            border-radius: 50%; width: 28px; height: 28px; display: flex;
+            position: absolute; top: 15px; right: 15px; background: white;
+            border-radius: 50%; width: 32px; height: 32px; display: flex;
             align-items: center; justify-content: center; border: 1px solid #eee;
-            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             z-index: 5;
         }
-        .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; }
+        .heart-btn svg { width: 18px; height: 18px; fill: #ef4444; }
 
-       /* BOTTOM NAV */
+ /* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -110,34 +144,28 @@
   transition: transform 0.2s;
 }
 .nav-sell:hover { transform: scale(1.08); }
-</style>
+    </style>
 </head>
 <body>
 
-<div class="header-area">
-    <button class="back-btn" onclick="location.href='profile.html'">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <h2 style="margin:0; font-weight: 800;">My Wishlist</h2>
+<div class="header-emerald">
+    <div class="header-top">
+        <button class="back-btn" onclick="location.href='profile.html'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">Switch to List</button>
+    </div>
+    <h1 style="margin: 20px 0 0; font-weight: 800; font-size: 28px;">My Wishlist</h1>
+    <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">Items you're keeping an eye on</p>
 </div>
 
-<div class="controls">
-    <div class="search-wrapper">
-        <input type="text" id="searchInput" placeholder="Search saved items..." oninput="filterWishlist()">
-    </div>
-    <select id="sortFilter" onchange="filterWishlist()">
-        <option value="newest">Recent</option>
-        <option value="low">₹ Low</option>
-        <option value="high">₹ High</option>
-    </select>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search your saved items..." oninput="renderWishlist()">
 </div>
 
-<div id="wishlistGrid" class="grid">
-    </div>
-
-<div id="emptyState" class="empty-state" style="display:none;">
-    <p>No items found in your wishlist.</p>
-    <button onclick="location.href='dashboard.html'" style="background:var(--primary); color:white; border:none; padding:12px 25px; border-radius:12px; font-weight:700;">Explore Products</button>
+<div class="wishlist-container">
+    <div id="wishlistGrid" class="grid">
+        </div>
 </div>
 
 <nav class="bottom-nav">
@@ -164,75 +192,72 @@
 
 <script>
     let wishlistData = [];
+    let isListView = false;
 
-    async function loadWishlist() {
+    async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = 'login-signup.html';
-
+        
         const { data, error } = await supabaseClient
             .from("wishlist")
-            .select("id, created_at, product:products(*)")
+            .select("id, product:products(*)")
             .eq("user_id", session.user.id);
 
-        if (error) {
-            console.error(error);
-            return;
-        }
-
         wishlistData = data || [];
-        filterWishlist();
+        renderWishlist();
     }
 
-    function filterWishlist() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const sortVal = document.getElementById('sortFilter').value;
+    function toggleView() {
         const grid = document.getElementById('wishlistGrid');
-        const emptyState = document.getElementById('emptyState');
+        const btn = document.getElementById('viewToggle');
+        isListView = !isListView;
+        
+        if (isListView) {
+            grid.classList.add('list-view');
+            btn.innerText = "Switch to Grid";
+        } else {
+            grid.classList.remove('list-view');
+            btn.innerText = "Switch to List";
+        }
+    }
 
-        let filtered = wishlistData.filter(item => 
+    function renderWishlist() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const grid = document.getElementById('wishlistGrid');
+        
+        const filtered = wishlistData.filter(item => 
             item.product && item.product.title.toLowerCase().includes(searchTerm)
         );
 
-        if (sortVal === "low") {
-            filtered.sort((a, b) => a.product.price - b.product.price);
-        } else if (sortVal === "high") {
-            filtered.sort((a, b) => b.product.price - a.product.price);
-        } else {
-            filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        }
-
         grid.innerHTML = "";
-        if (filtered.length === 0) {
-            emptyState.style.display = "block";
-        } else {
-            emptyState.style.display = "none";
-            filtered.forEach(item => {
-                const p = item.product;
-                const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
-                grid.innerHTML += `
-                    <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
-                        <button class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                        </button>
-                        <img src="${img}">
+        filtered.forEach(item => {
+            const p = item.product;
+            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+            
+            grid.innerHTML += `
+                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="${img}">
+                    <div class="item-details">
                         <div class="price">₹${p.price}</div>
                         <div class="title">${p.title}</div>
+                        <button class="view-prod-btn">View Product</button>
                     </div>
-                `;
-            });
-        }
+                </div>`;
+        });
     }
 
     async function removeFromWishlist(id) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
         if (!error) {
-            wishlistData = wishlistData.filter(item => item.id !== id);
-            filterWishlist();
+            wishlistData = wishlistData.filter(i => i.id !== id);
+            renderWishlist();
         }
     }
 
-    window.onload = loadWishlist;
+    window.onload = init;
 </script>
-
 </body>
 </html>
