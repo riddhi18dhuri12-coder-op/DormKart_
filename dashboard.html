@@ -484,10 +484,15 @@ function showDetails(p) {
                     </div>
                 </div>
             </div>
-            <div class="btn-row">
-                <button class="btn" style="background:#e2e8f0;" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message</button>
-            <button class="btn btn-buy" onclick="openUPI(${p.price}, '${p.seller?.upi_id}')">Buy Now</button>
-            </div>
+           <div class="btn-row" style="display:flex; flex-wrap:wrap; gap:8px; padding:16px; position:sticky; bottom:0; background:var(--card-bg); border-top:1px solid var(--border);">
+    <button class="btn btn-buy" style="width:100%;" onclick="openUPI(${p.price}, '${p.seller?.upi_id}')">Buy it Now</button>
+    <div style="display:flex; gap:8px; width:100%;">
+        <button class="btn" style="flex:1; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd;" onclick="addToCart('${p.id}', '${p.title}', ${p.price})">🛒 Add to Cart</button>
+        <button class="btn" style="flex:1; background:#fef9c3; color:#854d0e; border:1px solid #fde68a;" onclick="makeOffer('${p.id}', '${p.seller_id}')">💬 Make Offer</button>
+        <button class="btn" style="flex:1; background:#ffe4e6; color:#9f1239; border:1px solid #fecdd3;" onclick="addToWishlist('${p.id}')">♡ Wishlist</button>
+    </div>
+    <button class="btn btn-message" style="width:100%;" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message Seller</button>
+</div>
         `;
         modal.style.display = 'flex';
     }
@@ -611,6 +616,123 @@ document.getElementById("themeBtn").innerText=isDark?"☀️":"🌙"
 }
 
 window.onload=init
+
+    async function addToWishlist(productId) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const userId = session.user.id;
+
+    // Check if already wishlisted
+    const { data: existing } = await supabaseClient
+        .from('wishlist')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('product_id', productId)
+        .single();
+
+    if (existing) {
+        alert('Already in your wishlist!');
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from('wishlist')
+        .insert({ user_id: userId, product_id: productId });
+
+    if (error) {
+        alert('Could not add to wishlist: ' + error.message);
+        return;
+    }
+
+    // Also increment likes count on the product
+    await supabaseClient.rpc('increment_likes', { product_id: productId });
+
+    alert('Added to wishlist! ♡');
+}
+
+async function addToCart(productId) {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const userId = session.user.id;
+
+    // We use orders table with payment_status = 'in_cart'
+    const { data: existing } = await supabaseClient
+        .from('orders')
+        .select('id')
+        .eq('buyer_id', userId)
+        .eq('product_id', productId)
+        .eq('payment_status', 'in_cart')
+        .single();
+
+    if (existing) {
+        alert('Already in your cart!');
+        return;
+    }
+
+    // Fetch product to get seller_id and price
+    const { data: product, error: pErr } = await supabaseClient
+        .from('products')
+        .select('seller_id, price')
+        .eq('id', productId)
+        .single();
+
+    if (pErr || !product) {
+        alert('Could not fetch product details.');
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from('orders')
+        .insert({
+            buyer_id: userId,
+            product_id: productId,
+            seller_id: product.seller_id,
+            amount: product.price,
+            payment_method: 'UPI',
+            payment_status: 'in_cart'
+        });
+
+    if (error) {
+        alert('Could not add to cart: ' + error.message);
+        return;
+    }
+
+    alert('Added to cart!');
+}
+
+async function makeOffer(productId, sellerId) {
+    const amount = prompt('Enter your offer price (₹):');
+    if (!amount || isNaN(amount) || Number(amount) <= 0) return;
+
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    const userId = session.user.id;
+
+    // Send offer as a chat message
+    const { error } = await supabaseClient
+        .from('chats')
+        .insert({
+            sender_id: userId,
+            receiver_id: sellerId,
+            product_id: productId,
+            message: `💬 Offer: I'd like to buy this for ₹${amount}`
+        });
+
+    if (error) {
+        alert('Could not send offer: ' + error.message);
+        return;
+    }
+
+    // Send a notification to the seller
+    await supabaseClient
+        .from('notifications')
+        .insert({
+            user_id: sellerId,
+            title: 'New Offer Received',
+            message: `Someone made an offer of ₹${amount} on your listing.`,
+            type: 'offer'
+        });
+
+    // Redirect to chat
+    window.location.href = `chats.html?id=${sellerId}&product=${productId}`;
+}
 
 </script>
 <!-- UPI Payment Modal -->
