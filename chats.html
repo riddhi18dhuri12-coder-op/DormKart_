@@ -5,101 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DormKart - Chats</title>
     <link rel="stylesheet" href="app.css">
-    <style>
-        .chat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+  /* CHAT LIST */
 
-        .chat-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(20, 184, 166, 0.1);
-            border-radius: 20px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+.chat-list{
+display:flex;
+flex-direction:column;
+gap:12px;
+padding:16px;
+}
 
-        .chat-card:active {
-            transform: scale(0.98);
-        }
+/* CHAT CARD */
 
-        .chat-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--background), #E2E8F0);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-            border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(20, 184, 166, 0.2);
-        }
+.chat-card{
+background:var(--card-bg);
+border:1px solid var(--border);
+border-radius:16px;
+padding:14px;
+display:flex;
+align-items:center;
+gap:12px;
+cursor:pointer;
+transition:all .18s ease;
+}
 
-        .chat-info {
-            flex: 1;
-            overflow: hidden;
-        }
+.chat-card:hover{
+border-color:var(--primary-dark);
+transform:translateY(-1px);
+box-shadow:0 8px 20px rgba(0,0,0,0.06);
+}
 
-        .chat-name {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            color: #2D3748;
-            margin-bottom: 4px;
-        }
+.chat-card:active{
+transform:scale(.97);
+}
 
-        .chat-preview {
-            color: #718096;
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+/* AVATAR */
 
-        .chat-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 5px;
-        }
+.chat-avatar{
+width:46px;
+height:46px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--bg);
+border:1px solid var(--border);
+color:var(--text-light);
+flex-shrink:0;
+overflow:hidden;
+}
 
-        .chat-time {
-            font-size: 0.75rem;
-            color: #A0AEC0;
-            font-weight: 600;
-        }
+/* CHAT INFO */
 
-        .unread-badge {
-            background: var(--primary);
-            color: white;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
+.chat-info{
+flex:1;
+overflow:hidden;
+}
 
-        .empty-state {
-            text-align: center;
-            padding: 50px 20px;
-            color: #A0AEC0;
-        }
-        
-        .empty-icon {
-            font-size: 4rem;
-            margin-bottom: 20px;
-            opacity: 0.5;
-        }
+.chat-name{
+font-family:'Syne',sans-serif;
+font-weight:700;
+font-size:15px;
+color:var(--text);
+margin-bottom:2px;
+}
 
-    </style>
+.chat-preview{
+font-size:13px;
+color:var(--text-light);
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+/* RIGHT META */
+
+.chat-meta{
+display:flex;
+flex-direction:column;
+align-items:flex-end;
+gap:4px;
+}
+
+.chat-time{
+font-size:11px;
+color:var(--text-light);
+font-weight:500;
+}
+
+/* UNREAD BADGE */
+
+.unread-badge{
+background:var(--primary-dark);
+color:white;
+font-size:10px;
+font-weight:700;
+padding:3px 8px;
+border-radius:100px;
+font-family:'Syne',sans-serif;
+}
+
+/* EMPTY STATE */
+
+.empty-state{
+text-align:center;
+padding:60px 20px;
+color:var(--text-light);
+}
+
+.empty-icon{
+font-size:40px;
+margin-bottom:12px;
+opacity:.5;
+}
+
 </head>
 <body>
     <div class="app-container">
