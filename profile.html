@@ -49,13 +49,13 @@
 
         /* View vs Edit States */
         .info-display p { margin: 5px 0; color: var(--text); font-weight: 500; }
-        .info-display label { display: block; font-size: 11px; color: var(--gray); font-weight: 700; text-transform: uppercase; margin-top: 12px; }
+        .info-display label { display: block; font-size: 11px; color: var(--text-light); font-weight: 700; text-transform: uppercase; margin-top: 12px; }
         .edit-form { display: none; }
         
         input, textarea {
             width: 100%; padding: 12px; border-radius: 12px;
             border: 1px solid var(--border); background: #fdfdfd; 
-            font-family: inherit; margin-top: 5px;
+            font-family: inherit; margin-top: 5px; box-sizing: border-box;
         }
 
         .btn-primary {
@@ -69,17 +69,23 @@
             padding: 8px 16px; border-radius: 10px; font-weight: 600; cursor: pointer;
         }
 
-        /* Listings Grid */
+        /* Section Headers */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; }
+
+        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
         .product-item { background: #fff; border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; }
         .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
         
-        .edit-listing-btn {
+        .heart-btn {
             position: absolute; top: 8px; right: 8px; background: white;
-            border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px;
-            font-size: 10px; font-weight: 700; color: var(--primary-dark); cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 50%; width: 28px; height: 28px; display: flex;
+            align-items: center; justify-content: center; border: 1px solid #eee;
+            cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
         }
+        .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; }
 
         /* Bottom Nav Styling */
         .bottom-nav {
@@ -101,18 +107,6 @@
             margin-top: -35px; border: 5px solid var(--bg); color: white !important;
             box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
         }
-        /* New styles for wishlist features */
-    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-    .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; }
-    
-    .heart-btn {
-        position: absolute; top: 8px; right: 8px; background: white;
-        border-radius: 50%; width: 28px; height: 28px; display: flex;
-        align-items: center; justify-content: center; border: 1px solid #eee;
-        cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        z-index: 10;
-    }
-    .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; stroke: #ef4444; }
     </style>
 </head>
 
@@ -129,7 +123,6 @@
 
     <div class="card">
         <h3>Account Information</h3>
-        
         <div id="infoDisplay" class="info-display">
             <label>Full Name</label>
             <p id="displayNameText">-</p>
@@ -138,7 +131,7 @@
             <label>Bio</label>
             <p id="displayBioText">-</p>
             <label>UPI ID</label>
-<p id="displayUpiText">Not set</p>
+            <p id="displayUpiText">Not set</p>
         </div>
 
         <div id="infoEdit" class="edit-form">
@@ -149,7 +142,7 @@
             <label>Bio</label>
             <textarea id="bioInput" rows="2"></textarea>
             <label>UPI ID</label>
-<input id="upiInput" placeholder="example@upi">
+            <input id="upiInput" placeholder="example@upi">
             <div style="display:flex; gap:10px;">
                 <button class="btn-primary" onclick="saveProfile()">Save</button>
                 <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)">Cancel</button>
@@ -157,17 +150,23 @@
         </div>
     </div>
 
-  <div class="card">
-<h3>My Wishlist</h3>
-<div id="wishlistGrid" class="grid"></div>
-</div>
+    <div class="card">
+        <div class="section-header">
+            <h3>My Wishlist</h3>
+            <button id="wishlistToggle" class="see-all-btn" onclick="toggleWishlistFull()" style="display:none;">See All</button>
+        </div>
+        <div id="wishlistGrid" class="grid"></div>
+    </div>
 
     <div class="card">
-<h3>My Orders</h3>
-<div id="ordersGrid" class="grid"></div>
-</div>
+        <div class="section-header">
+            <h3>My Orders</h3>
+            <button id="ordersToggle" class="see-all-btn" onclick="toggleOrdersFull()" style="display:none;">See All</button>
+        </div>
+        <div id="ordersGrid" class="grid"></div>
+    </div>
     
-    <button style="background: #fee2e2; color: #ef4444; border:none; width:100%; padding:14px; border-radius:12px; font-weight:700; margin-bottom: 20px;" onclick="logout()">Logout</button>
+    <button style="background: #fee2e2; color: #ef4444; border:none; width:100%; padding:14px; border-radius:12px; font-weight:700; margin-bottom: 20px; cursor:pointer;" onclick="logout()">Logout</button>
 </div>
 
 <nav class="bottom-nav">
@@ -179,7 +178,6 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
         <span>Chats</span>
     </a>
-   <!-- Updated Link to add_product.html -->
     <a href="add_product.html" class="nav-item nav-sell">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
     </a>
@@ -195,15 +193,18 @@
 
 <script>
     let currentUser;
+    let allWishlistItems = [];
+    let showingAllWishlist = false;
+    let allOrdersItems = [];
+    let showingAllOrders = false;
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = "login-signup.html";
         currentUser = session.user;
         loadProfile();
-       loadProfile();
-loadWishlist();
-loadOrders();
+        loadWishlist();
+        loadOrders();
     }
 
     async function loadProfile() {
@@ -216,7 +217,6 @@ loadOrders();
         document.getElementById('displayCollegeText').innerText = data.college || "Not set";
         document.getElementById('displayBioText').innerText = data.bio || "No bio added";
         document.getElementById('displayUpiText').innerText = data.upi_id || "Not set";
-
 
         document.getElementById('nameInput').value = data.name || "";
         document.getElementById('collegeInput').value = data.college || "";
@@ -238,31 +238,97 @@ loadOrders();
         const { error } = await supabaseClient.from("users").update({
             name: document.getElementById('nameInput').value,
             college: document.getElementById('collegeInput').value,
-          bio: document.getElementById('bioInput').value,
-upi_id: document.getElementById('upiInput').value
+            bio: document.getElementById('bioInput').value,
+            upi_id: document.getElementById('upiInput').value
         }).eq('id', currentUser.id);
 
         if (error) alert(error.message);
         else location.reload();
     }
 
-    async function loadListings() {
-        const { data } = await supabaseClient.from("products").select("*").eq("seller_id", currentUser.id).eq("status", "active");
-        const grid = document.getElementById('listingGrid');
+    // --- WISHLIST LOGIC ---
+    async function loadWishlist() {
+        const { data, error } = await supabaseClient
+            .from("wishlist")
+            .select("id, product:products(*)")
+            .eq("user_id", currentUser.id);
+
+        if (error) return console.error(error);
+        allWishlistItems = data || [];
+        renderWishlist();
+    }
+
+    function renderWishlist() {
+        const grid = document.getElementById("wishlistGrid");
+        const toggleBtn = document.getElementById("wishlistToggle");
         grid.innerHTML = "";
         
-        data?.forEach(p => {
-            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+        const itemsToDisplay = showingAllWishlist ? allWishlistItems : allWishlistItems.slice(0, 3);
+        toggleBtn.style.display = allWishlistItems.length > 3 ? "block" : "none";
+        toggleBtn.innerText = showingAllWishlist ? "Show Less" : "See All";
+
+        itemsToDisplay.forEach(item => {
+            const p = item.product;
+            if (!p) return;
+            const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
             grid.innerHTML += `
-                <div class="product-item">
-                    <button class="edit-listing-btn" onclick="location.href='edit_product.html?id=${p.id}'">EDIT</button>
+                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;">
+                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
                     <img src="${img}">
                     <div style="font-weight:700; margin-top:5px;">₹${p.price}</div>
-                    <div style="font-size:11px; color:var(--text-light);">${p.title}</div>
-                </div>
-            `;
+                    <div style="font-size:11px;color:gray;">${p.title}</div>
+                </div>`;
         });
     }
+
+    function toggleWishlistFull() { showingAllWishlist = !showingAllWishlist; renderWishlist(); }
+
+    async function removeFromWishlist(wishlistId) {
+        const { error } = await supabaseClient.from("wishlist").delete().eq("id", wishlistId);
+        if (error) alert("Error removing item");
+        else {
+            allWishlistItems = allWishlistItems.filter(i => i.id !== wishlistId);
+            renderWishlist();
+        }
+    }
+
+    // --- ORDERS LOGIC ---
+    async function loadOrders() {
+        const { data, error } = await supabaseClient
+            .from("orders")
+            .select("product:products(*)")
+            .eq("buyer_id", currentUser.id);
+
+        if (error) return console.error(error);
+        allOrdersItems = data || [];
+        renderOrders();
+    }
+
+    function renderOrders() {
+        const grid = document.getElementById("ordersGrid");
+        const toggleBtn = document.getElementById("ordersToggle");
+        grid.innerHTML = "";
+        
+        const itemsToDisplay = showingAllOrders ? allOrdersItems : allOrdersItems.slice(0, 3);
+        toggleBtn.style.display = allOrdersItems.length > 3 ? "block" : "none";
+        toggleBtn.innerText = showingAllOrders ? "Show Less" : "See All";
+
+        itemsToDisplay.forEach(item => {
+            const p = item.product;
+            if (!p) return;
+            const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+            grid.innerHTML += `
+                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;">
+                    <img src="${img}">
+                    <div style="font-weight:700; margin-top:5px;">₹${p.price}</div>
+                    <div style="font-size:11px;color:gray;">${p.title}</div>
+                </div>`;
+        });
+    }
+
+    function toggleOrdersFull() { showingAllOrders = !showingAllOrders; renderOrders(); }
 
     async function logout() {
         await supabaseClient.auth.signOut();
@@ -270,107 +336,6 @@ upi_id: document.getElementById('upiInput').value
     }
 
     window.onload = init;
-
-  let allWishlistItems = [];
-let showingAllWishlist = false;
-
-async function loadWishlist() {
-    const { data, error } = await supabaseClient
-        .from("wishlist")
-        .select("id, product:products(*)") // Fetching wishlist ID to make deletion easier
-        .eq("user_id", currentUser.id);
-
-    if (error) return console.error(error);
-    
-    allWishlistItems = data || [];
-    renderWishlist();
-}
-
-function renderWishlist() {
-    const grid = document.getElementById("wishlistGrid");
-    const toggleBtn = document.getElementById("wishlistToggle");
-    
-    grid.innerHTML = "";
-    
-    // Determine which items to show
-    const itemsToDisplay = showingAllWishlist ? allWishlistItems : allWishlistItems.slice(0, 3);
-    
-    // Show/Hide "See All" button
-    toggleBtn.style.display = allWishlistItems.length > 3 ? "block" : "none";
-    toggleBtn.innerText = showingAllWishlist ? "Show Less" : "See All";
-
-    itemsToDisplay.forEach(item => {
-        const p = item.product;
-        if (!p) return; // Guard against deleted products
-
-        const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
-
-        grid.innerHTML += `
-            <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;">
-                <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                </div>
-                <img src="${img}">
-                <div style="font-weight:700; margin-top:5px;">₹${p.price}</div>
-                <div style="font-size:11px;color:gray;">${p.title}</div>
-            </div>
-        `;
-    });
-}
-
-function toggleWishlistFull() {
-    showingAllWishlist = !showingAllWishlist;
-    renderWishlist();
-}
-
-async function removeFromWishlist(wishlistId) {
-    const { error } = await supabaseClient
-        .from("wishlist")
-        .delete()
-        .eq("id", wishlistId);
-
-    if (error) {
-        alert("Could not remove item");
-    } else {
-        // Refresh local data and re-render
-        allWishlistItems = allWishlistItems.filter(item => item.id !== wishlistId);
-        renderWishlist();
-    }
-}
-
-});
-
-}
-
-    async function loadOrders(){
-
-const { data } = await supabaseClient
-.from("orders")
-.select("product:products(*)")
-.eq("buyer_id", currentUser.id);
-
-const grid = document.getElementById("ordersGrid");
-
-grid.innerHTML="";
-
-data?.forEach(item=>{
-
-const p = item.product;
-
-const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
-
-grid.innerHTML += `
-<div class="product-item">
-<img src="${img}">
-<div style="font-weight:700;">₹${p.price}</div>
-<div style="font-size:11px;color:gray;">${p.title}</div>
-</div>
-`;
-
-});
-
-}
-    
 </script>
 </body>
 </html>
