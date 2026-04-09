@@ -2,433 +2,193 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DormKart - Product</title>
-    <link rel="stylesheet" href="app.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>DormKart • Product Details</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        .back-nav {
-            padding: 20px;
-            cursor: pointer;
-            color: var(--primary);
-            font-weight: 700;
-            display: inline-block;
+        :root {
+            --primary: #4ade80;
+            --primary-dark: #059669;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
         }
 
-        .carousel-view {
-            width: 100%;
-            height: 350px;
-            background: #E2E8F0;
-            position: relative;
-            overflow: hidden; /* Hide overflow for slider */
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+
+        /* Lush Emerald Header */
+        .header-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 20px; color: white; border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
+            display: flex; align-items: center; gap: 15px;
         }
+        .back-btn { background: rgba(255,255,255,0.2); border: none; border-radius: 12px; padding: 8px; color: white; cursor: pointer; }
+
+        /* Modal Content Styling */
+        .modal-content { background: white; min-height: 100vh; position: relative; }
+        .slider-container { position: relative; width: 100%; height: 350px; background: #000; overflow: hidden; }
+        .slider-wrapper { display: flex; height: 100%; transition: transform 0.4s ease-out; }
+        .slide { min-width: 100%; height: 100%; object-fit: contain; }
         
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-        }
+        .close-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; }
+        
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.3); color: white; border: none; padding: 10px; cursor: pointer; z-index: 5; }
+        .prev-btn { left: 10px; } .next-btn { right: 10px; }
+        .slider-dots { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: center; gap: 5px; }
+        .dot { width: 8px; height: 8px; background: rgba(255,255,255,0.5); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: white; width: 20px; border-radius: 4px; }
 
-        .carousel-slide {
-            min-width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-        }
+        .modal-body { padding: 20px; }
+        .modal-price-row { display: flex; justify-content: space-between; align-items: center; }
+        .modal-price { font-size: 32px; font-weight: 800; color: var(--primary-dark); }
+        .verified-badge { background: #dcfce7; color: #166534; font-size: 12px; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
+        
+        .modal-title { font-size: 20px; font-weight: 700; margin: 10px 0; }
+        .condition-chip { display: inline-block; background: #f1f5f9; padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; }
+        .safety-tip { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; padding: 12px; border-radius: 12px; font-size: 13px; margin: 15px 0; }
+        
+        .seller-card { display: flex; align-items: center; gap: 12px; padding: 15px; background: #f8fafc; border: 1px solid var(--border); border-radius: 16px; cursor: pointer; margin-top: 20px; }
+        .seller-avatar { width: 45px; height: 45px; border-radius: 50%; background: var(--primary); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; overflow: hidden; }
+        .seller-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .seller-name { font-weight: 700; font-size: 15px; }
+        .seller-college { font-size: 12px; color: var(--text-light); }
+        .seller-arrow { margin-left: auto; font-size: 24px; color: var(--text-light); }
 
-        .carousel-dots {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 8px;
-        }
+        /* Buttons */
+        .btn-row { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+        .btn { border: none; border-radius: 15px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-buy { background: var(--primary-dark); color: white; }
+        .btn-secondary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .btn-cart, .btn-offer, .btn-wish { background: #f1f5f9; color: var(--text); font-size: 13px; padding: 12px 5px; }
+        .btn-message { background: #0f172a; color: white; }
+        .btn:active { transform: scale(0.96); }
 
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.5);
-            transition: 0.3s;
-            cursor: pointer;
-        }
-
-        .dot.active {
-            background: var(--primary);
-            width: 20px;
-            border-radius: 5px;
-        }
-
-        /* Detail Card */
-        .detail-card {
-            background: var(--background);
-            border-radius: 30px 30px 0 0;
-            margin-top: -30px;
-            position: relative;
-            z-index: 10;
-            padding: 30px 20px;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
-            min-height: 50vh;
-        }
-
-        .d-price {
-            font-family: 'Outfit', sans-serif;
-            font-size: 2.5rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .d-title {
-            font-size: 1.5rem;
-            color: #2D3748;
-            font-weight: 700;
-            margin-bottom: 15px;
-        }
-
-        .d-badges {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-
-        .badge {
-            background: rgba(20, 184, 166, 0.1);
-            color: #2D3748;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            border: 1px solid rgba(20, 184, 166, 0.2);
-        }
-
-        .d-desc {
-            color: #4A5568;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .seller-block {
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 5px 15px var(--shadow-color);
-            margin-bottom: 30px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .seller-block:hover {
-            transform: scale(0.98);
-        }
-
-        .sb-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .sb-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--secondary), var(--primary));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-        }
-
-        .sb-name {
-            font-weight: 700;
-            color: #2D3748;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .sb-verified {
-            color: var(--primary);
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .fixed-action {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: inherit;
-            background: rgba(255,255,255,0.9);
-            backdrop-filter: blur(15px);
-            padding: 20px;
-            box-sizing: border-box;
-            border-top: 1px solid rgba(0,0,0,0.05);
-            z-index: 100;
-        }
-
-        .detail-skeleton { color: #A0AEC0; text-align: center; }
-
-        /* Buy Modal */
-        .buy-modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            backdrop-filter: blur(5px);
-            z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .buy-modal-content {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            width: 85%;
-            max-width: 400px;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            animation: floatIn 0.3s ease-out forwards;
-        }
-        @keyframes floatIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .close-modal {
-            position: absolute;
-            top: 15px; right: 20px;
-            font-size: 1.5rem;
-            color: #A0AEC0;
-            cursor: pointer;
-        }
-
+        /* UPI Modal */
+        #upiModal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+        .upi-content { background: white; padding: 25px; border-radius: 25px; width: 100%; max-width: 350px; text-align: center; }
+        .upi-title { font-weight: 800; font-size: 20px; margin-bottom: 10px; }
+        #upiQR { width: 200px; height: 200px; margin: 15px auto; border: 8px solid #f1f5f9; border-radius: 15px; }
+        .upi-btns { display: flex; gap: 10px; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="app-container" style="padding-bottom: 100px;">
-    
-        <div class="carousel-view">
-            <div class="back-nav" onclick="window.location.href='dashboard.html'" style="display:flex; align-items:center; gap:5px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            Back
-        </div>
-            <div class="carousel-track" id="carouselTrack">
-                <!-- Images go here -->
-            </div>
-            <div class="carousel-dots" id="carouselDots">
-                <!-- Dots go here -->
-            </div>
-        </div>
 
-        <div class="detail-card">
-            <div id="detailContent">
-                <div class="detail-skeleton">Fetching Data...</div>
-            </div>
-        </div>
-
-        <div class="fixed-action" style="display: flex; gap: 10px;">
-            <button class="btn" id="chatBtn" style="font-size: 1.2rem; flex: 1; background: var(--secondary);">Chat</button>
-            <button class="btn" id="buyBtn" style="font-size: 1.2rem; flex: 1;">Buy Now</button>
-        </div>
-        
-        <!-- Buy Modal -->
-        <div id="buyModal" class="buy-modal" style="display: none;">
-            <div class="buy-modal-content">
-                <span class="close-modal" onclick="closeModal()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </span>
-                <h2 style="margin-top:0; font-family:'Outfit', sans-serif;">Pay via UPI</h2>
-                <p style="color: #718096; font-size: 0.95rem;">Scan the QR code or click the button below to pay using your preferred UPI app.</p>
-                
-                <div id="qrCodeContainer" style="text-align: center; margin: 20px 0;">
-                    <!-- QR Code injected here -->
-                </div>
-
-                <a id="upiLink" href="#" class="btn" style="display: block; text-align: center; text-decoration: none;">Pay with UPI App</a>
-                
-                <p style="font-size: 0.8rem; color: #A0AEC0; text-align: center; margin-top: 15px;">
-                    Ensure the seller has added their UPI ID to their profile.
-                </p>
-            </div>
-        </div>
-        
+<div id="productModal">
+    <div class="modal-content" id="modalContent">
+        <div style="padding:50px; text-align:center;">Loading product...</div>
     </div>
+</div>
 
-    <!-- Supabase JS CDN and User Config -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    
-    <script>
-        let currentSlide = 0;
-        let authSession = null;
+<div id="upiModal">
+    <div class="upi-content">
+        <div class="upi-title">Pay via UPI</div>
+        <div id="upiAmount" style="font-size: 24px; font-weight: 800; color: var(--primary-dark);"></div>
+        <img id="upiQR" src="" alt="Scan to pay">
+        <p class="upi-hint" style="font-size: 12px; color: gray;">Scan with GPay, PhonePe, Paytm or any UPI app</p>
+        <div class="upi-btns">
+            <a id="upiLink" href="#" class="btn btn-buy" style="flex:1; text-decoration:none; display:flex; align-items:center; justify-content:center;">Open App</a>
+            <button onclick="document.getElementById('upiModal').style.display='none'" class="btn btn-cart" style="flex:1;">Close</button>
+        </div>
+    </div>
+</div>
 
-        window.onload = async () => {
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login-signup.html';
-                return;
-            }
-            authSession = session;
+<script>
+    let slideIndex = 0;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
-            if(productId) {
-                await fetchProduct(productId);
-            } else {
-                document.getElementById('detailContent').innerHTML = "<p style='color:red;'>Product ID missing.</p>";
-            }
-        };
+    window.onload = async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+        if (productId) fetchProductDetails(productId);
+    };
 
-        async function fetchProduct(id) {
-            // First getting product
-            const { data: product, error } = await supabaseClient
-                .from('products')
-                .select('*')
-                .eq('id', id)
-                .single();
+    async function fetchProductDetails(id) {
+        const { data: p, error } = await supabaseClient
+            .from('products')
+            .select('*, seller:users(*)')
+            .eq('id', id)
+            .single();
 
-            if (error || !product) {
-                document.getElementById('detailContent').innerHTML = "<p style='color:red;'>Product not found.</p>";
-                return;
-            }
-
-            // Getting seller manually to avoid complex join query reliance if their DB lacks relations setup
-            let sellerName = 'Verified User';
-            let sellerUpiId = null;
-            let avatarUrl = null;
-            const { data: seller } = await supabaseClient
-                .from('users')
-                .select('name, upi_id, avatar_url')
-                .eq('id', product.seller_id)
-                .single();
-            if (seller) {
-                if (seller.name) sellerName = seller.name;
-                if (seller.upi_id) sellerUpiId = seller.upi_id;
-                if (seller.avatar_url) avatarUrl = seller.avatar_url;
-            }
-
-            renderCarousel(product.image_url);
-            renderDetails(product, sellerName, sellerUpiId, avatarUrl);
+        if (error || !p) {
+            document.getElementById('modalContent').innerHTML = "<p style='padding:50px; text-align:center;'>Product not found.</p>";
+            return;
         }
 
-        function renderCarousel(commaStr) {
-            const track = document.getElementById('carouselTrack');
-            const dots = document.getElementById('carouselDots');
-            let images = [];
-            
-            if (commaStr) {
-                images = commaStr.split(',').map(url => url.trim());
-            }
+        const images = p.image_url ? p.image_url.split(',') : ['placeholder.png'];
+        const slidesHTML = images.map(img => `<img src="${img.trim()}" class="slide">`).join('');
+        const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('');
 
-            if (images.length === 0) {
-                images = ['https://via.placeholder.com/600x400/F0FDFA/14B8A6?text=No+Image'];
-            }
-
-            // Generate Slides
-            track.innerHTML = images.map(url => `<img src="${url}" class="carousel-slide">`).join('');
-            
-            // Generate Dots
-            if (images.length > 1) {
-                dots.innerHTML = images.map((_, i) => `<div class="dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
-                
-                // Add simple touch swipe listener for the track (mocked slightly with JS logic here)
-                // Just relying on dots for simple prototype
-            }
-        }
-
-        function goToSlide(index) {
-            const track = document.getElementById('carouselTrack');
-            const total = track.children.length;
-            if(index < 0 || index >= total) return;
-            currentSlide = index;
-            track.style.transform = `translateX(-${currentSlide * 100}%)`;
-            
-            // Update dots
-            const dots = document.getElementById('carouselDots').children;
-            for(let i=0; i<dots.length; i++) {
-                dots[i].classList.remove('active');
-            }
-            dots[currentSlide].classList.add('active');
-        }
-
-        function renderDetails(product, sellerName, sellerUpiId, avatarUrl) {
-            const content = document.getElementById('detailContent');
-            content.innerHTML = `
-                <div class="d-price">₹${Number(product.price).toFixed(2)}</div>
-                <div class="d-title">${product.title}</div>
-                
-                <div class="d-badges">
-                    <div class="badge">Condition: ${product.condition || 'Pre-owned'}</div>
-                    <div class="badge" style="display:flex; align-items:center; gap:4px;">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> 
-                        ${product.category}
-                    </div>
+        const content = document.getElementById('modalContent');
+        content.innerHTML = `
+            <div class="slider-container">
+                <button class="close-btn" onclick="history.back()">✕</button>
+                ${images.length > 1 ? `
+                    <button class="slider-btn prev-btn" onclick="moveSlide(-1,${images.length})">❮</button>
+                    <button class="slider-btn next-btn" onclick="moveSlide(1,${images.length})">❯</button>
+                    <div class="slider-dots">${dotsHTML}</div>
+                ` : ''}
+                <div class="slider-wrapper" id="sliderWrapper">${slidesHTML}</div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-price-row">
+                    <div class="modal-price">₹${Math.floor(p.price).toLocaleString('en-IN')}</div>
+                    ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified Student</span>' : ''}
                 </div>
-
-                <div class="seller-block" onclick="window.location.href='seller_profile.html?id=${product.seller_id}'">
-                    <div class="sb-left">
-                        <div class="sb-avatar" style="${avatarUrl ? 'background:none; overflow:hidden;' : ''}">
-                            ${avatarUrl ? `<img src="${avatarUrl}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">` : `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`}
-                        </div>
-                        <div>
-                            <div class="sb-name">${sellerName}</div>
-                            <div class="sb-verified" style="display:flex; align-items:center; gap:4px;">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                Meet the Seller
-                            </div>
-                        </div>
-                    </div>
-                    <div style="color:var(--primary);">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </div>
+                <div class="modal-title">${p.title}</div>
+                ${p.condition ? `<div class="condition-chip">🏷️ ${p.condition}</div>` : ''}
+                <div class="safety-tip">🛡️ Meet at public campus spots — Library, Canteen or Admin Block.</div>
+                <div class="desc-section">
+                    <h4 style="margin-bottom:8px;">Description</h4>
+                    <p style="color:var(--text-light); line-height:1.5; margin:0;">${p.description || 'No description provided.'}</p>
                 </div>
-
-                <div class="d-desc">
-                    ${product.description || 'No description provided.'}
+                <div class="seller-card" onclick="window.location.href='seller_profile.html?id=${p.seller_id}'">
+                    <div class="seller-avatar">
+                        ${p.seller?.avatar_url ? `<img src="${p.seller.avatar_url}">` : (p.seller?.name?.charAt(0)?.toUpperCase() || 'S')}
+                    </div>
+                    <div>
+                        <div class="seller-name">${p.seller?.name || 'Anonymous Seller'}</div>
+                        <div class="seller-college">${p.seller?.college || 'Verified Campus'}</div>
+                    </div>
+                    <div class="seller-arrow">›</div>
                 </div>
-            `;
+            </div>
+            <div class="btn-row">
+                <button class="btn btn-buy" onclick="openUPI(${p.price}, '${p.seller?.upi_id || ''}', '${p.seller?.name || 'Seller'}')">⚡ Buy it Now</button>
+                <div class="btn-secondary-row">
+                    <button class="btn btn-cart" onclick="alert('Added to Cart')">🛒 Cart</button>
+                    <button class="btn btn-offer" onclick="location.href='chats.html?new=${p.seller_id}'">💬 Offer</button>
+                    <button class="btn btn-wish" onclick="alert('Saved to Wishlist')">♡ Save</button>
+                </div>
+                <button class="btn btn-message" onclick="window.location.href='chat_room.html?user=${p.seller_id}'">Message Seller</button>
+            </div>
+        `;
+    }
 
-            const chatBtn = document.getElementById('chatBtn');
-            const buyBtn = document.getElementById('buyBtn');
-            
-            if(product.seller_id === authSession.user.id) {
-                chatBtn.innerHTML = "Edit Listing";
-                chatBtn.style.background = "#A0AEC0";
-                chatBtn.onclick = null;
-                buyBtn.style.display = 'none';
-            } else {
-                chatBtn.onclick = () => window.location.href = `chat_room.html?user=${product.seller_id}`;
-                buyBtn.onclick = () => openBuyModal(product, sellerName, sellerUpiId);
-            }
-        }
+    function moveSlide(step, total) {
+        const wrapper = document.getElementById('sliderWrapper');
+        const dots = document.querySelectorAll('.dot');
+        slideIndex = (slideIndex + step + total) % total;
+        wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === slideIndex));
+    }
 
-        function openBuyModal(product, sellerName, sellerUpiId) {
-            if(!sellerUpiId) {
-                alert("This seller hasn't added their UPI ID yet. Try chatting with them or contact them to complete the purchase!");
-                return;
-            }
-            
-            const modal = document.getElementById('buyModal');
-            modal.style.display = 'flex';
-            
-            const upiIntent = `upi://pay?pa=${sellerUpiId}&pn=${encodeURIComponent(sellerName)}&am=${product.price}&cu=INR`;
-            
-            document.getElementById('upiLink').href = upiIntent;
-            
-            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiIntent)}`;
-            document.getElementById('qrCodeContainer').innerHTML = `<img src="${qrUrl}" alt="UPI QR Code" style="border-radius:12px; border: 4px solid var(--primary);">`;
+    function openUPI(amount, upiId, name) {
+        if (!upiId) {
+            alert("Seller hasn't added a UPI ID yet. Use 'Message Seller' to discuss payment.");
+            return;
         }
+        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+        
+        document.getElementById('upiAmount').innerText = `₹${amount}`;
+        document.getElementById('upiQR').src = qrUrl;
+        document.getElementById('upiLink').href = upiLink;
+        document.getElementById('upiModal').style.display = 'flex';
+    }
+</script>
 
-        function closeModal() {
-            document.getElementById('buyModal').style.display = 'none';
-        }
-    </script>
 </body>
 </html>
