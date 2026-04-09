@@ -101,6 +101,18 @@
             margin-top: -35px; border: 5px solid var(--bg); color: white !important;
             box-shadow: 0 4px 12px rgba(74, 222, 128, 0.4);
         }
+        /* New styles for wishlist features */
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; }
+    
+    .heart-btn {
+        position: absolute; top: 8px; right: 8px; background: white;
+        border-radius: 50%; width: 28px; height: 28px; display: flex;
+        align-items: center; justify-content: center; border: 1px solid #eee;
+        cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        z-index: 10;
+    }
+    .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; stroke: #ef4444; }
     </style>
 </head>
 
@@ -259,30 +271,72 @@ upi_id: document.getElementById('upiInput').value
 
     window.onload = init;
 
-    async function loadWishlist(){
+  let allWishlistItems = [];
+let showingAllWishlist = false;
 
-const { data } = await supabaseClient
-.from("wishlist")
-.select("product:products(*)")
-.eq("user_id", currentUser.id);
+async function loadWishlist() {
+    const { data, error } = await supabaseClient
+        .from("wishlist")
+        .select("id, product:products(*)") // Fetching wishlist ID to make deletion easier
+        .eq("user_id", currentUser.id);
 
-const grid = document.getElementById("wishlistGrid");
+    if (error) return console.error(error);
+    
+    allWishlistItems = data || [];
+    renderWishlist();
+}
 
-grid.innerHTML = "";
+function renderWishlist() {
+    const grid = document.getElementById("wishlistGrid");
+    const toggleBtn = document.getElementById("wishlistToggle");
+    
+    grid.innerHTML = "";
+    
+    // Determine which items to show
+    const itemsToDisplay = showingAllWishlist ? allWishlistItems : allWishlistItems.slice(0, 3);
+    
+    // Show/Hide "See All" button
+    toggleBtn.style.display = allWishlistItems.length > 3 ? "block" : "none";
+    toggleBtn.innerText = showingAllWishlist ? "Show Less" : "See All";
 
-data?.forEach(item=>{
+    itemsToDisplay.forEach(item => {
+        const p = item.product;
+        if (!p) return; // Guard against deleted products
 
-const p = item.product;
+        const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
 
-const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+        grid.innerHTML += `
+            <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;">
+                <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <img src="${img}">
+                <div style="font-weight:700; margin-top:5px;">₹${p.price}</div>
+                <div style="font-size:11px;color:gray;">${p.title}</div>
+            </div>
+        `;
+    });
+}
 
-grid.innerHTML += `
-<div class="product-item">
-<img src="${img}">
-<div style="font-weight:700;">₹${p.price}</div>
-<div style="font-size:11px;color:gray;">${p.title}</div>
-</div>
-`;
+function toggleWishlistFull() {
+    showingAllWishlist = !showingAllWishlist;
+    renderWishlist();
+}
+
+async function removeFromWishlist(wishlistId) {
+    const { error } = await supabaseClient
+        .from("wishlist")
+        .delete()
+        .eq("id", wishlistId);
+
+    if (error) {
+        alert("Could not remove item");
+    } else {
+        // Refresh local data and re-render
+        allWishlistItems = allWishlistItems.filter(item => item.id !== wishlistId);
+        renderWishlist();
+    }
+}
 
 });
 
