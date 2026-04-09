@@ -228,4 +228,63 @@
 
             const user = data.user
             await supabaseClient
-                .
+                .from("users")
+                .upsert({
+                    id: user.id,
+                    email: user.email
+                })
+
+            msg.style.color = "#059669"
+            msg.innerText = "Signup successful! Redirecting..."
+
+            setTimeout(() => {
+                window.location = "profile.html"
+            }, 1500)
+        }
+
+        async function login() {
+            const email = document.getElementById("loginEmail").value
+            const password = document.getElementById("loginPassword").value
+            const msg = document.getElementById("loginMsg")
+
+            if (!email || !password) {
+                msg.style.color = "#ef4444"
+                msg.innerText = "Enter email and password"
+                return
+            }
+
+            msg.style.color = "#059669"
+            msg.innerText = "Logging in..."
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email: email,
+                password: password
+            })
+
+            if (error) {
+                msg.style.color = "#ef4444"
+                msg.innerText = error.message
+                return
+            }
+
+            msg.style.color = "#059669"
+            msg.innerText = "Login successful! Redirecting..."
+
+            setTimeout(() => {
+                window.location = "dashboard.html"
+            }, 1000)
+        }
+
+        async function checkSession() {
+            const { data } = await supabaseClient.auth.getSession()
+            if (data.session) {
+                window.location = "dashboard.html"
+            }
+        }
+
+        checkSession()
+    </script>
+
+</body>
+
+</html>
