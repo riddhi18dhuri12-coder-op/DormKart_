@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DormKart - Chats</title>
     <link rel="stylesheet" href="app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #4ade80;
@@ -22,88 +23,68 @@
             background-color: var(--bg);
             margin: 0;
             padding-bottom: calc(var(--nav-height) + 20px);
-            color: var(--text);
         }
 
-        /* 1. Lush Emerald Header */
+        /* 1. Emerald Header with Search */
         .header-emerald {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            padding: 40px 20px 30px;
+            padding: 25px 20px 35px;
             color: white;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
-            margin-bottom: 20px;
+            position: sticky; top: 0; z-index: 1000;
         }
 
-        .header-top { display: flex; align-items: center; justify-content: space-between; }
-        .header-emerald h1 { margin: 0; font-weight: 800; font-size: 28px; letter-spacing: -0.5px; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .header-emerald h1 { margin: 0; font-weight: 800; font-size: 26px; }
 
-        /* CHAT LIST */
-        .chat-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 0 16px;
+        .search-container { width: 100%; }
+        .search-container input {
+            width: 100%; padding: 14px 20px; border-radius: 15px; border: none;
+            background: rgba(255, 255, 255, 0.95); font-family: inherit; outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
-        /* CHAT CARD */
+        /* 2. Floating Delete Button */
+        #deleteFab {
+            position: fixed; bottom: 90px; right: 20px;
+            background: #ef4444; color: white; border: none;
+            padding: 15px 25px; border-radius: 30px; font-weight: 800;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            display: none; z-index: 1001; cursor: pointer;
+        }
+
+        /* 3. Chat Card with Checkbox */
+        .chat-list { display: flex; flex-direction: column; gap: 12px; padding: 20px 16px; }
         .chat-card {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            background: white; border: 1px solid var(--border); border-radius: 20px;
+            padding: 16px; display: flex; align-items: center; gap: 14px;
+            cursor: pointer; position: relative; transition: 0.2s;
         }
 
-        .chat-card:active {
-            transform: scale(0.97);
-            background: #f1f5f9;
+        .chat-card.selected { border-color: #ef4444; background: #fff1f2; }
+
+        .select-checkbox {
+            width: 20px; height: 20px; accent-color: var(--primary-dark);
+            cursor: pointer; margin-right: 5px;
         }
 
-        /* AVATAR */
         .chat-avatar {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #f1f5f9;
-            flex-shrink: 0;
-            overflow: hidden;
-            border: 2px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; overflow: hidden; border: 2px solid white;
         }
-
         .chat-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* CHAT INFO */
         .chat-info { flex: 1; overflow: hidden; }
-        .chat-name { font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 3px; }
+        .chat-name { font-weight: 700; font-size: 16px; color: var(--text); }
         .chat-preview { font-size: 13px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* RIGHT META */
         .chat-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-        .chat-time { font-size: 11px; color: var(--text-light); font-weight: 600; }
+        .chat-time { font-size: 11px; color: var(--text-light); }
 
-        /* UNREAD BADGE */
-        .unread-badge {
-            background: var(--primary-dark);
-            color: white;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-        }
-
-        /* BOTTOM NAV */
+       /* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -142,27 +123,27 @@
   transition: transform 0.2s;
 }
 .nav-sell:hover { transform: scale(1.08); }
-    </style>
+</style>
 </head>
 <body>
-    <div class="app-container">
-        
-        <header class="header-emerald">
-            <div class="header-top">
-                <h1>Messages</h1>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.8"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
-            </div>
-        </header>
 
-        <main class="content-area">
-            <div class="chat-list" id="chatList">
-                <div style="text-align: center; color: #718096; padding: 40px;">
-                    <p>Fetching messages...</p>
-                </div>
-            </div>
-        </main>
+    <header class="header-emerald">
+        <div class="header-top">
+            <h1>Messages</h1>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.8"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search by name..." oninput="filterChats()">
+        </div>
+    </header>
 
-       <!-- BOTTOM NAVigation -->
+    <button id="deleteFab" onclick="deleteSelectedChats()">Delete Selected</button>
+
+    <main class="chat-list" id="chatList">
+        <div style="text-align: center; color: #718096; padding: 40px;">Fetching chats...</div>
+    </main>
+
+      <!-- BOTTOM NAVigation -->
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active">
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -184,93 +165,112 @@
     Profile
   </a>
 </nav>
-        
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    
     <script>
         let currentUserId = null;
+        let allChats = [];
+        let selectedUserIds = new Set();
+
         window.onload = async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) {
-                window.location.href = 'login-signup.html';
-                return;
-            }
+            if (!session) return window.location.href = 'login-signup.html';
             currentUserId = session.user.id;
             await fetchChats();
         };
 
         async function fetchChats() {
-            const container = document.getElementById('chatList');
             const { data, error } = await supabaseClient
                 .from('chats')
                 .select('*')
                 .or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`)
                 .order('created_at', { ascending: false });
 
-            if (error) {
-                container.innerHTML = `<div style="color:red; text-align:center; padding: 20px;">Failed to load chats.</div>`;
-                return;
-            }
-
-            if (!data || data.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-icon">💬</div>
-                        <h3>No messages yet</h3>
-                        <p>Browse items to start a conversation!</p>
-                    </div>
-                `;
-                return;
-            }
+            if (error) return;
 
             const convos = new Map();
             const userIds = new Set();
             data.forEach(msg => {
-                const otherUserId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
-                if (!convos.has(otherUserId)) {
-                    convos.set(otherUserId, msg);
-                }
-                userIds.add(msg.sender_id);
-                userIds.add(msg.receiver_id);
+                const otherId = msg.sender_id === currentUserId ? msg.receiver_id : msg.sender_id;
+                if (!convos.has(otherId)) convos.set(otherId, msg);
+                userIds.add(otherId);
             });
 
             const { data: usersData } = await supabaseClient
-                .from('users')
-                .select('id, name, avatar_url')
-                .in('id', Array.from(userIds));
+                .from('users').select('id, name, avatar_url').in('id', Array.from(userIds));
 
             const userMap = {};
-            if(usersData) usersData.forEach(u => userMap[u.id] = u);
+            usersData.forEach(u => userMap[u.id] = u);
 
+            allChats = Array.from(convos).map(([otherId, msg]) => ({
+                otherId,
+                lastMsg: msg,
+                user: userMap[otherId] || { name: 'User', avatar_url: null }
+            }));
+
+            renderChats(allChats);
+        }
+
+        function renderChats(chats) {
+            const container = document.getElementById('chatList');
             container.innerHTML = '';
-            convos.forEach((msg, otherId) => {
-                const otherUser = userMap[otherId];
-                const isSentByMe = msg.sender_id === currentUserId;
-                const d = new Date(msg.created_at);
+
+            chats.forEach(chat => {
+                const isSentByMe = chat.lastMsg.sender_id === currentUserId;
+                const d = new Date(chat.lastMsg.created_at);
                 const timeStr = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const badge = (!isSentByMe && !msg.is_read) ? `<div class="unread-badge">New</div>` : '';
 
                 const card = document.createElement('div');
-                card.className = 'chat-card';
-                card.onclick = () => window.location.href = `chat_room.html?user=${otherId}`;
+                card.className = `chat-card ${selectedUserIds.has(chat.otherId) ? 'selected' : ''}`;
+                
                 card.innerHTML = `
-                    <div class="chat-avatar" style="${otherUser?.avatar_url ? '' : 'background: linear-gradient(135deg, #10b981, #059669); color: white;'}">
-                        ${otherUser?.avatar_url ? `<img src="${otherUser.avatar_url}">` : otherUser?.name?.charAt(0) || 'U'}
+                    <input type="checkbox" class="select-checkbox" 
+                        ${selectedUserIds.has(chat.otherId) ? 'checked' : ''} 
+                        onclick="event.stopPropagation(); toggleSelection('${chat.otherId}')">
+                    <div class="chat-avatar" style="${chat.user.avatar_url ? '' : 'background: linear-gradient(135deg, #10b981, #059669); color: white;'}">
+                        ${chat.user.avatar_url ? `<img src="${chat.user.avatar_url}">` : chat.user.name.charAt(0)}
                     </div>
-                    <div class="chat-info">
-                        <div class="chat-name">${otherUser?.name || 'User'}</div>
-                        <div class="chat-preview">${isSentByMe ? 'You: ' : ''}${msg.message}</div>
+                    <div class="chat-info" onclick="window.location.href='chat_room.html?user=${chat.otherId}'">
+                        <div class="chat-name">${chat.user.name}</div>
+                        <div class="chat-preview">${isSentByMe ? 'You: ' : ''}${chat.lastMsg.message}</div>
                     </div>
                     <div class="chat-meta">
                         <div class="chat-time">${timeStr}</div>
-                        ${badge}
                     </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function filterChats() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allChats.filter(chat => chat.user.name.toLowerCase().includes(term));
+            renderChats(filtered);
+        }
+
+        function toggleSelection(userId) {
+            if (selectedUserIds.has(userId)) selectedUserIds.delete(userId);
+            else selectedUserIds.add(userId);
+
+            document.getElementById('deleteFab').style.display = selectedUserIds.size > 0 ? 'block' : 'none';
+            renderChats(allChats);
+        }
+
+        async function deleteSelectedChats() {
+            if (!confirm(`Delete chats with ${selectedUserIds.size} users?`)) return;
+
+            const idsToDelete = Array.from(selectedUserIds);
+            
+            // Delete messages where current user is sender OR receiver for each selected otherId
+            for (const otherId of idsToDelete) {
+                await supabaseClient.from('chats').delete()
+                    .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${otherId}),and(sender_id.eq.${otherId},receiver_id.eq.${currentUserId})`);
+            }
+
+            selectedUserIds.clear();
+            document.getElementById('deleteFab').style.display = 'none';
+            await fetchChats();
         }
     </script>
 </body>
