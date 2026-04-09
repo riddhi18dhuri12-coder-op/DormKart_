@@ -223,33 +223,36 @@
         }
     }
 
-    function renderWishlist() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-        const grid = document.getElementById('wishlistGrid');
-        
-        const filtered = wishlistData.filter(item => 
-            item.product && item.product.title.toLowerCase().includes(searchTerm)
-        );
+  function renderWishlist() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const grid = document.getElementById('wishlistGrid');
+    
+    const filtered = wishlistData.filter(item => 
+        item.product && item.product.title.toLowerCase().includes(searchTerm)
+    );
 
-        grid.innerHTML = "";
-        filtered.forEach(item => {
-            const p = item.product;
-            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
-            
-            grid.innerHTML += `
-                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
-                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                    </div>
-                    <img src="${img}">
-                    <div class="item-details">
-                        <div class="price">₹${p.price}</div>
-                        <div class="title">${p.title}</div>
-                        <button class="view-prod-btn">View Product</button>
-                    </div>
-                </div>`;
-        });
-    }
+    grid.innerHTML = "";
+    filtered.forEach(item => {
+        const p = item.product;
+        const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+        
+        grid.innerHTML += `
+            <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+                <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+                <img src="${img}">
+                <div class="item-details">
+                    <div class="price">₹${p.price}</div>
+                    <div class="title">${p.title}</div>
+                    
+                    <button class="view-prod-btn" onclick="event.stopPropagation(); location.href='product-details.html?id=${p.id}'">
+                        View Product
+                    </button>
+                </div>
+            </div>`;
+    });
+}
 
     async function removeFromWishlist(id) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
