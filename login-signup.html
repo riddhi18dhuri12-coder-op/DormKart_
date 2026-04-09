@@ -16,7 +16,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: Segoe UI, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
         body {
@@ -24,7 +24,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #F0FDFA;
+            /* Emerald Light background */
+            background: #F0FDFA; 
         }
 
         .container {
@@ -32,55 +33,69 @@
             height: 500px;
             display: flex;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(5, 150, 105, 0.1);
             overflow: hidden;
         }
 
         .left {
             flex: 1;
-            background: linear-gradient(135deg, #A8DCAB, #519755);
+            /* Emerald Gradient */
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            padding: 40px;
+            text-align: center;
         }
 
         .left h1 {
             font-size: 40px;
+            font-weight: 800;
             margin-bottom: 10px;
+            letter-spacing: -1px;
         }
 
         .left p {
             opacity: 0.9;
+            font-weight: 500;
         }
 
         .right {
             flex: 1;
             padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .tabs {
             display: flex;
             margin-bottom: 25px;
-            border-radius: 8px;
-            overflow: hidden;
+            background: #f1f5f9;
+            border-radius: 12px;
+            padding: 5px;
         }
 
         .tabs button {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            background: #eee;
+            background: transparent;
             cursor: pointer;
             font-size: 15px;
+            font-weight: 600;
+            color: #64748b;
+            border-radius: 8px;
+            transition: 0.3s;
         }
 
         .tabs button.active {
-            background: #519755;
-            color: white;
-            font-weight: 700;
+            background: white;
+            color: #059669; /* Emerald Dark */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
 
         .form {
@@ -93,31 +108,41 @@
         }
 
         input {
-            padding: 12px;
+            padding: 12px 15px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
             font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #10b981;
         }
 
         button.submit {
-            padding: 12px;
+            padding: 14px;
             border: none;
-            background: linear-gradient(135deg, #A8DCAB, #519755);
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            transition: 0.3s;
         }
 
         button.submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(81, 151, 85, 0.3);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
         }
 
         .message {
             font-size: 14px;
-            margin-top: 10px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 500;
         }
     </style>
 
@@ -139,80 +164,55 @@
                 <button id="signupTab">Sign Up</button>
             </div>
 
-            <!-- LOGIN FORM -->
-
             <div id="loginForm" class="form active">
-
                 <input type="email" id="loginEmail" placeholder="College Email">
-
                 <input type="password" id="loginPassword" placeholder="Password">
-
                 <button class="submit" onclick="login()">Login</button>
-
                 <div id="loginMsg" class="message"></div>
-
             </div>
 
-            <!-- SIGNUP FORM -->
-
             <div id="signupForm" class="form">
-
                 <input type="email" id="signupEmail" placeholder="College Email">
-
                 <input type="password" id="signupPassword" placeholder="Password">
-
                 <button class="submit" onclick="signup()">Create Account</button>
-
                 <div id="signupMsg" class="message"></div>
-
             </div>
 
         </div>
     </div>
 
     <script>
-
         const loginTab = document.getElementById("loginTab")
         const signupTab = document.getElementById("signupTab")
-
         const loginForm = document.getElementById("loginForm")
         const signupForm = document.getElementById("signupForm")
 
         loginTab.onclick = () => {
-
             loginTab.classList.add("active")
             signupTab.classList.remove("active")
-
             loginForm.classList.add("active")
             signupForm.classList.remove("active")
-
         }
 
         signupTab.onclick = () => {
-
             signupTab.classList.add("active")
             loginTab.classList.remove("active")
-
             signupForm.classList.add("active")
             loginForm.classList.remove("active")
-
         }
 
         async function signup() {
-
             const email = document.getElementById("signupEmail").value
             const password = document.getElementById("signupPassword").value
-
             const msg = document.getElementById("signupMsg")
 
             if (!email || !password) {
-
-                msg.style.color = "red"
+                msg.style.color = "#ef4444"
                 msg.innerText = "Enter email and password"
                 return
-
             }
 
+            msg.style.color = "#059669"
             msg.innerText = "Creating account..."
 
             const { data, error } = await supabaseClient.auth.signUp({
@@ -221,84 +221,11 @@
             })
 
             if (error) {
-
-                msg.style.color = "red"
+                msg.style.color = "#ef4444"
                 msg.innerText = error.message
                 return
-
             }
 
             const user = data.user
-
             await supabaseClient
-                .from("users")
-                .upsert({
-                    id: user.id,
-                    email: user.email
-                })
-
-            msg.style.color = "green"
-            msg.innerText = "Signup successful! Redirecting..."
-
-            setTimeout(() => {
-                window.location = "profile.html"
-            }, 1500)
-
-        }
-
-        async function login() {
-
-            const email = document.getElementById("loginEmail").value
-            const password = document.getElementById("loginPassword").value
-
-            const msg = document.getElementById("loginMsg")
-
-            if (!email || !password) {
-
-                msg.style.color = "red"
-                msg.innerText = "Enter email and password"
-                return
-
-            }
-
-            msg.innerText = "Logging in..."
-
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            })
-
-            if (error) {
-
-                msg.style.color = "red"
-                msg.innerText = error.message
-                return
-
-            }
-
-            msg.style.color = "green"
-            msg.innerText = "Login successful! Redirecting..."
-
-            setTimeout(() => {
-                window.location = "dashboard.html"
-            }, 1000)
-
-        }
-
-        async function checkSession() {
-
-            const { data } = await supabaseClient.auth.getSession()
-
-            if (data.session) {
-                window.location = "dashboard.html"
-            }
-
-        }
-
-        checkSession()
-
-    </script>
-
-</body>
-
-</html>
+                .
