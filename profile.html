@@ -87,7 +87,7 @@
         }
         .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; }
 
-        /* Bottom Nav Styling */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height);
             background: var(--card-bg); border-top: 1px solid var(--border);
@@ -153,7 +153,7 @@
     <div class="card">
         <div class="section-header">
             <h3>My Wishlist</h3>
-            <button id="wishlistToggle" class="see-all-btn" onclick="toggleWishlistFull()" style="display:none;">See All</button>
+            <button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'" style="display:none;">See All</button>
         </div>
         <div id="wishlistGrid" class="grid"></div>
     </div>
@@ -161,7 +161,7 @@
     <div class="card">
         <div class="section-header">
             <h3>My Orders</h3>
-            <button id="ordersToggle" class="see-all-btn" onclick="toggleOrdersFull()" style="display:none;">See All</button>
+            <button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'" style="display:none;">See All</button>
         </div>
         <div id="ordersGrid" class="grid"></div>
     </div>
@@ -193,10 +193,6 @@
 
 <script>
     let currentUser;
-    let allWishlistItems = [];
-    let showingAllWishlist = false;
-    let allOrdersItems = [];
-    let showingAllOrders = false;
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
@@ -246,7 +242,7 @@
         else location.reload();
     }
 
-    // --- WISHLIST LOGIC ---
+    // --- WISHLIST LOGIC (Redirct to wishlist.html) ---
     async function loadWishlist() {
         const { data, error } = await supabaseClient
             .from("wishlist")
@@ -254,20 +250,13 @@
             .eq("user_id", currentUser.id);
 
         if (error) return console.error(error);
-        allWishlistItems = data || [];
-        renderWishlist();
-    }
-
-    function renderWishlist() {
         const grid = document.getElementById("wishlistGrid");
         const toggleBtn = document.getElementById("wishlistToggle");
-        grid.innerHTML = "";
+        const items = data || [];
         
-        const itemsToDisplay = showingAllWishlist ? allWishlistItems : allWishlistItems.slice(0, 3);
-        toggleBtn.style.display = allWishlistItems.length > 3 ? "block" : "none";
-        toggleBtn.innerText = showingAllWishlist ? "Show Less" : "See All";
+        if (items.length > 2) toggleBtn.style.display = "block";
 
-        itemsToDisplay.forEach(item => {
+        items.slice(0, 2).forEach(item => {
             const p = item.product;
             if (!p) return;
             const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
@@ -283,18 +272,12 @@
         });
     }
 
-    function toggleWishlistFull() { showingAllWishlist = !showingAllWishlist; renderWishlist(); }
-
     async function removeFromWishlist(wishlistId) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", wishlistId);
-        if (error) alert("Error removing item");
-        else {
-            allWishlistItems = allWishlistItems.filter(i => i.id !== wishlistId);
-            renderWishlist();
-        }
+        if (error) alert("Error"); else location.reload();
     }
 
-    // --- ORDERS LOGIC ---
+    // --- ORDERS LOGIC (Redirct to orders.html) ---
     async function loadOrders() {
         const { data, error } = await supabaseClient
             .from("orders")
@@ -302,20 +285,13 @@
             .eq("buyer_id", currentUser.id);
 
         if (error) return console.error(error);
-        allOrdersItems = data || [];
-        renderOrders();
-    }
-
-    function renderOrders() {
         const grid = document.getElementById("ordersGrid");
         const toggleBtn = document.getElementById("ordersToggle");
-        grid.innerHTML = "";
-        
-        const itemsToDisplay = showingAllOrders ? allOrdersItems : allOrdersItems.slice(0, 3);
-        toggleBtn.style.display = allOrdersItems.length > 3 ? "block" : "none";
-        toggleBtn.innerText = showingAllOrders ? "Show Less" : "See All";
+        const items = data || [];
 
-        itemsToDisplay.forEach(item => {
+        if (items.length > 2) toggleBtn.style.display = "block";
+
+        items.slice(0, 2).forEach(item => {
             const p = item.product;
             if (!p) return;
             const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
@@ -327,8 +303,6 @@
                 </div>`;
         });
     }
-
-    function toggleOrdersFull() { showingAllOrders = !showingAllOrders; renderOrders(); }
 
     async function logout() {
         await supabaseClient.auth.signOut();
