@@ -1,127 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>DormKart</title>
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>DormKart • My Wishlist</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Lush Emerald Colors */
-            --emerald-light: #10b981;
-            --emerald-dark: #059669;
+            --primary: #4ade80;
+            --primary-dark: #059669;
+            --text: #0f172a;
+            --text-light: #64748b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border: #e2e8f0;
+            --nav-height: 70px;
         }
 
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            /* Enhanced Emerald Gradient */
-            background: linear-gradient(135deg, var(--emerald-light) 0%, var(--emerald-dark) 100%);
-            color: white;
-            flex-direction: column;
             font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
             margin: 0;
-            overflow: hidden;
+            padding-bottom: calc(var(--nav-height) + 40px);
+            color: var(--text);
         }
 
-        /* Splash Animation Enhancements */
-        .logo-container {
-            text-align: center;
-            animation: fadeInScale 1.2s ease-out forwards;
+        /* 1. Lush Emerald Gradient Header */
+        .header-emerald {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 20px 50px;
+            color: white;
+            border-bottom-left-radius: 35px;
+            border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+            position: relative;
         }
 
-        .icon-box {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 25px;
-            border-radius: 30px;
-            display: inline-block;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            animation: pulseEmerald 2.5s infinite ease-in-out;
+        .header-top { display: flex; align-items: center; justify-content: space-between; }
+        
+        .back-btn { 
+            background: rgba(255,255,255,0.2); border: none; 
+            border-radius: 12px; padding: 8px; cursor: pointer; color: white;
         }
 
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
+        .view-toggle-btn {
+            background: white; border: none; color: var(--primary-dark);
+            padding: 8px 15px; border-radius: 10px; font-size: 12px;
+            font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        @keyframes pulseEmerald {
-            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
-            50% { transform: scale(1.08); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
-            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        /* Search Bar */
+        .search-container { padding: 0 20px; margin-top: -25px; z-index: 10; position: relative; }
+        input#searchInput {
+            width: 100%; padding: 15px 20px; border-radius: 15px;
+            border: 1px solid var(--border); box-sizing: border-box;
+            font-family: inherit; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
-        h1 {
-            font-size: 38px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -1px;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        /* 2. Grid & List Layout Logic */
+        .wishlist-container { padding: 20px; }
+        
+        .grid { 
+            display: grid; 
+            gap: 15px; 
+            grid-template-columns: repeat(2, 1fr); /* Default Grid */
+            transition: all 0.3s ease;
         }
 
-        .loading-text {
-            margin-top: 15px;
-            font-weight: 500;
-            opacity: 0.85;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        /* List View Mode */
+        .grid.list-view { grid-template-columns: 1fr; }
+
+        .product-item { 
+            background: white; border-radius: 20px; padding: 10px; 
+            border: 1px solid var(--border); position: relative;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
         }
 
-        /* Subtle Loading Indicator */
-        .dot-loader {
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .dot-loader:nth-child(1) { animation-delay: -0.32s; }
-        .dot-loader:nth-child(2) { animation-delay: -0.16s; }
+        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 15px; object-fit: cover; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
+        /* Side-by-side List Styling */
+        .grid.list-view .product-item { display: flex; align-items: center; gap: 15px; }
+        .grid.list-view .product-item img { width: 90px; height: 90px; }
+        .grid.list-view .item-details { flex: 1; }
+
+        .price { font-weight: 800; font-size: 18px; margin-top: 8px; color: var(--text); }
+        .title { font-size: 13px; color: var(--text-light); margin-top: 2px; }
+
+        /* 3. View Product Button */
+        .view-prod-btn {
+            width: 100%; padding: 10px; margin-top: 10px;
+            background: #f1f5f9; color: var(--text); border: none;
+            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
         }
-    </style>
+
+        .heart-btn {
+            position: absolute; top: 15px; right: 15px; background: white;
+            border-radius: 50%; width: 32px; height: 32px; display: flex;
+            align-items: center; justify-content: center; border: 1px solid #eee;
+            z-index: 5;
+        }
+        .heart-btn svg { width: 18px; height: 18px; fill: #ef4444; }
+
+    
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 2000;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  gap: 3px;
+  transition: color 0.2s;
+}
+.nav-item.active { color: var(--primary-dark); }
+.nav-item svg { width: 22px; height: 22px; }
+.nav-sell {
+  background: var(--primary-dark);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: -30px;
+  border: 4px solid var(--bg);
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(0,200,83,0.4);
+  transition: transform 0.2s;
+}
+.nav-sell:hover { transform: scale(1.08); }
+</style>
 </head>
-
 <body>
 
-    <div class="logo-container">
+<div class="header-emerald">
+    
+    <div class="header-top">
+        <button class="back-btn" onclick="location.href='profile.html'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+        <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">Switch to List</button>
 
-        <div class="icon-box">
-            <i class="material-icons" style="font-size:80px; display: block;">storefront</i>
+ </div>
+    <h1 style="margin: 20px 0 0; font-weight: 800; font-size: 28px;">My Wishlist</h1>
+    <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">Items you're keeping an eye on</p>
+</div>
+<div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search your saved items..." oninput="renderWishlist()">
+</div>
+
+<div class="wishlist-container">
+    <div id="wishlistGrid" class="grid">
         </div>
+</div>
 
-        <h1>DormKart</h1>
+  <!-- BOTTOM NAVigation -->
+<nav class="bottom-nav">
+  <a href="dashboard.html" class="nav-item active">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    Home
+  </a>
+  <a href="chats.html" class="nav-item">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+    Chats
+  </a>
+  <a href="add_product.html" class="nav-item nav-sell">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+  </a>
+  <a href="my-ads.html" class="nav-item">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+    My Ads
+  </a>
+  <a href="profile.html" class="nav-item">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    Profile
+  </a>
+</nav>
 
-        <div class="loading-text">
-            Loading your campus
-            <div class="dot-loader"></div>
-            <div class="dot-loader"></div>
-            <div class="dot-loader"></div>
-        </div>
+<script>
+    let wishlistData = [];
+    let isListView = false;
 
-    </div>
+    async function init() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return location.href = 'login-signup.html';
+        
+        const { data, error } = await supabaseClient
+            .from("wishlist")
+            .select("id, product:products(*)")
+            .eq("user_id", session.user.id);
 
-    <script>
-        // Kept your original logic
-        setTimeout(function () {
-            window.location.href = "login-signup.html"
-        }, 5000)
-    </script>
+        wishlistData = data || [];
+        renderWishlist();
+    }
 
+    function toggleView() {
+        const grid = document.getElementById('wishlistGrid');
+        const btn = document.getElementById('viewToggle');
+        isListView = !isListView;
+        
+        if (isListView) {
+            grid.classList.add('list-view');
+            btn.innerText = "Switch to Grid";
+        } else {
+            grid.classList.remove('list-view');
+            btn.innerText = "Switch to List";
+        }
+    }
+
+    function renderWishlist() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const grid = document.getElementById('wishlistGrid');
+        
+        const filtered = wishlistData.filter(item => 
+            item.product && item.product.title.toLowerCase().includes(searchTerm)
+        );
+
+        grid.innerHTML = "";
+        filtered.forEach(item => {
+            const p = item.product;
+            const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+            
+            grid.innerHTML += `
+                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="${img}">
+                    <div class="item-details">
+                        <div class="price">₹${p.price}</div>
+                        <div class="title">${p.title}</div>
+                        <button class="view-prod-btn">View Product</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    async function removeFromWishlist(id) {
+        const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
+        if (!error) {
+            wishlistData = wishlistData.filter(i => i.id !== id);
+            renderWishlist();
+        }
+    }
+
+    window.onload = init;
+</script>
 </body>
-
 </html>
