@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>DormKart • Campus Trade & Marketplace</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="config.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DormKart • Campus Marketplace</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
 :root {
   --primary: #00e676;
   --primary-dark: #00c853;
@@ -588,34 +588,62 @@ body {
 
 <header class="app-header">
   <div class="logo">DormKart</div>
-  <div class="header-actions">
-    <button onclick="toggleDarkMode()" id="themeBtn" class="theme-btn">🌙</button>
-  </div>
+  <button onclick="toggleDarkMode()" id="themeBtn" class="theme-btn">🌙</button>
 </header>
 
 <div class="hero">
-  <div class="hero-label">⚡ Campus Marketplace</div>
-  <div class="hero-title">Swap, buy & <em>trade smarter</em></div>
+  <div class="hero-label">Campus Marketplace</div>
+  <div class="hero-title">Find deals from<br><em>students near you</em></div>
   <div class="search-wrap">
-    <svg class="search-icon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input id="searchInput" placeholder="Search items...">
+    <svg class="search-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="searchInput" placeholder="Search books, electronics, dorm stuff...">
   </div>
 </div>
 
 <div class="filter-bar">
-  <select id="categoryFilter" class="filter-item"><option value="">All Categories</option><option value="Electronics">Electronics</option><option value="Books">Books</option><option value="Dorm Essentials">Dorm Essentials</option></select>
-  <div class="filter-item" id="tradeFilterBtn" onclick="toggleTradeFilter()">🔄 Trades only</div>
+  <select id="categoryFilter" class="filter-item">
+    <option value="">All Categories</option>
+    <option value="Electronics">Electronics</option>
+    <option value="Books">Books</option>
+    <option value="Dorm Essentials">Dorm Essentials</option>
+    <option value="Fashion">Fashion</option>
+  </select>
+  <select id="priceSort" class="filter-item">
+    <option value="">Sort: Price</option>
+    <option value="low">Low to High</option>
+    <option value="high">High to Low</option>
+  </select>
+</div>
+
+<div class="section-label">
+  Latest Listings <span>See all →</span>
 </div>
 
 <main>
   <div class="product-grid" id="productGrid">
-    <div class="skeleton-card"><div class="skeleton skeleton-img"></div></div>
-    <div class="skeleton-card"><div class="skeleton skeleton-img"></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div>
+    <div class="skeleton-card"><div class="skeleton skeleton-img"></div><div class="skeleton skeleton-line"></div><div class="skeleton skeleton-line short"></div></div>
   </div>
 </main>
 
-<div id="productModal"><div class="modal-content" id="modalContent"></div></div>
+<div id="productModal">
+  <div class="modal-content" id="modalContent"></div>
+</div>
 
+<div id="upiModal">
+  <div class="upi-content">
+    <div class="upi-title">Pay via UPI</div>
+    <div id="upiAmount"></div>
+    <img id="upiQR" src="" alt="Scan to pay">
+    <p class="upi-hint">Scan with GPay, PhonePe, Paytm or any UPI app</p>
+    <div class="upi-btns">
+      <a id="upiLink" href="#" class="btn btn-buy" style="flex:1; text-decoration:none;">Open UPI App</a>
+      <button onclick="document.getElementById('upiModal').style.display='none'" class="btn btn-message" style="flex:1;">Close</button>
+    </div>
+  </div>
+</div>
     <!-- BOTTOM NAVigation -->
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active">
@@ -640,85 +668,76 @@ body {
 </nav>
 
 <script>
-  let allProducts = [];
-  let currentImgIndex = 0;
-  let tradeOnly = false;
-  let activeProductId = null;
+let allProducts = [];
+let currentImgIndex = 0;
 
-  async function init() {
-    applySavedTheme();
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) { location.href = 'login-signup.html'; return; }
-    await fetchProducts();
+async function init() {
+  applySavedTheme();
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if (!session) { location.href = 'login-signup.html'; return; }
+  fetchProducts();
+}
+
+async function fetchProducts() {
+  const { data, error } = await supabaseClient
+    .from('products')
+    .select(`*, seller:users(id, name, college, is_verified, avatar_url, upi_id)`)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
+  if (error) return console.error(error);
+  allProducts = data;
+  renderGrid(data);
+}
+
+function renderGrid(products) {
+  const grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  if (!products.length) {
+    grid.innerHTML = `<div class="empty-state"><div class="icon">🛍️</div><p>No listings found.<br>Try a different search.</p></div>`;
+    return;
   }
-
-  async function fetchProducts() {
-    const { data, error } = await supabaseClient
-      .from('products')
-      .select(`*, seller:users(id, name, college, upi_id, is_verified)`)
-      .eq('status', 'active');
-    if (error) return console.error(error);
-    allProducts = data || [];
-    applyFilters();
-  }
-
-  function applyFilters() {
-    let filtered = allProducts.filter(p => {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const cat = document.getElementById('categoryFilter').value;
-      const matchesSearch = p.title.toLowerCase().includes(search);
-      const matchesCat = !cat || p.category === cat;
-      const matchesTrade = !tradeOnly || p.swap_enabled;
-      return matchesSearch && matchesCat && matchesTrade;
-    });
-    renderGrid(filtered);
-  }
-
-  function renderGrid(products) {
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = products.map(p => `
-      <div class="product-card" onclick="showDetails('${p.id}')">
-        <div class="p-img-container">
-          <img src="${p.image_url?.split(',')[0] || 'placeholder.jpg'}">
-          ${p.swap_enabled ? '<div class="trade-badge">🔄 TRADE</div>' : ''}
-        </div>
-        <div class="p-info">
-          <div class="p-price">₹${p.price}</div>
-          <div class="p-title">${p.title}</div>
-        </div>
+  products.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
+    card.innerHTML = `
+      <div class="p-img-container">
+        <img src="${img}" loading="lazy" onerror="this.src='placeholder.jpg'">
+        ${p.condition ? `<div class="p-badge">${p.condition}</div>` : ''}
       </div>
-    `).join('');
-  }
+      <div class="p-info">
+        <div class="p-price">₹${Math.floor(p.price).toLocaleString('en-IN')}</div>
+        <div class="p-title">${p.title}</div>
+        <div class="p-meta">📍 ${p.seller?.college || 'Campus'}</div>
+      </div>
+    `;
+    card.onclick = () => showDetails(p);
+    grid.appendChild(card);
+  });
+}
 
- function showDetails(p) {
+function applyFilters() {
+  let f = [...allProducts];
+  const s = document.getElementById('searchInput').value.toLowerCase();
+  const c = document.getElementById('categoryFilter').value;
+  const sort = document.getElementById('priceSort').value;
+  if (s) f = f.filter(p => p.title.toLowerCase().includes(s) || (p.description || '').toLowerCase().includes(s));
+  if (c) f = f.filter(p => p.category === c);
+  if (sort === 'low') f.sort((a, b) => a.price - b.price);
+  if (sort === 'high') f.sort((a, b) => b.price - a.price);
+  renderGrid(f);
+}
+document.getElementById('searchInput').addEventListener('input', applyFilters);
+document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+document.getElementById('priceSort').addEventListener('change', applyFilters);
+
+function showDetails(p) {
   const modal = document.getElementById('productModal');
   const content = document.getElementById('modalContent');
   currentImgIndex = 0;
-  
   const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
   const slidesHTML = images.map(url => `<img src="${url.trim()}" onerror="this.src='placeholder.jpg'">`).join('');
   const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
-
-  // Define the Trade Section Logic
-  let tradeSectionHTML = '';
-  if (p.swap_enabled) {
-    if (p.swap_item) {
-      // Case: Seller wanted item specified
-      tradeSectionHTML = `
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 12px; margin: 15px 0; font-size: 13px; color: #166534;">
-          <div style="font-weight: 800; margin-bottom: 4px;">🔄 SWAP AVAILABLE</div>
-          <b>Seller wants:</b> ${p.swap_item}
-        </div>`;
-    } else {
-      // Case: Open trade, show input for buyer
-      tradeSectionHTML = `
-        <div style="background: #f0f9ff; border: 1px solid #bae6fd; padding: 12px; border-radius: 12px; margin: 15px 0;">
-          <div style="font-weight: 800; color: #0369a1; font-size: 13px; margin-bottom: 8px;">🔄 OPEN TRADE</div>
-          <input type="text" id="buyerSwapOffer" placeholder="What would you swap for this?" 
-                 style="width: 100%; padding: 10px; border-radius: 8px; border: 1.5px solid #bae6fd; font-size: 13px; outline: none;">
-        </div>`;
-    }
-  }
 
   content.innerHTML = `
     <div class="modal-drag"></div>
@@ -738,9 +757,6 @@ body {
       </div>
       <div class="modal-title">${p.title}</div>
       ${p.condition ? `<div class="condition-chip">🏷️ ${p.condition}</div>` : ''}
-      
-      ${tradeSectionHTML}
-
       <div class="safety-tip">🛡️ Meet at public campus spots — Library, Canteen or Admin Block.</div>
       <div class="desc-section">
         <h4>Description</h4>
@@ -759,89 +775,102 @@ body {
     </div>
     <div class="btn-row">
       <button class="btn btn-buy" onclick="openUPI(${p.price}, '${p.seller?.upi_id || ''}')">⚡ Buy it Now</button>
-      
       <div class="btn-secondary-row">
-        ${p.swap_enabled ? `
-          <button class="btn btn-offer" onclick="proposeTrade('${p.id}', '${p.seller_id}', '${p.swap_item || ''}')" 
-                  style="background: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe;">
-            🔄 Trade
-          </button>` : ''}
-        
-        <button class="btn btn-cart" onclick="addToCart('${p.id}')">🛒 Cart</button>
-        <button class="btn btn-wish" onclick="addToWishlist('${p.id}')">♡ Save</button>
+        <button class="btn btn-cart"  onclick="addToCart('${p.id}')">🛒 Cart</button>
+        <button class="btn btn-offer" onclick="makeOffer('${p.id}', '${p.seller_id}')">💬 Offer</button>
+        <button class="btn btn-wish"  onclick="addToWishlist('${p.id}')">♡ Save</button>
       </div>
-      
       <button class="btn btn-message" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message Seller</button>
     </div>
   `;
   modal.style.display = 'flex';
 }
 
-// Function to handle the Trade Proposal
-async function proposeTrade(productId, sellerId, sellerWantedItem) {
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if (!session) return alert("Please login to propose a trade!");
+function closeModal() {
+  document.getElementById('productModal').style.display = 'none';
+}
+document.getElementById('productModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
 
-  let buyerOffer = "";
-  
-  if (sellerWantedItem) {
-    // If seller already specified what they want
-    const confirmTrade = confirm(`Seller is looking for: "${sellerWantedItem}". Do you have this or something similar to trade?`);
-    if (!confirmTrade) return;
-    buyerOffer = `Interested in swapping for your requested item: ${sellerWantedItem}`;
-  } else {
-    // If trade is open, get the value from the input field
-    const input = document.getElementById('buyerSwapOffer');
-    buyerOffer = input ? input.value.trim() : "";
-    if (!buyerOffer) return alert("Please enter what you want to offer for trade!");
-  }
-
-  const { error } = await supabaseClient.from('chats').insert({
-    sender_id: session.user.id,
-    receiver_id: sellerId,
-    product_id: productId,
-    message: `🔄 TRADE PROPOSAL: I'd like to trade. My offer: ${buyerOffer}`
-  });
-
-  if (error) {
-    alert("Error sending trade proposal: " + error.message);
-  } else {
-    alert("Trade proposal sent via Chat! 🔄");
-    window.location.href = `chats.html?id=${sellerId}&product=${productId}`;
-  }
+function moveSlide(direction, total) {
+  const wrapper = document.getElementById('sliderWrapper');
+  currentImgIndex = (currentImgIndex + direction + total) % total;
+  wrapper.style.transform = `translateX(-${currentImgIndex * 100}%)`;
+  document.querySelectorAll('.dot').forEach((dot, i) => dot.classList.toggle('active', i === currentImgIndex));
 }
 
-  async function sendTradeProposal() {
-    const offer = document.getElementById('tradeOfferInput').value;
-    if (!offer) return alert("Please enter an offer");
-    const p = allProducts.find(x => x.id === activeProductId);
-    
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    const { error } = await supabaseClient.from('chats').insert({
-      sender_id: session.user.id,
-      receiver_id: p.seller_id,
-      message: `🔄 TRADE OFFER for ${p.title}: ${offer}`
-    });
+function openUPI(price, upiId) {
+  if (!upiId) { alert('Seller has not added a UPI ID yet.'); return; }
+  const upiLink = `upi://pay?pa=${upiId}&pn=DormKart&am=${price}&cu=INR`;
+  const qr = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(upiLink)}`;
+  document.getElementById('upiAmount').innerText = '₹' + Math.floor(price).toLocaleString('en-IN');
+  document.getElementById('upiQR').src = qr;
+  document.getElementById('upiLink').href = upiLink;
+  document.getElementById('upiModal').style.display = 'flex';
+}
 
-    if (!error) {
-      alert("Trade proposal sent!");
-      closeModal();
-    }
+async function addToWishlist(productId) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const userId = session.user.id;
+  const { data: existing } = await supabaseClient.from('wishlist').select('id').eq('user_id', userId).eq('product_id', productId).single();
+  if (existing) { alert('Already in your wishlist!'); return; }
+  const { error } = await supabaseClient.from('wishlist').insert({ user_id: userId, product_id: productId });
+  if (error) { alert('Could not add to wishlist: ' + error.message); return; }
+  await supabaseClient.rpc('increment_likes', { product_id: productId });
+  alert('Added to wishlist! ♡');
+}
+
+async function addToCart(productId) {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const userId = session.user.id;
+  const { data: existing } = await supabaseClient.from('orders').select('id').eq('buyer_id', userId).eq('product_id', productId).eq('payment_status', 'in_cart').single();
+  if (existing) { alert('Already in your cart!'); return; }
+  const { data: product, error: pErr } = await supabaseClient.from('products').select('seller_id, price').eq('id', productId).single();
+  if (pErr || !product) { alert('Could not fetch product details.'); return; }
+  const { error } = await supabaseClient.from('orders').insert({
+    buyer_id: userId, product_id: productId,
+    seller_id: product.seller_id, amount: product.price,
+    payment_method: 'UPI', payment_status: 'in_cart'
+  });
+  if (error) { alert('Could not add to cart: ' + error.message); return; }
+  alert('Added to cart! 🛒');
+}
+
+async function makeOffer(productId, sellerId) {
+  const amount = prompt('Enter your offer price (₹):');
+  if (!amount || isNaN(amount) || Number(amount) <= 0) return;
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  const userId = session.user.id;
+  const { error } = await supabaseClient.from('chats').insert({
+    sender_id: userId, receiver_id: sellerId,
+    product_id: productId,
+    message: `💬 Offer: I'd like to buy this for ₹${amount}`
+  });
+  if (error) { alert('Could not send offer: ' + error.message); return; }
+  await supabaseClient.from('notifications').insert({
+    user_id: sellerId,
+    title: 'New Offer Received',
+    message: `Someone made an offer of ₹${amount} on your listing.`,
+    type: 'offer'
+  });
+  window.location.href = `chats.html?id=${sellerId}&product=${productId}`;
+}
+
+function applySavedTheme() {
+  const theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.body.classList.add('dark');
+    document.getElementById('themeBtn').innerText = '☀️';
   }
+}
+function toggleDarkMode() {
+  const isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').innerText = isDark ? '☀️' : '🌙';
+}
 
-  function toggleTradeFilter() {
-    tradeOnly = !tradeOnly;
-    document.getElementById('tradeFilterBtn').classList.toggle('active');
-    applyFilters();
-  }
-
-  function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-  function applySavedTheme() { if (localStorage.getItem('theme') === 'dark') document.body.classList.add('dark'); }
-  function toggleDarkMode() { document.body.classList.toggle('dark'); localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light'); }
-
-  window.onload = init;
-  document.getElementById('searchInput').oninput = applyFilters;
-  document.getElementById('categoryFilter').onchange = applyFilters;
+window.onload = init;
 </script>
 </body>
 </html>
