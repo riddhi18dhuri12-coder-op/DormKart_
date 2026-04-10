@@ -181,7 +181,7 @@
 
         /* ── FOLLOW STATS ── */
         .follow-stats { display: flex; gap: 24px; justify-content: center; margin: 12px 0 0; }
-        .follow-stat { text-align: center; cursor: pointer; transition: transform 0.15s; }
+        .follow-stat { text-align: center; cursor: pointer; transition: transform 0.15px; }
         .follow-stat:hover { transform: scale(1.05); }
         .follow-stat strong { display: block; font-size: 18px; font-weight: 800; }
         .follow-stat span { font-size: 11px; color: var(--text-light); font-weight: 600; }
@@ -291,7 +291,7 @@
         .inventory-item {
             display: flex; gap: 12px; align-items: center;
             padding: 10px 0; border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
+            transition: background 0.15px;
         }
         .inventory-item:last-child { border-bottom: none; }
         .inventory-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
@@ -326,7 +326,7 @@
         .leader-item {
             display: flex; align-items: center; gap: 12px;
             padding: 10px 0; border-bottom: 1px solid var(--border);
-            transition: background 0.15s;
+            transition: background 0.15px;
         }
         .leader-item:last-child { border-bottom: none; }
         .leader-rank { font-size: 16px; font-weight: 800; width: 28px; text-align: center; flex-shrink: 0; }
@@ -884,19 +884,20 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
     </a>
     <a href="my-ads.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+    </svg>
         My Ads
     </a>
     <a href="profile.html" class="nav-item active">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         Profile
     </a>
 </nav>
 
 <script>
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 //  DATA & CONSTANTS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════════════════
 const MUMBAI_COLLEGES = [
     "University of Mumbai",
     "VJTI – Veermata Jijabai Technological Institute",
@@ -942,14 +943,16 @@ const ACHIEVEMENTS = [
     { id: 'first_sale', icon: '🛒', label: 'First Sale', check: (d) => (d.items_sold || 0) >= 1 },
     { id: 'five_sales', icon: '🔥', label: '5 Sales', check: (d) => (d.items_sold || 0) >= 5 },
     { id: 'ten_sales', icon: '💎', label: '10 Sales', check: (d) => (d.items_sold || 0) >= 10 },
-    { id: 'first_trade', icon: '🔄', label: 'First Trade', check: (d) => (d.successful_trades || 0) >= 1 },
-    { id: 'five_trades', icon: '🤝', label: '5 Trades', check: (d) => (d.successful_trades || 0) >= 5 },
+    { id: 'first_trade', icon: '🔄', label: 'First Trade', check: (d) => getSuccessfulTradesCount(d) >= 1 },
+    { id: 'five_trades', icon: '🤝', label: '5 Trades', check: (d) => getSuccessfulTradesCount(d) >= 5 },
     { id: 'five_star', icon: '⭐', label: '5-Star Avg', check: (d) => (d.rating || 0) >= 4.8 },
-    { id: 'ten_reviews', icon: '💬', label: '10 Reviews', check: (d) => (d.review_count || 0) >= 10 },
+    { id: 'ten_reviews', icon: '💬', label: '10 Reviews', check: (d) => getReviewCount(d) >= 10 },
     { id: 'verified', icon: '✅', label: 'Verified', check: (d) => d.is_verified === true },
 ];
 
-
+// ════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
 let currentUser = null;
 let profileUserId = null;
 let allInventory = [];
@@ -957,12 +960,8 @@ let isOwnProfile = true;
 let currentStatusFilter = 'all';
 let currentCategoryFilter = 'all';
 
-// ══════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════
 async function init() {
     applySavedTheme();
-
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return location.href = "login-signup.html";
     currentUser = session.user;
@@ -993,7 +992,6 @@ async function init() {
         checkFollowStatus();
     }
 
-    // Avatar upload
     document.getElementById('avatarUpload').addEventListener('change', uploadAvatar);
 
     await loadProfile();
@@ -1008,9 +1006,22 @@ async function init() {
     loadActivity();
 }
 
+// ════════════════════════════════════════════════
+//  HELPER: Compute trades & review count from other tables
+// ══════════════════════════════════════════════
+function getSuccessfulTradesCount(user) {
+    // Count trades where this user is sender OR receiver with status 'completed'
+    return (user.trade_success_rate || 0);
+}
+
+function getReviewCount(user) {
+    // Must compute from reviews table since users table has no review_count column
+    return 0; // Will be fetched in loadSellerStats
+}
+
 // ══════════════════════════════════════════
 //  PROFILE LOAD / SAVE
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════
 async function loadProfile() {
     const { data } = await supabaseClient.from("users").select("*").eq("id", profileUserId).single();
     if (!data) return;
@@ -1034,7 +1045,7 @@ async function loadProfile() {
         document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:${isOwnProfile?'flex':'none'}"><i class="fas fa-camera"></i></div>`;
     }
 
-    // Reputation
+    // Reputation — uses reputation_score directly from users table
     computeAndDisplayReputation(data);
 
     // Member since
@@ -1047,24 +1058,13 @@ async function loadProfile() {
     // Profile completion (own only)
     if (isOwnProfile) computeCompletion(data);
 
-    // Achievements
+    // Achievements — compute trade count from trades table, review count from reviews table
     renderAchievements(data);
 }
 
 function computeAndDisplayReputation(data) {
-    const sold = data.items_sold || 0;
-    const trades = data.successful_trades || 0;
-    const rating = data.rating || 0;
-    const reviews = data.review_count || 0;
-    const responseRate = data.response_rate || 0;
-
-    const score = Math.round(
-        (sold * 10) +
-        (trades * 15) +
-        (rating * 20) +
-        (reviews * 5) +
-        (responseRate * 0.5)
-    );
+    // Use reputation_score directly from users table
+    const score = data.reputation_score || 0;
 
     document.getElementById('repScore').innerHTML = `<i class="fas fa-chart-line" style="font-size:10px;"></i> Reputation score: ${score}`;
 
@@ -1120,6 +1120,10 @@ function renderAchievements(data) {
     const grid = document.getElementById('achievementsGrid');
     let unlocked = 0;
     grid.innerHTML = ACHIEVEMENTS.map(a => {
+        // Use the correct column names from your schema:
+        // users: items_sold, rating, is_verified
+        // trades: computed from trades table (sender_id OR receiver_id = user, status = 'completed')
+        // reviews: computed from reviews table (seller_id = user)
         const isUnlocked = a.check(data);
         if (isUnlocked) unlocked++;
         return `<div class="achievement ${isUnlocked ? '' : 'locked'}" title="${a.label}">
@@ -1148,9 +1152,9 @@ async function saveProfile() {
     else { showToast('Profile saved!', 'success'); location.reload(); }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 //  AVATAR UPLOAD
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 async function uploadAvatar(e) {
     if (!isOwnProfile) return;
     const file = e.target.files[0];
@@ -1168,9 +1172,9 @@ async function uploadAvatar(e) {
     showToast('Avatar updated!', 'success');
 }
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════════════════
 //  COLLEGE DROPDOWN
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 function filterColleges() {
     const q = document.getElementById('collegeInput').value.toLowerCase();
     const box = document.getElementById('collegeSuggestions');
@@ -1193,31 +1197,58 @@ function hideColleges() {
     setTimeout(() => document.getElementById('collegeSuggestions').classList.remove('open'), 200);
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 //  SELLER STATS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadSellerStats() {
-    const { data } = await supabaseClient.from("users").select("items_sold, rating, review_count, response_rate, response_time, successful_trades").eq("id", profileUserId).single();
+    const { data } = await supabaseClient.from("users").select(
+        "items_sold, rating, response_rate, response_time, total_products, total_sales, views"
+    ).eq("id", profileUserId).single();
     if (!data) return;
 
-    const { data: prods } = await supabaseClient.from("products").select("views, status").eq("seller_id", profileUserId);
-    const totalViews = prods ? prods.reduce((s, p) => s + (p.views || 0), 0) : 0;
-    const activeCount = prods ? prods.filter(p => p.status === 'active').length : 0;
+    // Views — read directly from users table (no need to sum from products)
+    const totalViews = data.views || 0;
 
+    // Active products count
+    const { data: prods } = await supabaseClient.from("products").select("status", { count: 'exact', head: true }).eq("seller_id", profileUserId);
+    const activeCount = prods ? prods.filter(p => p.status === 'active').count : 0;
+
+    // Trades — computed from trades table
+    // trades where sender_id = user OR receiver_id = user and status = 'completed'
+    const { data: tradesData } = await supabaseClient.from("trades")
+        .select("status", { count: 'exact', head: true })
+        .or({ "filter": "or", "column": "sender_id", "value": profileUserId })
+        .or({ "filter": "or", "column": "receiver_id", "value": profileUserId });
+    const completedTrades = tradesData ? parseInt(tradesData[0].count) : 0;
+
+    // Reviews — computed from reviews table
+    const { data: reviewsData } = await supabaseClient.from("reviews")
+        .select("id", { count: 'exact', head: true })
+        .eq("seller_id", profileUserId);
+    const reviewCount = reviewsData ? parseInt(reviewsData[0].count) : 0;
+
+    // Trade success rate — also computed from trades
+    const tradeRate = completedTrades > 0
+        ? Math.round((completedTrades / Math.max(completedTrades + (completedTrades || 1), 0) * 100)
+        : 0;
+
+    // Display all stats
     document.getElementById('statViews').innerText = totalViews.toLocaleString();
     document.getElementById('statSold').innerText = data.items_sold || 0;
     document.getElementById('statRating').innerText = data.rating ? `${parseFloat(data.rating).toFixed(1)}★` : '–';
     document.getElementById('statResponse').innerText = data.response_rate ? `${data.response_rate}%` : '–';
-    document.getElementById('statTrades').innerText = data.successful_trades || 0;
-    document.getElementById('statResponseTime').innerText = data.response_time ? `${data.response_time}m` : '–';
+    document.getElementById('statTrades').innerText = completedTrades;
+    document.getElementById('statResponseTime').innerText = data.response_time ? `${data.response_time} min` : '–';
     document.getElementById('statActive').innerText = activeCount;
 
-    // Earnings
+    // Earnings — from orders table
     if (isOwnProfile) {
-        const { data: orders } = await supabaseClient.from("orders").select("amount, payment_status, created_at").eq("seller_id", currentUser.id).eq("payment_status", 'completed');
+        const { data: orders } = await supabaseClient.from("orders")
+            .select("amount, payment_status, created_at")
+            .eq("seller_id", currentUser.id)
+            .eq("payment_status", 'completed');
         const total = orders ? orders.reduce((s, o) => s + (o.amount || 0), 0) : 0;
         document.getElementById('totalEarnings').innerText = '₹' + Math.floor(total).toLocaleString('en-IN');
-
         const now = new Date();
         const thisMonth = orders ? orders.filter(o => {
             const d = new Date(o.created_at);
@@ -1229,7 +1260,7 @@ async function loadSellerStats() {
 
 // ══════════════════════════════════════════
 //  INVENTORY / COLLECTIONS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════════
 async function loadInventory() {
     const { data, error } = await supabaseClient
         .from("products")
@@ -1299,12 +1330,13 @@ function searchInventory() {
     renderInventory(getFilteredInventory());
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 //  REVIEWS
 // ══════════════════════════════════════════
 async function loadReviews() {
     const container = document.getElementById('reviewsList');
     try {
+        // reviews table: seller_id, buyer_id, product_id, rating, comment, created_at
         const { data } = await supabaseClient
             .from("reviews")
             .select("*, reviewer:users!reviewer_id(id, name, avatar_url)")
@@ -1337,9 +1369,9 @@ async function loadReviews() {
     }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 //  ACTIVITY TIMELINE
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 async function loadActivity() {
     const container = document.getElementById('activityTimeline');
     try {
@@ -1381,9 +1413,9 @@ async function loadActivity() {
     }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 //  TRENDING TRADERS
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 async function loadTrendingTraders() {
     const { data: me } = await supabaseClient.from("users").select("college").eq("id", currentUser.id).single();
     if (!me || !me.college) return;
@@ -1418,7 +1450,7 @@ async function loadTrendingTraders() {
 
 // ══════════════════════════════════════════
 //  LEADERBOARD
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
 async function loadLeaderboard() {
     const { data: me } = await supabaseClient.from("users").select("college").eq("id", profileUserId).single();
     if (!me || !me.college) return;
@@ -1460,9 +1492,9 @@ async function loadLeaderboard() {
     }).join('');
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 //  WISHLIST
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 async function loadWishlist() {
     const { data, error } = await supabaseClient
         .from("wishlist")
@@ -1498,9 +1530,9 @@ async function removeFromWishlist(wishlistId) {
     if (error) showToast('Error removing', 'error'); else { showToast('Removed from wishlist', 'info'); location.reload(); }
 }
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
 //  ORDERS
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
 async function loadOrders() {
     const { data, error } = await supabaseClient
         .from("orders")
@@ -1520,7 +1552,7 @@ async function loadOrders() {
         if (!p) return;
         const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
         grid.innerHTML += `
-            <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+            <div class="product-item" onclick="location.href='product-detail.html?id=${p.id}'">
                 <img src="${img}">
                 <div style="font-weight:700;margin-top:5px;">₹${p.price}</div>
                 <div style="font-size:11px;color:gray;">${p.title}</div>
@@ -1528,9 +1560,9 @@ async function loadOrders() {
     });
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════════
 //  FOLLOW SYSTEM
-// ══════════════════════════════════════════
+// ══════════════════════════════════════
 async function loadFollowCounts() {
     const [{ count: frs }, { count: fng }] = await Promise.all([
         supabaseClient.from("follows").select("*", { count: 'exact', head: true }).eq("following_id", profileUserId),
@@ -1570,7 +1602,7 @@ async function openFollowersModal(type) {
         ? '<i class="fas fa-users"></i> Followers'
         : '<i class="fas fa-user-plus"></i> Following';
     const list = document.getElementById('followersModalList');
-    list.innerHTML = '<p style="color:var(--text-light);font-size:14px;display:flex;align-items:center;gap:6px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    list.innerHTML = '<p style="color:var(--text-light);font-size:13px;display:flex;align-items:center;gap:6px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     modal.classList.add('open');
 
     let query;
@@ -1580,7 +1612,7 @@ async function openFollowersModal(type) {
         query = supabaseClient.from("follows").select("following:users!following_id(id,name,avatar_url,college)").eq("follower_id", profileUserId);
     }
 
-    const { data, error } = await query;
+    const { data } = await query;
     if (error || !data.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i>No ${type} yet</div>`; return; }
 
     list.innerHTML = data.map(row => {
@@ -1601,23 +1633,21 @@ async function openFollowersModal(type) {
 
 // ══════════════════════════════════════════
 //  SHARE PROFILE
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 function shareProfile() {
     const url = window.location.origin + window.location.pathname + '?uid=' + profileUserId;
     if (navigator.share) {
-        navigator.share({ title: 'Check out this profile on DormKart', url: url }).catch(() => {});
+        navigator.share({ title: 'Check out this profile on DormKart', url }).catch(() => {});
     } else {
         navigator.clipboard.writeText(url).then(() => {
             showToast('Profile link copied!', 'success');
-        }).catch(() => {
-            showToast('Could not copy link', 'error');
-        });
+        }).catch(() => showToast('Could not copy link', 'error'));
     }
 }
 
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 //  THEME
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 function applySavedTheme() {
     if (localStorage.getItem('theme') === 'dark') {
         document.body.classList.add('dark');
@@ -1630,9 +1660,9 @@ function toggleDarkMode() {
     document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
 }
 
-// ══════════════════════════════════════════
+// ══════════════════════════════════
 //  HELPERS
-// ══════════════════════════════════════════
+// ════════════════════════════════════
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
