@@ -580,17 +580,10 @@ const MUMBAI_COLLEGES = [
     "KC College",
     "Elphinstone College",
     "Sydenham College of Commerce and Economics",
-    "Lala Lajpat Rai College of Commerce and Economics"
+    "Lala Lajpat Rai College of Commerce and Economics",
+    "Datta Meghe College of Engineering"
 ];
 
-const REPORT_REASONS = [
-    "Scam / Fraud",
-    "Fake product listing",
-    "Harassment or abusive behaviour",
-    "Spam",
-    "Fake profile / Impersonation",
-    "Other"
-];
 
 let currentUser = null;
 let profileUserId = null;  // could be own or another user's
@@ -606,10 +599,13 @@ async function init() {
     if (!session) return location.href = "login-signup.html";
     currentUser = session.user;
 
-    // Support viewing another user's profile via ?uid=
     const params = new URLSearchParams(location.search);
     profileUserId = params.get("uid") || currentUser.id;
     isOwnProfile = profileUserId === currentUser.id;
+
+    if (!isOwnProfile) {
+        await supabaseClient.rpc('increment_profile_views', { target_user_id: profileUserId });
+    }
 
     // Show/hide safety actions only for other profiles
     if (isOwnProfile) {
@@ -622,6 +618,8 @@ async function init() {
         document.getElementById('editProfileBtn').style.display = 'none';
         checkFollowStatus();
         checkScamWarning();
+        await loadProfile();
+    loadSellerStats();
     }
 
     // Avatar upload
@@ -780,11 +778,11 @@ async function loadSellerStats() {
 //  INVENTORY / COLLECTIONS
 // ══════════════════════════════════════════
 async function loadInventory() {
+    // Removed the .eq("status", "active") to show all items
     const { data, error } = await supabaseClient
         .from("products")
         .select("*")
-        .eq("seller_id", profileUserId)
-        .eq("status", "active");
+        .eq("seller_id", profileUserId);
 
     if (error) return;
     allInventory = data || [];
@@ -799,14 +797,21 @@ function renderInventory(items) {
     }
     list.innerHTML = items.slice(0, 5).map(p => {
         const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+        
+        // Check if item is sold to apply a different style/label
+        const isSold = p.status === 'sold';
+        
         return `
-        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;">
+        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'" 
+             style="cursor:pointer; opacity: ${isSold ? '0.6' : '1'};">
             <img src="${img}" onerror="this.src='placeholder.png'">
             <div class="inventory-item-info">
-                <strong>${p.title}</strong>
+                <strong>${p.title} ${isSold ? '<span style="color:var(--danger)">[SOLD]</span>' : ''}</strong>
                 <span>${p.category || 'Uncategorized'} • ₹${p.price}</span>
             </div>
-            <span class="trade-badge ${p.trade_available ? '' : 'no'}">${p.trade_available ? '🔄 Trade OK' : 'No Trade'}</span>
+            <span class="trade-badge ${isSold ? 'no' : (p.trade_available ? '' : 'no')}">
+                ${isSold ? 'Sold' : (p.trade_available ? ' Trade OK' : 'No Trade')}
+            </span>
         </div>`;
     }).join('');
 }
