@@ -8,6 +8,8 @@
 <script src="config.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <!-- ADDED: Lucide Icons for professional SVG icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
   <style>
     :root {
       --primary: #00e676;
@@ -38,6 +40,56 @@
       color: var(--text);
       padding-bottom: calc(var(--nav-height) + 20px);
     }
+
+    /* ADDED: Subtle dot pattern overlay for depth */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(circle at 1px 1px, var(--border) 0.8px, transparent 0);
+      background-size: 22px 22px;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ADDED: Page entrance animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .app-header { animation: fadeUp 0.4s ease-out both; }
+    .hero { animation: fadeUp 0.5s ease-out 0.05s both; }
+    .filter-bar { animation: fadeUp 0.5s ease-out 0.1s both; }
+    .trade-spotlight { animation: fadeUp 0.5s ease-out 0.15s both; }
+    .cat-bar { animation: fadeUp 0.5s ease-out 0.18s both; }
+    .deals-section { animation: fadeUp 0.5s ease-out 0.22s both; }
+    .section-header { animation: fadeUp 0.5s ease-out 0.26s both; }
+
+    /* ADDED: Staggered card reveal */
+    .product-card { animation: fadeUp 0.4s ease-out both; }
+    .product-card:nth-child(1) { animation-delay: 0s; }
+    .product-card:nth-child(2) { animation-delay: 0.04s; }
+    .product-card:nth-child(3) { animation-delay: 0.08s; }
+    .product-card:nth-child(4) { animation-delay: 0.12s; }
+    .product-card:nth-child(5) { animation-delay: 0.16s; }
+    .product-card:nth-child(6) { animation-delay: 0.20s; }
+    .product-card:nth-child(n+7) { animation-delay: 0.24s; }
+
+    /* ADDED: Animated gradient on hero title em */
+    .hero-title em {
+      background: linear-gradient(135deg, var(--primary-dark), #00bfa5, var(--primary-dark));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 4s ease infinite;
+    }
+    @keyframes gradientShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
     .app-header {
       background: var(--card-bg);
       height: 64px;
@@ -55,6 +107,9 @@
       font-size: 22px;
       font-weight: 800;
       color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .header-actions { display: flex; align-items: center; gap: 8px; }
     .icon-btn {
@@ -62,7 +117,9 @@
       border: 1px solid var(--border); background: var(--bg);
       font-size: 18px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, border-color 0.2s;
     }
+    .icon-btn:hover { border-color: var(--primary-dark); background: var(--primary-glow); }
     .notif-wrap { position: relative; }
     .badge-dot {
       position: absolute; top: 6px; right: 6px;
@@ -70,6 +127,27 @@
       background: #ef4444; border-radius: 50%;
       border: 2px solid var(--card-bg);
     }
+
+    /* ADDED: Notification count badge (replaces dot when count available) */
+    .notif-count-badge {
+      position: absolute;
+      top: 0px; right: 0px;
+      min-width: 18px; height: 18px;
+      background: #ef4444;
+      color: white;
+      font-size: 10px; font-weight: 800;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--card-bg);
+      padding: 0 4px;
+      animation: badgePop 0.3s ease-out;
+    }
+    @keyframes badgePop {
+      0% { transform: scale(0); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+
     .hero { padding: 20px 16px 8px; }
     .hero-label { font-family: 'Syne',sans-serif; font-size: 12px; font-weight: 700; color: var(--primary-dark); letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-title { font-family: 'Syne',sans-serif; font-size: 28px; font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
@@ -80,7 +158,9 @@
       border-radius: 40px; padding: 8px 16px;
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; font-weight: 500;
+      transition: border-color 0.2s;
     }
+    .stat-chip:hover { border-color: var(--primary-dark); }
     .search-wrap { position: relative; margin-top: 8px; }
     .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; stroke: var(--text-light); fill: none; }
     .search-wrap input {
@@ -121,7 +201,10 @@
       background: var(--trade-light); margin: 8px 16px 16px; padding: 16px 18px;
       border-radius: 24px; border: 1px solid rgba(124,58,237,0.4);
       display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    .trade-spotlight:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(124,58,237,0.15); }
+    .trade-spotlight:active { transform: scale(0.98); }
     .ts-title { font-weight: 700; color: var(--trade); font-family: 'Syne',sans-serif; font-size: 16px; }
     .ts-sub { color: var(--text-light); font-size: 13px; margin-top: 2px; }
     .ts-arrow { font-size: 24px; color: var(--trade); }
@@ -136,8 +219,11 @@
       transition: transform 0.18s, box-shadow 0.18s; position: relative;
     }
     .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+    /* ADDED: Press-down effect */
+    .product-card:active { transform: translateY(0) scale(0.97); }
     .p-img-wrap { aspect-ratio: 1/1; background: var(--bg); overflow: hidden; position: relative; }
-    .p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s; }
+    .product-card:hover .p-img-wrap img { transform: scale(1.05); }
     .trade-badge {
       position: absolute; top: 8px; right: 8px; background: var(--trade);
       color: white; font-size: 10px; font-weight: 800; padding: 4px 10px;
@@ -147,6 +233,45 @@
       position: absolute; bottom: 8px; left: 8px; background: var(--primary-dark);
       color: white; padding: 3px 8px; border-radius: 20px; font-size: 10px; font-weight: 600;
     }
+
+    /* ADDED: NEW badge on product cards */
+    .new-badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: linear-gradient(135deg, #f59e0b, #ef4444);
+      color: white;
+      font-size: 9px; font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-family: 'Syne', sans-serif;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 8px rgba(239,68,68,0.3);
+    }
+
+    /* ADDED: Wishlist heart on product cards */
+    .p-wishlist-btn {
+      position: absolute;
+      bottom: 8px; right: 8px;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      border: none;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.2s, background 0.2s;
+      z-index: 5;
+      backdrop-filter: blur(4px);
+    }
+    .p-wishlist-btn:hover { background: white; transform: scale(1.1); }
+    .p-wishlist-btn:active { transform: scale(0.9); }
+    .p-wishlist-btn svg {
+      width: 16px; height: 16px;
+      stroke: #ef4444;
+      fill: none;
+      stroke-width: 2;
+    }
+    .p-wishlist-btn.saved svg { fill: #ef4444; }
+
     .p-info { padding: 10px 12px 12px; }
     .p-price { font-family: 'Syne',sans-serif; font-size: 18px; font-weight: 800; color: var(--text); }
     .p-title { font-size: 13px; color: var(--text-light); margin: 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -182,7 +307,9 @@
       background: rgba(0,0,0,0.45); border: none; color: white;
       width: 34px; height: 34px; border-radius: 50%; font-size: 18px;
       cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
     }
+    .slide-btn:hover { background: rgba(0,0,0,0.7); }
     .slide-btn.prev { left: 10px; }
     .slide-btn.next { right: 10px; }
     .close-btn {
@@ -191,7 +318,9 @@
       width: 36px; height: 36px; border-radius: 50%;
       color: white; font-size: 18px; cursor: pointer; z-index: 20;
       display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
     }
+    .close-btn:hover { background: rgba(0,0,0,0.7); }
     .slide-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: background 0.2s; }
     .dot.active { background: white; }
@@ -223,7 +352,9 @@
       display: flex; align-items: center; gap: 12px;
       padding: 14px; background: var(--bg); border-radius: 20px;
       margin: 16px 0; cursor: pointer;
+      transition: background 0.2s;
     }
+    .seller-row:hover { background: var(--border); }
     .seller-av {
       width: 46px; height: 46px; border-radius: 50%;
       background: var(--primary-dark); display: flex; align-items: center;
@@ -277,7 +408,9 @@
       display: flex; flex-direction: column; align-items: center;
       color: var(--text-light); text-decoration: none;
       font-size: 10px; font-weight: 600; gap: 3px;
+      transition: color 0.2s;
     }
+    .nav-item:hover { color: var(--primary-dark); }
     .nav-item.active { color: var(--primary-dark); }
     .nav-item svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     .nav-sell {
@@ -285,7 +418,9 @@
       border-radius: 50%; display: flex; align-items: center;
       justify-content: center; margin-top: -30px;
       border: 4px solid var(--bg);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
+    .nav-sell:hover { transform: scale(1.08); box-shadow: 0 4px 20px rgba(0,200,83,0.35); }
     .nav-sell svg { stroke: white; }
     /* TOAST */
     .toast {
@@ -295,14 +430,448 @@
       border-radius: 30px; font-size: 14px; font-weight: 500;
       z-index: 5000; opacity: 0; transition: opacity 0.3s, transform 0.3s;
       white-space: nowrap; pointer-events: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.25);
     }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Category Quick Access Bar
+       ═══════════════════════════════════════════════════ */
+    .cat-bar {
+      display: flex;
+      gap: 14px;
+      padding: 12px 16px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .cat-item:active { transform: scale(0.9); }
+    .cat-icon-wrap {
+      width: 54px; height: 54px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+    }
+    .cat-item.active .cat-icon-wrap,
+    .cat-item:hover .cat-icon-wrap {
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+      box-shadow: 0 4px 16px rgba(0,200,83,0.25);
+    }
+    .cat-item.active .cat-icon-wrap svg,
+    .cat-item:hover .cat-icon-wrap svg {
+      stroke: white;
+    }
+    .cat-icon-wrap svg {
+      width: 22px; height: 22px;
+      stroke: var(--text);
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.25s;
+    }
+    .cat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-light);
+      text-align: center;
+      white-space: nowrap;
+      transition: color 0.25s;
+    }
+    .cat-item.active .cat-label { color: var(--primary-dark); }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Flash Deals Section
+       ═══════════════════════════════════════════════════ */
+    .deals-section { padding: 4px 0 0; }
+    .deals-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+    }
+    .deals-header-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .deals-header-left h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .deals-timer {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #ef4444;
+    }
+    .timer-block {
+      background: #fef2f2;
+      color: #ef4444;
+      padding: 3px 7px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 800;
+      min-width: 30px;
+      text-align: center;
+      font-family: 'Syne', sans-serif;
+    }
+    body.dark .timer-block { background: #2a1515; }
+    .deals-scroll {
+      display: flex;
+      gap: 12px;
+      padding: 0 16px 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .deals-scroll::-webkit-scrollbar { display: none; }
+    .deal-card {
+      min-width: 130px;
+      max-width: 130px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+    .deal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
+    .deal-card:active { transform: scale(0.97); }
+    .deal-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; }
+    .deal-card-info { padding: 8px 10px 10px; }
+    .deal-card-price { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; }
+    .deal-card-title { font-size: 11px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .deal-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      color: #ef4444;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 6px;
+      margin-top: 3px;
+      font-family: 'Syne', sans-serif;
+    }
+    body.dark .deal-tag { background: #2a1515; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Scroll to Top Button
+       ═══════════════════════════════════════════════════ */
+    .scroll-top {
+      position: fixed;
+      bottom: calc(var(--nav-height) + 20px);
+      right: 16px;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--primary-dark);
+      border: none;
+      color: white;
+      cursor: pointer;
+      z-index: 2500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,200,83,0.3);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .scroll-top.visible { display: flex; }
+    .scroll-top:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,200,83,0.4); }
+    .scroll-top:active { transform: scale(0.9); }
+    .scroll-top svg {
+      width: 20px; height: 20px;
+      stroke: white; fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Notification Dropdown Panel
+       ═══════════════════════════════════════════════════ */
+    .notif-panel {
+      position: fixed;
+      top: 64px;
+      right: 12px;
+      width: 340px;
+      max-width: calc(100vw - 24px);
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.15);
+      z-index: 1500;
+      display: none;
+      overflow: hidden;
+      animation: fadeUp 0.2s ease-out;
+    }
+    body.dark .notif-panel { box-shadow: 0 16px 48px rgba(0,0,0,0.4); }
+    .notif-panel.open { display: block; }
+    .notif-panel-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .notif-panel-hd h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .notif-panel-hd h4 svg { width: 18px; height: 18px; stroke: var(--text); fill: none; stroke-width: 2; }
+    .notif-mark-read {
+      font-size: 12px;
+      color: var(--primary-dark);
+      cursor: pointer;
+      font-weight: 600;
+      background: none;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .notif-mark-read:hover { opacity: 0.7; }
+    .notif-list { max-height: 340px; overflow-y: auto; }
+    .notif-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--bg); }
+    .notif-item.unread { background: var(--primary-glow); }
+    .notif-item-icon {
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 15px;
+    }
+    .notif-item-icon.trade { background: var(--trade-light); }
+    .notif-item-icon.offer { background: #fef3c7; }
+    .notif-item-icon.msg { background: #dbeafe; }
+    .notif-item-icon.system { background: var(--bg); }
+    .notif-item-text { flex: 1; min-width: 0; }
+    .notif-item-title { font-size: 13px; font-weight: 600; }
+    .notif-item-desc { font-size: 12px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .notif-item-time { font-size: 11px; color: var(--text-light); margin-top: 3px; opacity: 0.7; }
+    .notif-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+    .notif-empty svg { width: 40px; height: 40px; stroke: var(--border); fill: none; stroke-width: 1.5; margin: 0 auto 10px; display: block; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Online Users Indicator
+       ═══════════════════════════════════════════════════ */
+    .online-indicator {
+      position: fixed;
+      bottom: calc(var(--nav-height) + 20px);
+      left: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      z-index: 2500;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    }
+    body.dark .online-indicator { box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+    .online-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      animation: pulseDot 2s infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+    }
+    .online-indicator svg { width: 14px; height: 14px; stroke: var(--text-light); fill: none; stroke-width: 2; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Recently Viewed Section
+       ═══════════════════════════════════════════════════ */
+    .recently-viewed {
+      padding: 4px 0 16px;
+      display: none;
+    }
+    .recently-viewed.visible { display: block; }
+    .recent-scroll {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .recent-scroll::-webkit-scrollbar { display: none; }
+    .recent-item {
+      min-width: 90px;
+      max-width: 90px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .recent-item:active { transform: scale(0.95); }
+    .recent-item img {
+      width: 100%;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      transition: border-color 0.2s;
+    }
+    .recent-item:hover img { border-color: var(--primary-dark); }
+    .recent-item-label {
+      font-size: 11px;
+      color: var(--text-light);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 4px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Share Row in Modal
+       ═══════════════════════════════════════════════════ */
+    .share-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px 0;
+    }
+    .share-row-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-right: 4px;
+    }
+    .share-btn-sm {
+      width: 36px; height: 36px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      font-size: 16px;
+    }
+    .share-btn-sm:hover { border-color: var(--primary-dark); background: var(--primary-glow); transform: translateY(-1px); }
+    .share-btn-sm:active { transform: scale(0.92); }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Report Button in Modal
+       ═══════════════════════════════════════════════════ */
+    .report-btn {
+      background: none;
+      border: none;
+      font-size: 12px;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 4px 20px 0;
+      transition: color 0.2s;
+    }
+    .report-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .report-btn:hover { color: #ef4444; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Time Ago Display in Modal
+       ═══════════════════════════════════════════════════ */
+    .time-ago {
+      font-size: 12px;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 4px 0 0;
+    }
+    .time-ago svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Button Ripple Effect
+       ═══════════════════════════════════════════════════ */
+    .btn { position: relative; overflow: hidden; }
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.25) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    .btn:active::after { opacity: 1; transition: opacity 0s; }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Nav Badge for cart/wishlist counts
+       ═══════════════════════════════════════════════════ */
+    .nav-badge { position: relative; }
+    .nav-badge-count {
+      position: absolute;
+      top: -2px; right: -6px;
+      min-width: 16px; height: 16px;
+      background: #ef4444;
+      color: white;
+      font-size: 9px; font-weight: 800;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 3px;
+      border: 2px solid var(--card-bg);
+      animation: badgePop 0.3s ease-out;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ADDED: Smooth scrollbar
+       ═══════════════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
   </style>
 </head>
 <body>
 
 <header class="app-header">
-  <div class="logo">DormKart</div>
+  <!-- ADDED: Logo icon via SVG -->
+  <div class="logo">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    DormKart
+  </div>
   <div class="header-actions">
     <div class="notif-wrap">
       <button class="icon-btn" onclick="showToast('You are all caught up!')">🔔</button>
@@ -312,12 +881,29 @@
   </div>
 </header>
 
+<!-- ADDED: Notification Dropdown Panel -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-panel-hd">
+    <h4>
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Notifications
+    </h4>
+    <button class="notif-mark-read" onclick="markAllRead()">Mark all read</button>
+  </div>
+  <div class="notif-list" id="notifList">
+    <div class="notif-empty">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      No notifications yet
+    </div>
+  </div>
+</div>
+
 <div class="hero">
   <div class="hero-label">⚡ Campus Marketplace</div>
   <div class="hero-title">Swap, buy &amp; <em>trade smarter</em></div>
   <div class="stats-row">
-    <div class="stat-chip"><span>🔄</span> 1.2k active trades</div>
-    <div class="stat-chip"><span>📍</span> 8 campuses</div>
+    <div class="stat-chip"><span>🔄</span> <span id="activeItemsStat">1.2k active trades</span></div>
+    <div class="stat-chip"><span>📍</span> <span id="campusCountStat">8 campuses</span></div>
   </div>
   <div class="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24" stroke-width="2">
@@ -351,6 +937,68 @@
   <div class="ts-arrow">→</div>
 </div>
 
+<!-- ═══════════════════════════════════════════════════
+     ADDED: Category Quick Access Bar
+     ═══════════════════════════════════════════════════ -->
+<div class="cat-bar" id="catBar">
+  <div class="cat-item" onclick="filterByCategory('Electronics')" data-cat="Electronics">
+    <div class="cat-icon-wrap"><i data-lucide="smartphone"></i></div>
+    <span class="cat-label">Electronics</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Books')" data-cat="Books">
+    <div class="cat-icon-wrap"><i data-lucide="book-open"></i></div>
+    <span class="cat-label">Books</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Dorm Essentials')" data-cat="Dorm Essentials">
+    <div class="cat-icon-wrap"><i data-lucide="lamp"></i></div>
+    <span class="cat-label">Dorm Stuff</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Fashion')" data-cat="Fashion">
+    <div class="cat-icon-wrap"><i data-lucide="shirt"></i></div>
+    <span class="cat-label">Fashion</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Gaming')" data-cat="Gaming">
+    <div class="cat-icon-wrap"><i data-lucide="gamepad-2"></i></div>
+    <span class="cat-label">Gaming</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Stationery')" data-cat="Stationery">
+    <div class="cat-icon-wrap"><i data-lucide="pen-tool"></i></div>
+    <span class="cat-label">Stationery</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Sports')" data-cat="Sports">
+    <div class="cat-icon-wrap"><i data-lucide="dumbbell"></i></div>
+    <span class="cat-label">Sports</span>
+  </div>
+  <div class="cat-item" onclick="filterByCategory('Food')" data-cat="Food">
+    <div class="cat-icon-wrap"><i data-lucide="coffee"></i></div>
+    <span class="cat-label">Food</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════
+     ADDED: Flash Deals Section
+     ═══════════════════════════════════════════════════ -->
+<div class="deals-section" id="dealsSection">
+  <div class="deals-header">
+    <div class="deals-header-left">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <h3>Flash Deals</h3>
+    </div>
+    <div class="deals-timer">
+      Ends in
+      <span class="timer-block" id="timerH">04</span>:
+      <span class="timer-block" id="timerM">00</span>:
+      <span class="timer-block" id="timerS">00</span>
+    </div>
+  </div>
+  <div class="deals-scroll" id="dealsScroll">
+    <div class="skeleton" style="min-width:130px;max-width:130px;border-radius:16px;overflow:hidden;"><div class="skeleton" style="aspect-ratio:1/1;"></div><div class="skeleton" style="height:12px;margin:8px;"></div></div>
+    <div class="skeleton" style="min-width:130px;max-width:130px;border-radius:16px;overflow:hidden;"><div class="skeleton" style="aspect-ratio:1/1;"></div><div class="skeleton" style="height:12px;margin:8px;"></div></div>
+    <div class="skeleton" style="min-width:130px;max-width:130px;border-radius:16px;overflow:hidden;"><div class="skeleton" style="aspect-ratio:1/1;"></div><div class="skeleton" style="height:12px;margin:8px;"></div></div>
+    <div class="skeleton" style="min-width:130px;max-width:130px;border-radius:16px;overflow:hidden;"><div class="skeleton" style="aspect-ratio:1/1;"></div><div class="skeleton" style="height:12px;margin:8px;"></div></div>
+  </div>
+</div>
+
 <div class="section-header">
   <h3>✨ For you</h3>
   <span class="section-link" onclick="applyFilters()">See all →</span>
@@ -364,6 +1012,20 @@
     <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton" style="height:14px;margin:10px;"></div></div>
   </div>
 </main>
+
+<!-- ═══════════════════════════════════════════════════
+     ADDED: Recently Viewed Section
+     ═══════════════════════════════════════════════════ -->
+<section class="recently-viewed" id="recentlyViewed">
+  <div class="section-header">
+    <h3>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:4px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Recently Viewed
+    </h3>
+    <span class="section-link" onclick="clearRecentlyViewed()">Clear</span>
+  </div>
+  <div class="recent-scroll" id="recentScroll"></div>
+</section>
 
 <!-- PRODUCT MODAL -->
 <div class="modal-overlay" id="productModal" onclick="onModalBgClick(event)">
@@ -386,19 +1048,35 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- ═══════════════════════════════════════════════════
+     ADDED: Scroll to Top Button
+     ═══════════════════════════════════════════════════ -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- ═══════════════════════════════════════════════════
+     ADDED: Online Users Indicator
+     ═══════════════════════════════════════════════════ -->
+<div class="online-indicator" id="onlineIndicator">
+  <div class="online-dot"></div>
+  <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+  <span id="onlineCount">— online</span>
+</div>
+
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active">
     <svg viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
     Home
   </a>
-  <a href="chats.html" class="nav-item">
+  <a href="chats.html" class="nav-item nav-badge" id="chatsNavItem">
     <svg viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
     Chats
   </a>
   <a href="add_product.html" class="nav-item nav-sell">
     <svg viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"/></svg>
   </a>
-  <a href="my-ads.html" class="nav-item">
+  <a href="my-ads.html" class="nav-item nav-badge" id="myAdsNavItem">
     <svg viewBox="0 0 24 24"><path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012 2v2M7 7h10"/></svg>
     My Ads
   </a>
@@ -417,10 +1095,18 @@ let currentImgs    = [];
 let currentImgIdx  = 0;
 let tradeOnly      = false;
 let session        = null;
+// ADDED: current product ref for share/report
+let currentProduct = null;
+// ADDED: notification panel state
+let notifOpen      = false;
+// ADDED: wishlist tracking set
+let wishlistSet    = new Set();
 
 // ── INIT ──
 async function init() {
   applySavedTheme();
+  // ADDED: Initialize Lucide icons
+  initIcons();
   try {
     const { data, error } = await supabaseClient.auth.getSession();
     if (error || !data.session) { window.location.href = 'login-signup.html'; return; }
@@ -429,6 +1115,16 @@ async function init() {
     console.warn('Auth unavailable — running in preview mode');
   }
   await fetchProducts();
+  // ADDED: Post-fetch initializations
+  renderDeals();
+  startDealTimer();
+  renderRecentlyViewed();
+  fetchNotificationCount();
+  fetchWishlistForBadges();
+  fetchOnlineCount();
+  fetchLiveStats();
+  // ADDED: Enhance notification button to open panel
+  enhanceNotifButton();
 }
 
 // ── FETCH ──
@@ -463,11 +1159,20 @@ function renderGrid(products) {
     const img  = (p.image_url ? p.image_url.split(',')[0].trim() : '') || 'placeholder.jpg';
     const swap = Boolean(p.swap_enabled);
     const price = Math.floor(p.price || 0).toLocaleString('en-IN');
+    // ADDED: Check if product is new (within 3 days)
+    const isNew = p.created_at && (Date.now() - new Date(p.created_at).getTime()) < 3 * 86400000;
+    // ADDED: Check if wishlisted
+    const isSaved = wishlistSet.has(p.id);
     card.innerHTML = `
       <div class="p-img-wrap">
         <img src="${img}" loading="lazy" alt="${eh(p.title)}" onerror="this.src='placeholder.jpg'">
+        ${isNew ? '<div class="new-badge">✨ NEW</div>' : ''}
         ${swap ? '<div class="trade-badge">🔄 TRADE</div>' : ''}
         ${p.condition ? `<div class="cond-badge">${eh(p.condition)}</div>` : ''}
+        <!-- ADDED: Wishlist heart button on card -->
+        <button class="p-wishlist-btn ${isSaved ? 'saved' : ''}" onclick="event.stopPropagation();toggleWishlist('${p.id}',this)" title="Save">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
       </div>
       <div class="p-info">
         <div class="p-price">₹${price}</div>
@@ -512,10 +1217,17 @@ function openDetail(p) {
   currentImgs = (p.image_url ? p.image_url.split(',').map(s => s.trim()) : []).filter(Boolean);
   if (!currentImgs.length) currentImgs = ['placeholder.jpg'];
 
+  // ADDED: Store current product for share/report
+  currentProduct = p;
+  // ADDED: Track recently viewed
+  trackRecentlyViewed(p);
+
   const swap     = Boolean(p.swap_enabled);
   const price    = Math.floor(p.price || 0).toLocaleString('en-IN');
   const initial  = (p.seller?.name || 'S').charAt(0).toUpperCase();
   const multi    = currentImgs.length > 1;
+  // ADDED: Check if new
+  const isNew = p.created_at && (Date.now() - new Date(p.created_at).getTime()) < 3 * 86400000;
 
   const slides = currentImgs.map(u => `<img src="${u}" alt="product" onerror="this.src='placeholder.jpg'">`).join('');
   const dots   = multi ? currentImgs.map((_,i) => `<div class="dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`).join('') : '';
@@ -528,12 +1240,26 @@ function openDetail(p) {
       <div class="slides" id="slides">${slides}</div>
       ${multi ? `<div class="slide-dots">${dots}</div>` : ''}
     </div>
+    <!-- ADDED: Share row -->
+    <div class="share-row">
+      <span class="share-row-label">Share:</span>
+      <button class="share-btn-sm" onclick="shareWhatsApp(currentProduct)" title="WhatsApp">💬</button>
+      <button class="share-btn-sm" onclick="shareTelegram(currentProduct)" title="Telegram">✈️</button>
+      <button class="share-btn-sm" onclick="copyLink(currentProduct)" title="Copy Link">🔗</button>
+      <button class="share-btn-sm" onclick="shareNative(currentProduct)" title="More">📤</button>
+    </div>
     <div class="modal-body">
       <div class="price-row">
         <div class="modal-price">₹${price}</div>
         ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+        ${isNew ? '<span class="new-badge" style="position:static;">✨ NEW</span>' : ''}
       </div>
       <div class="modal-title">${eh(p.title)}</div>
+      <!-- ADDED: Time ago -->
+      <div class="time-ago">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        ${timeAgo(p.created_at)}
+      </div>
       ${p.condition ? `<span class="cond-tag">${eh(p.condition)}</span>` : ''}
       ${swap ? `
       <div class="trade-box">
@@ -554,142 +1280,6 @@ function openDetail(p) {
           <div class="seller-col">${eh(p.seller?.college || '')}</div>
         </div>
       </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="openUPI(${p.price||0},'${ea(p.seller?.upi_id||'')}')">⚡ Buy Now</button>
-      <div class="btn-inline">
-        <button class="btn btn-outline" onclick="addToCart('${p.id}')">🛒 Cart</button>
-        <button class="btn btn-outline" onclick="makeOffer('${p.id}','${p.seller_id}')">💰 Offer</button>
-        <button class="btn btn-outline" onclick="addToWishlist('${p.id}')">♡ Save</button>
-      </div>
-      <button class="btn btn-msg" onclick="window.location.href='chats.html?id=${p.seller_id}'">✉️ Message Seller</button>
-    </div>`;
-
-  document.getElementById('productModal').classList.add('open');
-
-  if (swap) {
-    const btn = document.getElementById('tradeSendBtn');
-    if (btn) btn.addEventListener('click', async () => {
-      const inp = document.getElementById('tradeInput');
-      const txt = inp ? inp.value.trim() : '';
-      if (!txt) { showToast('Please describe what you offer'); return; }
-      await sendTrade(p.id, p.seller_id, txt);
-    });
-  }
-}
-
-function closeModal() { document.getElementById('productModal').classList.remove('open'); }
-function onModalBgClick(e) { if (e.target.id === 'productModal') closeModal(); }
-
-// ── SLIDER ──
-function moveSlide(dir) {
-  currentImgIdx = (currentImgIdx + dir + currentImgs.length) % currentImgs.length;
-  refreshSlider();
-}
-function goSlide(i) { currentImgIdx = i; refreshSlider(); }
-function refreshSlider() {
-  const el = document.getElementById('slides');
-  if (el) el.style.transform = `translateX(-${currentImgIdx * 100}%)`;
-  document.querySelectorAll('#modalBox .dot').forEach((d,i) => d.classList.toggle('active', i === currentImgIdx));
-}
-
-// ── TRADE PROPOSAL ──
-async function sendTrade(productId, sellerId, offerText) {
-  if (!session) { showToast('Please log in first'); return; }
-  try {
-    const { error: e1 } = await supabaseClient.from('chats').insert({
-      sender_id: session.user.id, receiver_id: sellerId,
-      product_id: productId, message: `🔄 TRADE OFFER: ${offerText}`
-    });
-    if (e1) throw e1;
-    await supabaseClient.from('notifications').insert({
-      user_id: sellerId, title: 'New trade offer',
-      message: `Someone wants to trade: ${offerText}`, type: 'trade'
-    });
-    showToast('Trade proposal sent! Check chats.');
-    closeModal();
-  } catch (e) {
-    console.error(e);
-    showToast('Failed to send trade proposal');
-  }
-}
-
-// ── UPI ──
-function openUPI(price, upiId) {
-  if (!upiId) { showToast('Seller has no UPI ID'); return; }
-  const amt = Math.floor(price);
-  const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=DormKart&am=${amt}&cu=INR`;
-  document.getElementById('upiAmt').textContent  = '₹' + amt.toLocaleString('en-IN');
-  document.getElementById('upiQR').src           = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(link)}`;
-  document.getElementById('upiLink').href        = link;
-  document.getElementById('upiModal').classList.add('open');
-}
-function closeUPI() { document.getElementById('upiModal').classList.remove('open'); }
-function onUpiBgClick(e) { if (e.target.id === 'upiModal') closeUPI(); }
-
-// ── WISHLIST / CART / OFFER ──
-async function addToWishlist(pid) {
-  if (!session) { showToast('Please log in first'); return; }
-  const { error } = await supabaseClient.from('wishlist').insert({ user_id: session.user.id, product_id: pid });
-  showToast(error ? 'Already saved or an error occurred' : 'Added to wishlist ♡');
-}
-
-async function addToCart(pid) {
-  if (!session) { showToast('Please log in first'); return; }
-  try {
-    const { data: p, error: pe } = await supabaseClient.from('products').select('seller_id,price').eq('id', pid).single();
-    if (pe) throw pe;
-    const { error } = await supabaseClient.from('orders').insert({
-      buyer_id: session.user.id, product_id: pid,
-      seller_id: p.seller_id, amount: p.price, payment_status: 'in_cart'
-    });
-    showToast(error ? 'Could not add to cart' : 'Added to cart 🛒');
-  } catch (e) { showToast('Something went wrong'); }
-}
-
-async function makeOffer(pid, sellerId) {
-  if (!session) { showToast('Please log in first'); return; }
-  const amt = prompt('Your offer price (₹):');
-  if (!amt || isNaN(Number(amt))) return;
-  const { error } = await supabaseClient.from('chats').insert({
-    sender_id: session.user.id, receiver_id: sellerId,
-    product_id: pid, message: `💰 Offer: ₹${amt}`
-  });
-  if (!error) window.location.href = `chats.html?id=${sellerId}`;
-  else showToast('Failed to send offer');
-}
-
-// ── THEME ──
-function applySavedTheme() {
-  if (localStorage.getItem('theme') === 'dark') {
-    document.body.classList.add('dark');
-    document.getElementById('themeBtn').textContent = '☀️';
-  }
-}
-function toggleDarkMode() {
-  const dark = document.body.classList.toggle('dark');
-  localStorage.setItem('theme', dark ? 'dark' : 'light');
-  document.getElementById('themeBtn').textContent = dark ? '☀️' : '🌙';
-}
-
-// ── TOAST ──
-let toastTimer;
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-}
-
-// ── UTILS ──
-function eh(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
-}
-function ea(s) { return String(s||'').replace(/'/g,"\\'"); }
-
-// ── START ──
-window.addEventListener('DOMContentLoaded', init);
-</script>
-</body>
-</html>
+      <!-- ADDED: Report button -->
+      <button class="report-btn" onclick="reportProduct('${p.id}')">
+        <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1
