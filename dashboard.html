@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>DormKart • Campus Trade & Marketplace</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -407,10 +409,7 @@
 </nav>
 
 <script>
-// ── CONFIG ── Replace with values from config.js or your Supabase project ──
-const SUPABASE_URL  = (typeof window.SUPABASE_URL  !== 'undefined') ? window.SUPABASE_URL  : 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY  = (typeof window.SUPABASE_ANON_KEY !== 'undefined') ? window.SUPABASE_ANON_KEY : 'YOUR_SUPABASE_ANON_KEY';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 
 // ── STATE ──
 let allProducts    = [];
