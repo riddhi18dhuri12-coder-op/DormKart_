@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
@@ -18,6 +19,18 @@
             --card-bg: #ffffff;
             --border: #e2e8f0;
             --nav-height: 70px;
+            --danger: #ef4444;
+            --trade: #7c3aed;
+            --trade-light: #ede9fe;
+            --warning: #f59e0b;
+        }
+        body.dark {
+            --text: #e8f0e8;
+            --text-light: #7a8c7a;
+            --bg: #0a0f0a;
+            --card-bg: #111811;
+            --border: #1e2a1e;
+            --trade-light: #2e1a4a;
         }
 
         body {
@@ -26,6 +39,7 @@
             margin: 0;
             padding-bottom: calc(var(--nav-height) + 40px);
             color: var(--text);
+            transition: background 0.3s, color 0.3s;
         }
 
         .header-emerald {
@@ -36,99 +50,317 @@
             border-bottom-right-radius: 35px;
             box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
             position: relative;
+            overflow: hidden;
+        }
+        .header-emerald::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        .header-top { display: flex; align-items: center; justify-content: space-between; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
         
         .back-btn { 
             background: rgba(255,255,255,0.2); border: none; 
             border-radius: 12px; padding: 8px; cursor: pointer; color: white;
-            display: flex; align-items: center;
+            display: flex; align-items: center; justify-content: center;
+            width: 38px; height: 38px; transition: background 0.2s;
         }
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+
+        .header-actions { display: flex; gap: 8px; }
+        .icon-btn-sm {
+            width: 38px; height: 38px; border-radius: 12px;
+            background: rgba(255,255,255,0.2); border: none;
+            color: white; font-size: 15px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .icon-btn-sm:hover { background: rgba(255,255,255,0.35); }
 
         .view-toggle-btn {
             background: white; border: none; color: var(--primary-dark);
-            padding: 8px 15px; border-radius: 10px; font-size: 12px;
+            padding: 8px 14px; border-radius: 10px; font-size: 12px;
             font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex; align-items: center; gap: 6px;
+            transition: transform 0.15s;
         }
+        .view-toggle-btn:active { transform: scale(0.95); }
+
+        .header-content { position: relative; z-index: 1; }
+        .header-content h1 { margin: 20px 0 0; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 10px; }
+        .header-content h1 .wish-count {
+            background: rgba(255,255,255,0.25); padding: 3px 10px;
+            border-radius: 20px; font-size: 14px; font-weight: 700;
+        }
+        .header-content p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 
         .search-container { padding: 0 20px; margin-top: -25px; z-index: 10; position: relative; }
+        .search-wrap { position: relative; }
+        .search-wrap i {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            font-size: 15px; color: var(--text-light);
+        }
+        .search-wrap .search-clear {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--text-light); cursor: pointer;
+            font-size: 14px; display: none; padding: 4px;
+        }
+        .search-wrap .search-clear.visible { display: block; }
         input#searchInput {
-            width: 100%; padding: 15px 20px; border-radius: 15px;
+            width: 100%; padding: 15px 40px 15px 44px; border-radius: 15px;
             border: 1px solid var(--border); box-sizing: border-box;
-            font-family: inherit; background: white; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            outline: none;
+            font-family: inherit; background: var(--card-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            outline: none; color: var(--text); transition: border 0.2s, box-shadow 0.2s;
+        }
+        input#searchInput:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(5,150,105,0.12); }
+
+        .filter-bar {
+            display: flex; gap: 8px; padding: 14px 20px 0;
+            overflow-x: auto; scrollbar-width: none; align-items: center;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .filter-btn {
+            padding: 7px 14px; border: 1.5px solid var(--border);
+            border-radius: 30px; background: var(--card-bg);
+            color: var(--text-light); font-size: 12px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; white-space: nowrap;
+            font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 5px;
+        }
+        .filter-btn.active { background: var(--primary-dark); border-color: var(--primary-dark); color: white; }
+        .filter-btn i { font-size: 11px; }
+        .filter-select {
+            padding: 7px 12px; border: 1.5px solid var(--border);
+            border-radius: 30px; background: var(--card-bg);
+            color: var(--text); font-size: 12px; font-weight: 600;
+            cursor: pointer; outline: none; font-family: 'Inter', sans-serif;
+            white-space: nowrap;
         }
 
-        .wishlist-container { padding: 20px; }
+        .result-info {
+            padding: 10px 20px 0; font-size: 12px; color: var(--text-light);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .result-info strong { color: var(--text); }
+
+        .wishlist-container { padding: 12px 20px 20px; }
         
-        .grid { display: grid; gap: 15px; grid-template-columns: repeat(2, 1fr); transition: all 0.3s ease; }
+        .grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); transition: all 0.3s ease; }
+        @media (min-width: 500px) { .grid:not(.list-view) { grid-template-columns: repeat(3, 1fr); } }
         .grid.list-view { grid-template-columns: 1fr; }
 
         .product-item { 
-            background: white; border-radius: 20px; padding: 12px; 
+            background: var(--card-bg); border-radius: 18px; padding: 10px; 
             border: 1px solid var(--border); position: relative;
             box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-
+        .product-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
         .product-item:active { transform: scale(0.98); }
-        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 15px; object-fit: cover; }
+        .product-item .img-wrap { position: relative; overflow: hidden; border-radius: 14px; }
+        .product-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.3s; }
+        .product-item:hover img { transform: scale(1.04); }
 
-        .grid.list-view .product-item { display: flex; align-items: center; gap: 15px; }
-        .grid.list-view .product-item img { width: 100px; height: 100px; }
-        .grid.list-view .item-details { flex: 1; display: flex; flex-direction: column; }
-
-        .price { font-weight: 800; font-size: 18px; margin-top: 8px; color: var(--text); }
-        .title { font-size: 13px; color: var(--text-light); margin-top: 2px; }
-
-        .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .view-prod-btn {
-            flex: 1; padding: 10px;
-            background: #f1f5f9; color: var(--text); border: none;
-            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
-            transition: background 0.2s;
+        .trade-badge-sm {
+            position: absolute; top: 8px; left: 8px; background: var(--trade);
+            color: white; font-size: 9px; font-weight: 700; padding: 3px 8px;
+            border-radius: 20px; display: flex; align-items: center; gap: 3px;
         }
-        .btn-seller { background: var(--primary-dark); color: white; }
+        .trade-badge-sm i { font-size: 8px; }
 
         .heart-btn {
-            position: absolute; top: 15px; right: 15px; background: white;
+            position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9);
             border-radius: 50%; width: 32px; height: 32px; display: flex;
-            align-items: center; justify-content: center; border: 1px solid #eee;
-            z-index: 5;
+            align-items: center; justify-content: center; border: none;
+            z-index: 5; cursor: pointer; transition: transform 0.2s;
+            backdrop-filter: blur(4px);
         }
-        .heart-btn svg { width: 18px; height: 18px; fill: #ef4444; }
+        .heart-btn:hover { transform: scale(1.15); }
+        .heart-btn i { font-size: 15px; color: #ef4444; }
 
-        /* Bottom Nav (Consistent) */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600; gap: 3px; }
+        .item-details { padding: 4px 2px 0; }
+        .price { font-weight: 800; font-size: 17px; margin-top: 4px; color: var(--text); }
+        .price .og-price { font-size: 12px; font-weight: 400; color: var(--text-light); text-decoration: line-through; margin-left: 5px; }
+        .title { font-size: 12px; color: var(--text-light); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-meta { font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+        .item-meta i { font-size: 10px; }
+
+        .btn-group { display: flex; gap: 6px; margin-top: 8px; }
+        .view-prod-btn {
+            flex: 1; padding: 8px;
+            background: var(--bg); color: var(--text); border: 1px solid var(--border);
+            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
+            font-family: 'Inter', sans-serif;
+        }
+        .view-prod-btn:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
+        .btn-seller { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
+        .btn-seller:hover { background: #047857; color: white; border-color: #047857; }
+
+        /* ── LIST VIEW OVERRIDES ── */
+        .grid.list-view .product-item { display: flex; align-items: center; gap: 14px; padding: 12px; }
+        .grid.list-view .img-wrap { width: 90px; height: 90px; flex-shrink: 0; border-radius: 12px; }
+        .grid.list-view .img-wrap img { width: 100%; height: 100%; aspect-ratio: auto; }
+        .grid.list-view .heart-btn { top: 6px; right: 6px; width: 28px; height: 28px; }
+        .grid.list-view .heart-btn i { font-size: 13px; }
+        .grid.list-view .item-details { flex: 1; min-width: 0; }
+        .grid.list-view .title { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .grid.list-view .btn-group { margin-top: 6px; }
+
+        /* ── SKELETON ── */
+        .skeleton {
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+            background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px;
+        }
+        .skel-card { border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: var(--card-bg); }
+        .skel-img { aspect-ratio: 1/1; }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-light);
+        }
+        .empty-state i { font-size: 48px; margin-bottom: 14px; opacity: 0.4; display: block; }
+        .empty-state p { font-size: 15px; margin-bottom: 6px; }
+        .empty-state .empty-sub { font-size: 13px; opacity: 0.7; }
+        .empty-state .empty-action {
+            margin-top: 18px; display: inline-flex; align-items: center; gap: 8px;
+            padding: 10px 22px; border-radius: 12px; background: var(--primary-dark);
+            color: white; font-weight: 700; font-size: 13px; text-decoration: none;
+            border: none; cursor: pointer; transition: transform 0.2s;
+        }
+        .empty-state .empty-action:active { transform: scale(0.96); }
+
+        /* ── REMOVE CONFIRM ── */
+        .remove-overlay {
+            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
+            border-radius: 18px; display: none; align-items: center;
+            justify-content: center; z-index: 10; backdrop-filter: blur(2px);
+            flex-direction: column; gap: 8px;
+        }
+        .remove-overlay.show { display: flex; }
+        .remove-overlay p { color: white; font-size: 12px; font-weight: 600; }
+        .remove-btns { display: flex; gap: 8px; }
+        .remove-confirm-btn {
+            padding: 7px 16px; border-radius: 8px; border: none;
+            font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.15s;
+        }
+        .remove-confirm-btn:active { transform: scale(0.95); }
+        .remove-confirm-btn.yes { background: var(--danger); color: white; }
+        .remove-confirm-btn.no { background: white; color: var(--text); }
+
+        /* ── CLEAR ALL BAR ── */
+        .clear-bar {
+            display: flex; justify-content: flex-end; padding: 0 20px;
+            margin-bottom: 4px;
+        }
+        .clear-all-btn {
+            background: none; border: none; color: var(--danger);
+            font-size: 12px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 5px;
+            padding: 4px 8px; border-radius: 8px; transition: background 0.2s;
+        }
+        .clear-all-btn:hover { background: #fee2e2; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0f172a; color: white; padding: 10px 20px;
+            border-radius: 20px; font-size: 13px; font-weight: 600;
+            z-index: 9998; opacity: 0; transition: all 0.3s;
+            white-space: nowrap; display: flex; align-items: center; gap: 8px;
+            max-width: 90vw; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast i { font-size: 15px; }
+        .toast.success i { color: #4ade80; }
+        .toast.error i { color: #f87171; }
+        .toast.info i { color: #60a5fa; }
+
+        /* ── SCROLL TO TOP ── */
+        .scroll-top-btn {
+            position: fixed; bottom: calc(var(--nav-height) + 16px); right: 16px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--primary-dark); color: white; border: none;
+            font-size: 16px; cursor: pointer; z-index: 1500;
+            display: none; align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(5,150,105,0.35); transition: all 0.2s;
+        }
+        .scroll-top-btn.visible { display: flex; }
+        .scroll-top-btn:hover { transform: translateY(-2px); }
+
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; padding-bottom: env(safe-area-inset-bottom); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background 0.3s, border 0.3s; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600; gap: 3px; transition: color 0.2s; position: relative; }
         .nav-item.active { color: var(--primary-dark); }
+        .nav-item.active::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 24px; height: 3px; background: var(--primary-dark); border-radius: 0 0 4px 4px; }
         .nav-item svg { width: 22px; height: 22px; }
-        .nav-sell { background: var(--primary-dark); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid var(--bg); color: white !important; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4); }
+        .nav-sell { background: var(--primary-dark); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid var(--bg); color: white !important; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4); transition: transform 0.2s; }
+        .nav-sell:hover { transform: scale(1.08); }
     </style>
 </head>
+
 <body>
 
 <div class="header-emerald">
     <div class="header-top">
         <button class="back-btn" onclick="location.href='profile.html'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <i class="fas fa-arrow-left"></i>
         </button>
-        <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">Switch to List</button>
+        <div class="header-actions">
+            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">
+                <i class="fas fa-list" id="viewIcon"></i>
+                <span id="viewLabel">List</span>
+            </button>
+        </div>
     </div>
-    <h1 style="margin: 20px 0 0; font-weight: 800; font-size: 28px;">My Wishlist</h1>
-    <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">Items you're keeping an eye on</p>
+    <div class="header-content">
+        <h1>My Wishlist <span class="wish-count" id="wishCount">0</span></h1>
+        <p><i class="far fa-heart"></i> Items you're keeping an eye on</p>
+    </div>
 </div>
 
 <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Search your saved items..." oninput="renderWishlist()">
+    <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search your saved items..." oninput="handleSearch()">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fas fa-xmark"></i></button>
+    </div>
+</div>
+
+<div class="filter-bar">
+    <button class="filter-btn active" data-sort="newest" onclick="setSort('newest', this)"><i class="fas fa-clock"></i> Newest</button>
+    <button class="filter-btn" data-sort="low" onclick="setSort('low', this)"><i class="fas fa-arrow-up-short-wide"></i> Price Low</button>
+    <button class="filter-btn" data-sort="high" onclick="setSort('high', this)"><i class="fas fa-arrow-down-wide-short"></i> Price High</button>
+    <button class="filter-btn" data-sort="trade" onclick="setSort('trade', this)"><i class="fas fa-arrows-rotate"></i> Trades</button>
+</div>
+
+<div class="result-info" id="resultInfo" style="display:none;">
+    <i class="fas fa-filter"></i> Showing <strong id="resultNum">0</strong> items
+</div>
+
+<div class="clear-bar" id="clearBar" style="display:none;">
+    <button class="clear-all-btn" onclick="confirmClearAll()"><i class="fas fa-trash-can"></i> Clear all</button>
 </div>
 
 <div class="wishlist-container">
     <div id="wishlistGrid" class="grid">
-        <p style="text-align: center; color: gray; grid-column: span 2; padding: 40px;">Loading your wishlist...</p>
+        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
+        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
+        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
+        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
     </div>
 </div>
+
+<button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+</button>
+
+<div class="toast" id="toast"><i></i><span></span></div>
 
 <nav class="bottom-nav">
     <a href="dashboard.html" class="nav-item">
@@ -155,44 +387,106 @@
 <script>
     let wishlistData = [];
     let isListView = false;
+    let currentSort = 'newest';
+    let clearAllPending = false;
 
     async function init() {
+        applySavedTheme();
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = 'login-signup.html';
         
         const { data, error } = await supabaseClient
             .from("wishlist")
             .select(`
-                id, 
+                id, created_at,
                 product:products(
-                    id, title, price, image_url, seller_id
+                    id, title, price, original_price, image_url, seller_id, 
+                    swap_enabled, category,
+                    seller:users(id, name, college)
                 )
             `)
-            .eq("user_id", session.user.id);
+            .eq("user_id", session.user.id)
+            .order("created_at", { ascending: false });
 
         if (error) console.error(error);
-        wishlistData = data || [];
+        wishlistData = (data || []).filter(item => item.product);
+        updateCount();
         renderWishlist();
+    }
+
+    function updateCount() {
+        document.getElementById('wishCount').innerText = wishlistData.length;
+        document.getElementById('clearBar').style.display = wishlistData.length > 0 ? 'flex' : 'none';
     }
 
     function toggleView() {
         const grid = document.getElementById('wishlistGrid');
-        const btn = document.getElementById('viewToggle');
+        const icon = document.getElementById('viewIcon');
+        const label = document.getElementById('viewLabel');
         isListView = !isListView;
         grid.classList.toggle('list-view', isListView);
-        btn.innerText = isListView ? "Switch to Grid" : "Switch to List";
+        icon.className = isListView ? 'fas fa-grip' : 'fas fa-list';
+        label.innerText = isListView ? 'Grid' : 'List';
+    }
+
+    function setSort(sort, el) {
+        currentSort = sort;
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        renderWishlist();
+    }
+
+    function getFilteredData() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+        let filtered = wishlistData.filter(item =>
+            item.product.title.toLowerCase().includes(searchTerm) ||
+            (item.product.category || '').toLowerCase().includes(searchTerm) ||
+            (item.product.seller?.name || '').toLowerCase().includes(searchTerm)
+        );
+
+        if (currentSort === 'low') filtered.sort((a, b) => (a.product.price || 0) - (b.product.price || 0));
+        if (currentSort === 'high') filtered.sort((a, b) => (b.product.price || 0) - (a.product.price || 0));
+        if (currentSort === 'newest') filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        if (currentSort === 'trade') filtered = filtered.filter(item => Boolean(item.product.swap_enabled));
+
+        return filtered;
+    }
+
+    function handleSearch() {
+        const q = document.getElementById('searchInput').value;
+        document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
+        renderWishlist();
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('searchClear').classList.remove('visible');
+        renderWishlist();
     }
 
     function renderWishlist() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = getFilteredData();
         const grid = document.getElementById('wishlistGrid');
-        
-        const filtered = wishlistData.filter(item => 
-            item.product && item.product.title.toLowerCase().includes(searchTerm)
-        );
+        const resultInfo = document.getElementById('resultInfo');
+        const q = document.getElementById('searchInput').value.trim();
+        const isFiltered = q || currentSort !== 'newest';
+
+        if (isFiltered) {
+            resultInfo.style.display = 'flex';
+            document.getElementById('resultNum').innerText = filtered.length;
+        } else {
+            resultInfo.style.display = 'none';
+        }
 
         if (filtered.length === 0) {
-            grid.innerHTML = `<p style="text-align: center; color: gray; grid-column: span 2; padding: 40px;">No items found in your wishlist.</p>`;
+            const isTradeFilter = currentSort === 'trade';
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas ${isTradeFilter ? 'fa-arrows-rotate' : 'far fa-heart'}"></i>
+                    <p>${isTradeFilter ? 'No trade items in wishlist' : (q ? 'No matching items found' : 'Your wishlist is empty')}</p>
+                    <p class="empty-sub">${isTradeFilter ? 'Save items with trade enabled to see them here' : (q ? 'Try a different search term' : 'Browse the marketplace and tap the heart icon')}</p>
+                    ${!q && !isTradeFilter ? '<a href="dashboard.html" class="empty-action"><i class="fas fa-compass"></i> Explore Items</a>' : ''}
+                </div>`;
             return;
         }
 
@@ -200,39 +494,134 @@
         filtered.forEach(item => {
             const p = item.product;
             const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
-            
+            const isTrade = Boolean(p.swap_enabled);
+            const ogPrice = p.original_price ? `₹${Math.floor(p.original_price).toLocaleString('en-IN')}` : '';
+            const sellerName = p.seller?.name || 'Seller';
+
             grid.innerHTML += `
                 <div class="product-item" onclick="location.href='product_detail.html?id=${p.id}'">
-                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <div class="img-wrap">
+                        ${isTrade ? '<div class="trade-badge-sm"><i class="fas fa-arrows-rotate"></i> Trade</div>' : ''}
+                        <button class="heart-btn" onclick="event.stopPropagation(); showRemoveConfirm(this, '${item.id}')">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <img src="${img}" loading="lazy" onerror="this.src='placeholder.png'">
                     </div>
-                    <img src="${img}">
                     <div class="item-details">
-                        <div class="price">₹${p.price}</div>
+                        <div class="price">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}${ogPrice ? `<span class="og-price">${ogPrice}</span>` : ''}</div>
                         <div class="title">${p.title}</div>
+                        <div class="item-meta"><i class="fas fa-store"></i> ${sellerName}</div>
                         
                         <div class="btn-group">
                             <button class="view-prod-btn" onclick="event.stopPropagation(); location.href='product_detail.html?id=${p.id}'">
-                                Product
+                                <i class="fas fa-eye"></i> View
                             </button>
-                            <button class="view-prod-btn btn-seller" onclick="event.stopPropagation(); location.href='seller_profile.html?id=${p.seller_id}'">
-                                Seller
+                            <button class="view-prod-btn btn-seller" onclick="event.stopPropagation(); location.href='profile.html?uid=${p.seller_id}'">
+                                <i class="fas fa-user"></i> Seller
                             </button>
+                        </div>
+                    </div>
+                    <div class="remove-overlay" id="remove-${item.id}">
+                        <p>Remove from wishlist?</p>
+                        <div class="remove-btns">
+                            <button class="remove-confirm-btn yes" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">Remove</button>
+                            <button class="remove-confirm-btn no" onclick="event.stopPropagation(); hideRemoveConfirm('${item.id}')">Cancel</button>
                         </div>
                     </div>
                 </div>`;
         });
     }
 
+    function showRemoveConfirm(btn, id) {
+        document.getElementById('remove-' + id).classList.add('show');
+    }
+
+    function hideRemoveConfirm(id) {
+        document.getElementById('remove-' + id).classList.remove('show');
+    }
+
     async function removeFromWishlist(id) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
         if (!error) {
             wishlistData = wishlistData.filter(i => i.id !== id);
+            updateCount();
             renderWishlist();
+            showToast('Removed from wishlist', 'info');
         } else {
-            alert("Could not remove item. Try again.");
+            showToast('Could not remove item', 'error');
         }
     }
+
+    function confirmClearAll() {
+        if (clearAllPending) {
+            clearAllPending = false;
+            clearAllWishlist();
+            return;
+        }
+        clearAllPending = true;
+        const btn = document.querySelector('.clear-all-btn');
+        btn.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Tap again to confirm';
+        btn.style.background = '#fee2e2';
+        setTimeout(() => {
+            clearAllPending = false;
+            btn.innerHTML = '<i class="fas fa-trash-can"></i> Clear all';
+            btn.style.background = 'none';
+        }, 3000);
+    }
+
+    async function clearAllWishlist() {
+        const { error } = await supabaseClient.from("wishlist").delete().in(
+            "id", wishlistData.map(i => i.id)
+        );
+        if (!error) {
+            wishlistData = [];
+            updateCount();
+            renderWishlist();
+            showToast('Wishlist cleared', 'success');
+        } else {
+            showToast('Could not clear wishlist', 'error');
+        }
+        const btn = document.querySelector('.clear-all-btn');
+        btn.innerHTML = '<i class="fas fa-trash-can"></i> Clear all';
+        btn.style.background = 'none';
+    }
+
+    // ── THEME ──
+    function applySavedTheme() {
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark');
+            document.getElementById('themeIcon').className = 'fas fa-sun';
+        }
+    }
+    function toggleDarkMode() {
+        const dark = document.body.classList.toggle('dark');
+        localStorage.setItem('theme', dark ? 'dark' : 'light');
+        document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+    }
+
+    // ── TOAST ──
+    let toastTimer;
+    function showToast(msg, type) {
+        type = type || 'info';
+        const t = document.getElementById('toast');
+        const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+        t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${msg}</span>`;
+        t.className = 'toast show ' + type;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    // ── SCROLL TO TOP ──
+    window.addEventListener('scroll', () => {
+        document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
+    });
+
+    // ── KEYBOARD ──
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.remove-overlay.show').forEach(o => o.classList.remove('show'));
+        }
+    });
 
     window.onload = init;
 </script>
