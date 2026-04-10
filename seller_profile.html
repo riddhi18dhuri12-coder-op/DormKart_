@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --primary: #10b981;
@@ -14,156 +15,938 @@
             --text: #0f172a;
             --text-light: #64748b;
             --bg: #f8fafc;
+            --card-bg: #ffffff;
             --border: #e2e8f0;
             --danger: #ef4444;
+            --warning: #f59e0b;
+            --gold: #f59e0b;
+            --silver: #94a3b8;
+            --bronze: #d97706;
+            --trade: #7c3aed;
+            --trade-light: #ede9fe;
+        }
+        body.dark {
+            --text: #e8f0e8;
+            --text-light: #7a8c7a;
+            --bg: #0a0f0a;
+            --card-bg: #111811;
+            --border: #1e2a1e;
+            --trade-light: #2e1a4a;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 40px; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 40px; color: var(--text); transition: background 0.3s, color 0.3s; }
         .container { max-width: 600px; margin: auto; padding: 20px; }
 
-        .back-nav { padding: 10px 0; cursor: pointer; color: var(--primary); font-weight: 700; display: flex; align-items: center; gap: 5px; }
+        .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; }
+        .back-nav { cursor: pointer; color: var(--text); font-weight: 700; display: flex; align-items: center; gap: 8px; background: none; border: 1px solid var(--border); border-radius: 12px; padding: 8px 14px; font-size: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif; }
+        .back-nav:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
+        .top-actions { display: flex; gap: 8px; }
+        .icon-btn-sm {
+            width: 38px; height: 38px; border-radius: 12px;
+            border: 1px solid var(--border); background: var(--card-bg);
+            color: var(--text); font-size: 15px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s;
+        }
+        .icon-btn-sm:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
 
-        .card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-align: center; position: relative; }
+        /* ── PROFILE CARD ── */
+        .card { background: var(--card-bg); border-radius: 20px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; overflow: hidden; transition: background 0.3s, border 0.3s; }
+        .card-banner { height: 90px; background: linear-gradient(135deg, #10b981, #059669); position: relative; overflow: hidden; }
+        .card-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .card-body { padding: 0 20px 24px; text-align: center; margin-top: -45px; position: relative; }
 
         /* Reputation Badge */
-        .rep-badge { position: absolute; top: 15px; right: 15px; background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; }
+        .rep-badge { position: absolute; top: 12px; right: 12px; padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 5px; z-index: 2; }
+        .rep-badge.legend { background: linear-gradient(135deg,#fef3c7,#fde68a); color: #92400e; }
+        .rep-badge.pro { background: linear-gradient(135deg,#d1fae5,#a7f3d0); color: #065f46; }
+        .rep-badge.new { background: #f1f5f9; color: var(--text-light); }
+        .rep-badge i { font-size: 11px; }
 
-        .s-avatar { width: 90px; height: 90px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; color: white; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); overflow: hidden; }
+        .s-avatar {
+            width: 90px; height: 90px; background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 50%; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center;
+            color: white; border: 4px solid var(--card-bg); box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            overflow: hidden; position: relative; font-size: 28px; font-weight: 800;
+            transition: transform 0.2s;
+        }
+        .s-avatar:hover { transform: scale(1.05); }
         .s-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .online-dot {
+            position: absolute; bottom: 4px; right: 4px; width: 14px; height: 14px;
+            border-radius: 50%; background: #22c55e; border: 3px solid var(--card-bg);
+        }
 
-        .s-name { font-size: 1.5rem; font-weight: 800; color: var(--text); margin: 0; }
-        .s-college { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
+        .s-name { font-size: 1.4rem; font-weight: 800; color: var(--text); margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .s-name .verified-sm { color: var(--primary-dark); font-size: 15px; }
+        .s-college { color: var(--text-light); font-size: 0.85rem; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .s-college i { font-size: 12px; }
+        .s-bio { font-size: 13px; color: var(--text-light); margin: 10px auto 0; max-width: 360px; line-height: 1.5; }
+        .member-since { font-size: 11px; color: var(--text-light); margin-top: 6px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .member-since i { font-size: 10px; }
+
+        .follow-row { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+        .follow-stats { display: flex; gap: 20px; justify-content: center; margin-top: 14px; }
+        .follow-stat { text-align: center; cursor: pointer; }
+        .follow-stat strong { display: block; font-size: 16px; font-weight: 800; }
+        .follow-stat span { font-size: 10px; color: var(--text-light); font-weight: 600; }
+
+        .btn-follow {
+            padding: 10px 28px; border-radius: 12px; font-weight: 700;
+            border: none; cursor: pointer; transition: all 0.2s; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;
+        }
+        .btn-follow.not-following { background: var(--primary-dark); color: white; box-shadow: 0 4px 14px rgba(5,150,105,0.3); }
+        .btn-follow.not-following:hover { background: #047857; }
+        .btn-follow.following { background: var(--bg); color: var(--text-light); border: 1px solid var(--border); }
+        .btn-follow:active { transform: scale(0.96); }
+        .btn-msg {
+            padding: 10px 20px; border-radius: 12px; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text);
+            cursor: pointer; transition: all 0.2s; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif;
+        }
+        .btn-msg:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
 
         /* Stats Grid */
         .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 20px; }
-        .stat-box { background: #f1f5f9; padding: 12px; border-radius: 12px; }
-        .stat-box strong { display: block; font-size: 1.1rem; color: var(--primary-dark); }
-        .stat-box label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--text-light); }
+        .stat-box { background: var(--bg); padding: 14px 10px; border-radius: 14px; border: 1px solid var(--border); transition: transform 0.2s; }
+        .stat-box:hover { transform: translateY(-2px); }
+        .stat-box .stat-icon { font-size: 18px; margin-bottom: 4px; }
+        .stat-box strong { display: block; font-size: 1.15rem; color: var(--primary-dark); font-weight: 800; }
+        .stat-box label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--text-light); letter-spacing: 0.03em; }
+
+        /* Extended Stats Row */
+        .stats-row-2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+        .stat-sm { background: var(--bg); padding: 10px 6px; border-radius: 12px; border: 1px solid var(--border); text-align: center; }
+        .stat-sm strong { display: block; font-size: 14px; font-weight: 800; color: var(--text); }
+        .stat-sm label { font-size: 8px; text-transform: uppercase; font-weight: 700; color: var(--text-light); }
+
+        /* ── SECTION TITLES ── */
+        .section-title { font-size: 1.1rem; font-weight: 700; margin: 10px 0 15px; text-align: left; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .section-title i { font-size: 16px; color: var(--primary-dark); }
+        .section-header { display: flex; justify-content: space-between; align-items: baseline; margin: 10px 0 15px; }
+        .section-header h3 { margin: 0; font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; color: var(--text); }
+        .section-header h3 i { font-size: 16px; color: var(--primary-dark); }
+        .see-all-btn { font-size: 12px; color: var(--primary-dark); font-weight: 700; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
+        .see-all-btn i { font-size: 10px; }
 
         /* Inventory Grid */
-        .section-title { font-size: 1.1rem; font-weight: 700; margin: 10px 0 15px; text-align: left; color: var(--text); }
+        .filter-bar { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .filter-chip {
+            padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700;
+            border: 1.5px solid var(--border); background: var(--card-bg); color: var(--text-light);
+            cursor: pointer; white-space: nowrap; transition: all 0.2s; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; gap: 4px;
+        }
+        .filter-chip.active { background: var(--primary-dark); border-color: var(--primary-dark); color: white; }
+        .filter-chip i { font-size: 10px; }
+
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .product-item { background: #fff; border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; text-align: left; }
-        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
-        
-        /* Safety/Action Buttons */
-        .safety-card { background: #fff1f2; border: 1px solid #fecdd3; padding: 15px; border-radius: 15px; text-align: left; }
-        .action-btn { width: 100%; padding: 12px; border: 1px solid #fecdd3; border-radius: 12px; background: white; color: var(--danger); font-weight: 700; cursor: pointer; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        @media (min-width: 500px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        .product-item { background: var(--card-bg); border-radius: 14px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; text-align: left; transition: transform 0.2s, box-shadow 0.2s; }
+        .product-item:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
+        .product-item .img-wrap { overflow: hidden; border-radius: 10px; position: relative; }
+        .product-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.3s; }
+        .product-item:hover img { transform: scale(1.04); }
+        .trade-badge-sm {
+            position: absolute; top: 6px; left: 6px; background: var(--trade);
+            color: white; font-size: 9px; font-weight: 700; padding: 2px 7px;
+            border-radius: 20px; display: flex; align-items: center; gap: 3px;
+        }
+        .trade-badge-sm i { font-size: 8px; }
+        .cond-badge-sm {
+            position: absolute; bottom: 6px; left: 6px; background: rgba(5,150,105,0.9);
+            color: white; font-size: 9px; font-weight: 600; padding: 2px 7px; border-radius: 20px;
+        }
+        .p-info { padding: 6px 2px 2px; }
+        .p-price { font-weight: 800; font-size: 15px; margin-top: 4px; }
+        .p-price .og-price { font-size: 11px; font-weight: 400; color: var(--text-light); text-decoration: line-through; margin-left: 4px; }
+        .p-title { font-size: 11px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+        .p-meta { font-size: 10px; color: var(--text-light); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
+        .p-meta i { font-size: 9px; }
+
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 36px 20px; color: var(--text-light); }
+        .empty-state i { font-size: 36px; margin-bottom: 10px; opacity: 0.4; display: block; }
+        .empty-state p { font-size: 14px; }
+
+        /* ── REVIEWS ── */
+        .reviews-summary { display: flex; align-items: center; gap: 20px; background: var(--bg); border-radius: 16px; padding: 18px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .avg-rating { text-align: center; }
+        .avg-rating .big-num { font-size: 36px; font-weight: 800; color: var(--text); line-height: 1; }
+        .avg-rating .big-stars { color: var(--gold); font-size: 14px; margin-top: 4px; }
+        .avg-rating .review-count { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+        .rating-bars { flex: 1; }
+        .rating-bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+        .rating-bar-row span { font-size: 11px; font-weight: 700; color: var(--text-light); width: 12px; }
+        .rating-bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 6px; overflow: hidden; }
+        .rating-bar-fill { height: 100%; border-radius: 6px; background: var(--gold); transition: width 0.5s ease; }
+        .rating-bar-row .bar-pct { font-size: 10px; color: var(--text-light); width: 20px; text-align: right; }
+
+        .review-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
+        .review-item:last-child { border-bottom: none; }
+        .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+        .review-avatar {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 12px; overflow: hidden;
+        }
+        .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .review-name { font-weight: 700; font-size: 13px; }
+        .review-date { font-size: 11px; color: var(--text-light); }
+        .review-stars { color: var(--gold); font-size: 12px; margin-bottom: 4px; }
+        .review-text { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+        .review-product-link { font-size: 11px; color: var(--primary-dark); font-weight: 600; margin-top: 4px; display: inline-flex; align-items: center; gap: 4px; cursor: pointer; }
+
+        .write-review-btn {
+            width: 100%; padding: 12px; border-radius: 14px; border: 1.5px dashed var(--border);
+            background: var(--bg); color: var(--text); font-weight: 700; font-size: 13px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-bottom: 14px; transition: all 0.2s; font-family: 'Inter', sans-serif;
+        }
+        .write-review-btn:hover { border-color: var(--primary-dark); color: var(--primary-dark); background: #f0fdf4; }
+
+        /* ── SAFETY / ACTION ── */
+        .safety-card { background: var(--card-bg); border: 1px solid var(--border); padding: 18px; border-radius: 16px; text-align: left; margin-bottom: 20px; }
+        .safety-card h4 { margin: 0 0 10px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .safety-card h4 i { color: var(--warning); }
+        .safety-tip { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-bottom: 12px; display: flex; gap: 8px; }
+        .safety-tip i { color: var(--primary-dark); margin-top: 2px; flex-shrink: 0; }
+        .action-btn {
+            width: 100%; padding: 11px; border: 1px solid var(--border); border-radius: 12px;
+            background: var(--card-bg); color: var(--text); font-weight: 700; cursor: pointer;
+            margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s; font-family: 'Inter', sans-serif; font-size: 13px;
+        }
+        .action-btn:hover { background: var(--bg); }
+        .action-btn.danger { color: var(--danger); border-color: #fecdd3; }
+        .action-btn.danger:hover { background: #fff1f2; }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+            z-index: 9999; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-sheet {
+            background: var(--card-bg); border-radius: 20px 20px 0 0; padding: 24px;
+            width: 100%; max-width: 600px; max-height: 85vh; overflow-y: auto;
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+        .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); transition: color 0.2s; }
+        .modal-close:hover { color: var(--text); }
+
+        /* Report reasons */
+        .report-reason {
+            display: flex; align-items: center; gap: 10px;
+            padding: 12px 14px; border: 1.5px solid var(--border);
+            border-radius: 12px; cursor: pointer; margin-bottom: 8px;
+            transition: all 0.2s; font-size: 14px; color: var(--text);
+        }
+        .report-reason:hover { border-color: var(--text-light); }
+        .report-reason.selected { border-color: var(--danger); background: #fff1f2; color: var(--danger); }
+        .report-reason i { font-size: 16px; width: 20px; text-align: center; }
+
+        /* Review form stars */
+        .star-select { display: flex; gap: 6px; margin: 12px 0; }
+        .star-select button {
+            background: none; border: none; font-size: 28px; color: var(--border);
+            cursor: pointer; transition: color 0.15s, transform 0.15s; padding: 0;
+        }
+        .star-select button:hover { transform: scale(1.15); }
+        .star-select button.active { color: var(--gold); }
+        .review-form-product {
+            padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 12px;
+            background: var(--bg); margin-bottom: 10px; font-size: 13px; color: var(--text);
+            display: flex; align-items: center; gap: 8px; cursor: pointer; transition: border-color 0.2s;
+        }
+        .review-form-product:hover { border-color: var(--primary-dark); }
+        .review-form-product.selected { border-color: var(--primary-dark); background: #f0fdf4; }
+        .review-form-product img { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; }
+
+        .review-textarea {
+            width: 100%; padding: 12px; border-radius: 12px; border: 1.5px solid var(--border);
+            background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif;
+            font-size: 14px; resize: vertical; outline: none; min-height: 80px; transition: border 0.2s;
+        }
+        .review-textarea:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); }
+        .btn-submit-review {
+            width: 100%; padding: 14px; border: none; border-radius: 14px;
+            background: var(--primary-dark); color: white; font-weight: 700;
+            font-size: 14px; cursor: pointer; margin-top: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: 'Inter', sans-serif; transition: opacity 0.2s, transform 0.2s;
+        }
+        .btn-submit-review:active { transform: scale(0.97); opacity: 0.9; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #0f172a; color: white; padding: 10px 20px; border-radius: 20px;
+            font-size: 13px; font-weight: 600; z-index: 99998; opacity: 0; transition: all 0.3s;
+            white-space: nowrap; display: flex; align-items: center; gap: 8px; max-width: 90vw; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast i { font-size: 15px; }
+        .toast.success i { color: #4ade80; }
+        .toast.error i { color: #f87171; }
+        .toast.info i { color: #60a5fa; }
+
+        /* Skeleton */
+        .skeleton { background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px; }
+        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <div class="back-nav" onclick="history.back()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
-        Back
-    </div>
-
-    <div class="card">
-        <div id="repBadge" class="rep-badge">New Trader</div>
-        <div class="s-avatar" id="avatarBox">S</div>
-        <h2 class="s-name" id="sellerName">Loading...</h2>
-        <p class="s-college" id="sellerCollege">-</p>
-        <p id="sellerBio" style="font-size: 13px; color: var(--text-light); margin: 10px 0;">No bio provided.</p>
-
-        <div class="stats-grid">
-            <div class="stat-box"><strong id="statSold">0</strong><label>Sold</label></div>
-            <div class="stat-box"><strong id="statRating">5.0</strong><label>Rating</label></div>
-            <div class="stat-box"><strong id="statViews">0</strong><label>Views</label></div>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <button class="back-nav" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <div class="top-actions">
+            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button class="icon-btn-sm" onclick="shareProfile()">
+                <i class="fas fa-share-nodes"></i>
+            </button>
         </div>
     </div>
 
-    <div class="section-title">Current Listings</div>
-    <div id="inventoryGrid" class="grid">
-        <p style="color: gray; font-size: 12px;">Fetching listings...</p>
+    <!-- Profile Card -->
+    <div class="card">
+        <div class="card-banner"></div>
+        <div class="card-body">
+            <div id="repBadge" class="rep-badge new"><i class="fas fa-seedling"></i> New Trader</div>
+            <div class="s-avatar" id="avatarBox">S</div>
+            <h2 class="s-name" id="sellerName">Loading...</h2>
+            <p class="s-college" id="sellerCollege"><i class="fas fa-location-dot"></i> -</p>
+            <p class="s-bio" id="sellerBio">No bio provided.</p>
+            <div class="member-since" id="memberSince"><i class="far fa-calendar"></i> Member since ...</div>
+
+            <div class="follow-row">
+                <button class="btn-follow not-following" id="followBtn" onclick="toggleFollow()"><i class="fas fa-user-plus"></i> Follow</button>
+                <button class="btn-msg" id="msgBtn" onclick="messageSeller()"><i class="fas fa-comment-dots"></i> Message</button>
+            </div>
+
+            <div class="follow-stats">
+                <div class="follow-stat"><strong id="followersCount">0</strong><span><i class="fas fa-users" style="font-size:9px;"></i> Followers</span></div>
+                <div class="follow-stat"><strong id="followingCount">0</strong><span><i class="fas fa-user-plus" style="font-size:9px;"></i> Following</span></div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box"><div class="stat-icon">🛒</div><strong id="statSold">0</strong><label>Sold</label></div>
+                <div class="stat-box"><div class="stat-icon">⭐</div><strong id="statRating">5.0</strong><label>Rating</label></div>
+                <div class="stat-box"><div class="stat-icon">👁️</div><strong id="statViews">0</strong><label>Views</label></div>
+            </div>
+            <div class="stats-row-2">
+                <div class="stat-sm"><strong id="statProducts">0</strong><label>Products</label></div>
+                <div class="stat-sm"><strong id="statTrades">0%</strong><label>Trade Rate</label></div>
+                <div class="stat-sm"><strong id="statResponse">100%</strong><label>Response</label></div>
+                <div class="stat-sm"><strong id="statReviews">0</strong><label>Reviews</label></div>
+            </div>
+        </div>
     </div>
 
-    <div class="section-title" style="margin-top: 30px;">Campus Safety</div>
-    <div class="safety-card">
-        <p style="font-size: 12px; color: #be123c; margin: 0; line-height: 1.4;">
-            <b>Protect yourself:</b> Always meet in busy campus areas. Avoid sharing private details until you are ready to trade.
-        </p>
-        <button class="action-btn" onclick="alert('User reported. Our team will review this profile.')">
-            🚩 Report User
+    <!-- Current Listings -->
+    <div class="section-header">
+        <h3><i class="fas fa-box-open"></i> Current Listings</h3>
+        <span class="see-all-btn" id="listingsCount"></span>
+    </div>
+    <div class="filter-bar" id="categoryFilterBar"></div>
+    <div id="inventoryGrid" class="grid">
+        <div style="grid-column:1/-1;"><div class="skeleton" style="height:180px;margin-bottom:8px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div>
+        <div style="grid-column:1/-1;"><div class="skeleton" style="height:180px;margin-bottom:8px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div class="card" style="text-align:left;">
+        <div class="section-header" style="margin-top:0;">
+            <h3><i class="fas fa-star"></i> Reviews</h3>
+        </div>
+        <div class="reviews-summary" id="reviewsSummary"></div>
+        <button class="write-review-btn" id="writeReviewBtn" onclick="openWriteReview()">
+            <i class="fas fa-pen"></i> Write a Review
         </button>
-        <button class="action-btn" onclick="alert('User blocked.')">
-            🚫 Block User
+        <div id="reviewsList"></div>
+    </div>
+
+    <!-- Campus Safety -->
+    <div class="safety-card">
+        <h4><i class="fas fa-shield-halved"></i> Campus Safety</h4>
+        <div class="safety-tip">
+            <i class="fas fa-circle-check"></i>
+            <span>Always meet in busy campus areas during daylight. Avoid sharing private details until you are ready to trade.</span>
+        </div>
+        <div class="safety-tip">
+            <i class="fas fa-circle-check"></i>
+            <span>Check the seller's reputation badge and reviews before proceeding with any transaction.</span>
+        </div>
+        <button class="action-btn danger" onclick="openReportModal()">
+            <i class="fas fa-flag"></i> Report User
+        </button>
+        <button class="action-btn danger" onclick="blockUser()">
+            <i class="fas fa-ban"></i> Block User
         </button>
     </div>
 </div>
 
+<!-- Report Modal -->
+<div class="modal-overlay" id="reportModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <button class="modal-close" onclick="closeModal('reportModal')"><i class="fas fa-xmark"></i></button>
+        <h3 style="margin:0 0 8px;display:flex;align-items:center;gap:8px;"><i class="fas fa-flag" style="color:var(--danger);"></i> Report User</h3>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:14px;">Why are you reporting this seller?</p>
+        <div id="reportReasons"></div>
+        <textarea id="reportDetails" class="review-textarea" rows="2" placeholder="Additional details (optional)" style="margin-top:8px;"></textarea>
+        <button class="btn-submit-review" style="background:var(--danger);" onclick="submitReport()"><i class="fas fa-paper-plane"></i> Submit Report</button>
+    </div>
+</div>
+
+<!-- Write Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <button class="modal-close" onclick="closeModal('reviewModal')"><i class="fas fa-xmark"></i></button>
+        <h3 style="margin:0 0 6px;display:flex;align-items:center;gap:8px;"><i class="fas fa-pen" style="color:var(--primary-dark);"></i> Write a Review</h3>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:6px;">for <strong id="reviewSellerName">this seller</strong></p>
+
+        <p style="font-size:12px;font-weight:700;color:var(--text-light);margin:12px 0 4px;">Select a product you bought</p>
+        <div id="boughtProductsList"></div>
+
+        <p style="font-size:12px;font-weight:700;color:var(--text-light);margin:10px 0 0;">Your rating</p>
+        <div class="star-select" id="starSelect">
+            <button type="button" data-star="1" onclick="setRating(1)"><i class="fas fa-star"></i></button>
+            <button type="button" data-star="2" onclick="setRating(2)"><i class="fas fa-star"></i></button>
+            <button type="button" data-star="3" onclick="setRating(3)"><i class="fas fa-star"></i></button>
+            <button type="button" data-star="4" onclick="setRating(4)"><i class="fas fa-star"></i></button>
+            <button type="button" data-star="5" onclick="setRating(5)"><i class="fas fa-star"></i></button>
+        </div>
+
+        <p style="font-size:12px;font-weight:700;color:var(--text-light);margin:6px 0 0;">Your review</p>
+        <textarea id="reviewComment" class="review-textarea" rows="3" placeholder="Share your experience with this seller..."></textarea>
+        <button class="btn-submit-review" onclick="submitReview()"><i class="fas fa-check"></i> Submit Review</button>
+    </div>
+</div>
+
+<!-- Followers Modal -->
+<div class="modal-overlay" id="followersModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <button class="modal-close" onclick="closeModal('followersModal')"><i class="fas fa-xmark"></i></button>
+        <h3 id="followersModalTitle" style="margin:0 0 16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-users"></i> Followers</h3>
+        <div id="followersModalList"></div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i></i><span></span></div>
+
 <script>
-    window.onload = async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const sellerId = urlParams.get('id'); // Get ID from URL
-        
-        if (sellerId) {
-            fetchSellerProfile(sellerId);
-            fetchSellerInventory(sellerId);
-        } else {
-            alert("No seller found.");
-            history.back();
-        }
-    };
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let sellerId = null;
+let sellerData = null;
+let session = null;
+let selectedReportReason = null;
+let reviewRating = 0;
+let selectedProductId = null;
+let allListings = [];
+let allReviews = [];
+let boughtProducts = [];
+let isFollowing = false;
 
-    async function fetchSellerProfile(uid) {
-        const { data: user, error } = await supabaseClient
-            .from('users')
-            .select('*')
-            .eq('id', uid)
-            .single();
+const REPORT_REASONS = [
+    { id: 'scam', icon: 'fa-mask', label: 'Suspected scam or fraud' },
+    { id: 'fake', icon: 'fa-user-xmark', label: 'Fake profile or identity' },
+    { id: 'inappropriate', icon: 'fa-ban', label: 'Inappropriate content or behavior' },
+    { id: 'no_show', icon: 'fa-ghost', label: 'Never showed up for meetup' },
+    { id: 'spam', icon: 'fa-envelope-circle-xmark', label: 'Spam or repeated messages' },
+    { id: 'other', icon: 'fa-ellipsis', label: 'Other reason' },
+];
 
-        if (error || !user) return;
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+window.onload = async () => {
+    applySavedTheme();
+    const { data: { session: s } } = await supabaseClient.auth.getSession();
+    if (!s) return location.href = 'login-signup.html';
+    session = s;
 
-        document.getElementById('sellerName').innerText = user.name || "Verified Seller";
-        document.getElementById('sellerCollege').innerText = user.college || "Campus Member";
-        document.getElementById('sellerBio').innerText = user.bio || "Student at " + user.college;
-        
-        // Stats
-        document.getElementById('statSold').innerText = user.items_sold || 0;
-        document.getElementById('statRating').innerText = user.rating || "5.0";
-        
-        // Reputation
-        const score = user.reputation_score || 0;
-        document.getElementById('repBadge').innerText = score > 100 ? "Campus Legend" : (score > 50 ? "Pro Trader" : "New Trader");
+    const urlParams = new URLSearchParams(window.location.search);
+    sellerId = urlParams.get('id');
+    if (!sellerId) { showToast('No seller found', 'error'); history.back(); return; }
 
-        if (user.avatar_url) {
-            document.getElementById('avatarBox').innerHTML = `<img src="${user.avatar_url}">`;
-        } else {
-            document.getElementById('avatarBox').innerText = user.name ? user.name.charAt(0) : "S";
-        }
-
-        // Fetch Total Views for stats
-        const { data: prods } = await supabaseClient.from('products').select('views').eq('seller_id', uid);
-        const totalViews = prods ? prods.reduce((acc, curr) => acc + (curr.views || 0), 0) : 0;
-        document.getElementById('statViews').innerText = totalViews;
+    if (sellerId === session.user.id) {
+        location.href = 'profile.html';
+        return;
     }
 
-    async function fetchSellerInventory(uid) {
-        const { data: items, error } = await supabaseClient
-            .from('products')
-            .select('*')
-            .eq('seller_id', uid)
-            .eq('status', 'active');
+    fetchSellerProfile(sellerId);
+    fetchSellerInventory(sellerId);
+    fetchReviews(sellerId);
+    fetchFollowStatus();
+    fetchFollowCounts();
+    fetchBoughtProducts(sellerId);
+};
 
-        const grid = document.getElementById('inventoryGrid');
-        if (error || !items || items.length === 0) {
-            grid.innerHTML = `<p style="color:gray; font-size:12px; grid-column: span 2;">No active listings found.</p>`;
-            return;
-        }
+// ══════════════════════════════════════════
+//  SELLER PROFILE
+// ══════════════════════════════════════════
+async function fetchSellerProfile(uid) {
+    const { data: user, error } = await supabaseClient.from('users').select('*').eq('id', uid).single();
+    if (error || !user) return;
+    sellerData = user;
 
-        grid.innerHTML = items.map(p => {
-            const img = p.image_url ? p.image_url.split(',')[0] : "placeholder.png";
-            return `
-                <div class="product-item" onclick="location.href='product_detail.html?id=${p.id}'">
-                    <img src="${img}">
-                    <div style="font-weight:700; margin-top:8px; font-size:14px;">₹${p.price}</div>
-                    <div style="font-size:11px; color:gray; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.title}</div>
+    document.getElementById('sellerName').innerHTML = (user.name || 'Seller') + (user.is_verified ? ' <i class="fas fa-circle-check verified-sm" title="Verified"></i>' : '');
+    document.getElementById('sellerCollege').innerHTML = `<i class="fas fa-location-dot"></i> ${user.college || 'Campus Member'}`;
+    document.getElementById('sellerBio').innerText = user.bio || 'No bio provided.';
+    document.getElementById('reviewSellerName').innerText = user.name || 'this seller';
+
+    // Member since
+    if (user.created_at) {
+        const d = new Date(user.created_at);
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        document.getElementById('memberSince').innerHTML = `<i class="far fa-calendar"></i> Member since ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    // Stats
+    document.getElementById('statSold').innerText = user.items_sold || 0;
+    document.getElementById('statRating').innerText = (user.rating || 5.0).toFixed(1);
+    document.getElementById('statProducts').innerText = user.total_products || 0;
+    document.getElementById('statTrades').innerText = (user.trade_success_rate || 0) + '%';
+    document.getElementById('statResponse').innerText = (user.response_rate || 100) + '%';
+
+    // Reputation badge
+    const score = user.reputation_score || 0;
+    const badge = document.getElementById('repBadge');
+    if (score > 100) { badge.className = 'rep-badge legend'; badge.innerHTML = '<i class="fas fa-crown"></i> Campus Legend'; }
+    else if (score > 50) { badge.className = 'rep-badge pro'; badge.innerHTML = '<i class="fas fa-circle-check"></i> Pro Trader'; }
+    else { badge.className = 'rep-badge new'; badge.innerHTML = '<i class="fas fa-seedling"></i> New Trader'; }
+
+    // Avatar
+    if (user.avatar_url) {
+        document.getElementById('avatarBox').innerHTML = `<img src="${user.avatar_url}"><div class="online-dot"></div>`;
+    } else {
+        document.getElementById('avatarBox').innerHTML = `${user.name ? user.name.charAt(0).toUpperCase() : 'S'}<div class="online-dot"></div>`;
+    }
+
+    // Total views
+    const { data: prods } = await supabaseClient.from('products').select('views').eq('seller_id', uid);
+    const totalViews = prods ? prods.reduce((a, c) => a + (c.views || 0), 0) : 0;
+    document.getElementById('statViews').innerText = totalViews.toLocaleString();
+}
+
+// ══════════════════════════════════════════
+//  SELLER INVENTORY
+// ══════════════════════════════════════════
+async function fetchSellerInventory(uid) {
+    const { data: items, error } = await supabaseClient.from('products').select('*').eq('seller_id', uid).eq('status', 'active');
+    const grid = document.getElementById('inventoryGrid');
+
+    if (error || !items || !items.length) {
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i><p>No active listings found</p></div>`;
+        document.getElementById('listingsCount').innerText = '';
+        return;
+    }
+
+    allListings = items;
+    document.getElementById('listingsCount').innerText = items.length + ' items';
+
+    // Build category filter chips
+    const categories = [...new Set(items.map(p => p.category).filter(Boolean))];
+    const filterBar = document.getElementById('categoryFilterBar');
+    filterBar.innerHTML = `<span class="filter-chip active" onclick="filterListings('all', this)"><i class="fas fa-border-all"></i> All</span>`;
+    categories.forEach(cat => {
+        const icons = { 'Electronics': 'fa-microchip', 'Books': 'fa-book', 'Dorm Essentials': 'fa-couch', 'Fashion': 'fa-shirt', 'Stationery': 'fa-pen', 'Gaming': 'fa-gamepad' };
+        filterBar.innerHTML += `<span class="filter-chip" onclick="filterListings('${cat}', this)"><i class="fas ${icons[cat] || 'fa-tag'}"></i> ${cat}</span>`;
+    });
+
+    renderListings(items);
+}
+
+function renderListings(items) {
+    const grid = document.getElementById('inventoryGrid');
+    if (!items.length) {
+        grid.innerHTML = `<div class="empty-state"><i class="fas fa-filter"></i><p>No items in this category</p></div>`;
+        return;
+    }
+    grid.innerHTML = items.map(p => {
+        const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+        const isTrade = Boolean(p.swap_enabled);
+        return `
+        <div class="product-item" onclick="location.href='product_detail.html?id=${p.id}'">
+            <div class="img-wrap">
+                ${isTrade ? '<div class="trade-badge-sm"><i class="fas fa-arrows-rotate"></i> Trade</div>' : ''}
+                ${p.condition ? `<div class="cond-badge-sm">${p.condition}</div>` : ''}
+                <img src="${img}" loading="lazy" onerror="this.src='placeholder.png'">
+            </div>
+            <div class="p-info">
+                <div class="p-price">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}</div>
+                <div class="p-title">${p.title}</div>
+                <div class="p-meta"><i class="fas fa-eye"></i> ${p.views || 0} views</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function filterListings(cat, el) {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderListings(cat === 'all' ? allListings : allListings.filter(p => p.category === cat));
+}
+
+// ══════════════════════════════════════════
+//  REVIEWS
+// ══════════════════════════════════════════
+async function fetchReviews(sellerId) {
+    const { data, error } = await supabaseClient
+        .from('reviews')
+        .select('*, buyer:users!buyer_id(id, name, avatar_url), product:products!product_id(id, title, image_url)')
+        .eq('seller_id', sellerId)
+        .order('created_at', { ascending: false });
+
+    allReviews = data || [];
+    renderReviewsSummary();
+    renderReviewsList();
+}
+
+function renderReviewsSummary() {
+    const container = document.getElementById('reviewsSummary');
+    const count = allReviews.length;
+    const avg = count > 0 ? (allReviews.reduce((s, r) => s + (r.rating || 0), 0) / count) : 0;
+
+    // Distribution
+    const dist = [0, 0, 0, 0, 0];
+    allReviews.forEach(r => { if (r.rating >= 1 && r.rating <= 5) dist[r.rating - 1]++; });
+
+    const starsHtml = allReviews.length > 0
+        ? '<i class="fas fa-star"></i>'.repeat(Math.round(avg)) + '<i class="far fa-star"></i>'.repeat(5 - Math.round(avg))
+        : '<i class="far fa-star"></i>'.repeat(5);
+
+    container.innerHTML = `
+        <div class="avg-rating">
+            <div class="big-num">${avg.toFixed(1)}</div>
+            <div class="big-stars">${starsHtml}</div>
+            <div class="review-count">${count} review${count !== 1 ? 's' : ''}</div>
+        </div>
+        <div class="rating-bars">
+            ${[5,4,3,2,1].map(n => {
+                const pct = count > 0 ? Math.round((dist[n-1] / count) * 100) : 0;
+                return `<div class="rating-bar-row">
+                    <span>${n}</span>
+                    <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${pct}%"></div></div>
+                    <span class="bar-pct">${dist[n-1]}</span>
+                </div>`;
+            }).join('')}
+        </div>`;
+
+    document.getElementById('statReviews').innerText = count;
+}
+
+function renderReviewsList() {
+    const container = document.getElementById('reviewsList');
+    if (!allReviews.length) {
+        container.innerHTML = `<div style="text-align:center;padding:20px 0;color:var(--text-light);font-size:13px;"><i class="far fa-comment-dots" style="font-size:28px;opacity:0.4;display:block;margin-bottom:8px;"></i>No reviews yet</div>`;
+        return;
+    }
+    container.innerHTML = allReviews.slice(0, 5).map(r => {
+        const initials = (r.buyer?.name || 'U').charAt(0).toUpperCase();
+        const stars = '<i class="fas fa-star"></i>'.repeat(r.rating || 0) + '<i class="far fa-star"></i>'.repeat(5 - (r.rating || 0));
+        const timeAgo = getTimeAgo(r.created_at);
+        const prodImg = r.product?.image_url ? r.product.image_url.split(',')[0] : '';
+        return `
+        <div class="review-item">
+            <div class="review-header">
+                <div class="review-avatar">${r.buyer?.avatar_url ? `<img src="${r.buyer.avatar_url}">` : initials}</div>
+                <div>
+                    <div class="review-name">${r.buyer?.name || 'Buyer'}</div>
+                    <div class="review-date">${timeAgo}</div>
                 </div>
-            `;
-        }).join('');
-    }
-</script>
+            </div>
+            <div class="review-stars">${stars}</div>
+            <div class="review-text">${r.comment || 'No comment left.'}</div>
+            ${r.product ? `<div class="review-product-link" onclick="event.stopPropagation();location.href='product_detail.html?id=${r.product.id}'"><i class="fas fa-arrow-up-right-from-square"></i> ${r.product.title}</div>` : ''}
+        </div>`;
+    }).join('');
+}
 
+function getTimeAgo(dateStr) {
+    if (!dateStr) return '';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return days + 'd ago';
+    return Math.floor(days / 30) + 'mo ago';
+}
+
+// ══════════════════════════════════════════
+//  WRITE REVIEW
+// ══════════════════════════════════════════
+async function fetchBoughtProducts(sellerId) {
+    const { data } = await supabaseClient
+        .from('orders')
+        .select('id, product_id, product:products(id, title, image_url, price)')
+        .eq('buyer_id', session.user.id)
+        .eq('seller_id', sellerId)
+        .eq('payment_status', 'paid');
+
+    boughtProducts = (data || []).filter(o => o.product).map(o => o.product);
+
+    // Hide write review button if no bought products
+    if (!boughtProducts.length) {
+        document.getElementById('writeReviewBtn').style.display = 'none';
+    }
+}
+
+function openWriteReview() {
+    if (!boughtProducts.length) { showToast('You need to buy from this seller first', 'info'); return; }
+
+    reviewRating = 0;
+    selectedProductId = null;
+    document.querySelectorAll('#starSelect button').forEach(b => b.classList.remove('active'));
+    document.getElementById('reviewComment').value = '';
+
+    const container = document.getElementById('boughtProductsList');
+    container.innerHTML = boughtProducts.map(p => {
+        const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
+        return `
+        <div class="review-form-product" id="rprod-${p.id}" onclick="selectReviewProduct('${p.id}', '${p.id}')">
+            <img src="${img}" onerror="this.src='placeholder.png'">
+            <div>
+                <div style="font-weight:700;font-size:13px;">${p.title}</div>
+                <div style="font-size:11px;color:var(--text-light);">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}</div>
+            </div>
+        </div>`;
+    }).join('');
+
+    openModal('reviewModal');
+}
+
+function selectReviewProduct(pid) {
+    selectedProductId = pid;
+    document.querySelectorAll('.review-form-product').forEach(el => el.classList.remove('selected'));
+    document.getElementById('rprod-' + pid).classList.add('selected');
+}
+
+function setRating(n) {
+    reviewRating = n;
+    document.querySelectorAll('#starSelect button').forEach(b => {
+        b.classList.toggle('active', parseInt(b.dataset.star) <= n);
+    });
+}
+
+async function submitReview() {
+    if (!selectedProductId) { showToast('Please select a product', 'error'); return; }
+    if (!reviewRating) { showToast('Please select a rating', 'error'); return; }
+
+    const comment = document.getElementById('reviewComment').value.trim();
+
+    const { error } = await supabaseClient.from('reviews').insert({
+        seller_id: sellerId,
+        buyer_id: session.user.id,
+        product_id: selectedProductId,
+        rating: reviewRating,
+        comment: comment
+    });
+
+    if (error) {
+        showToast('Failed to submit review', 'error');
+    } else {
+        showToast('Review submitted!', 'success');
+        closeModal('reviewModal');
+        fetchReviews(sellerId);
+        fetchSellerProfile(sellerId); // refresh rating
+    }
+}
+
+// ══════════════════════════════════════════
+//  FOLLOW
+// ══════════════════════════════════════════
+async function fetchFollowStatus() {
+    const { data } = await supabaseClient.from('follows').select('follower_id').eq('follower_id', session.user.id).eq('following_id', sellerId).single();
+    isFollowing = !!data;
+    updateFollowBtn();
+}
+
+function updateFollowBtn() {
+    const btn = document.getElementById('followBtn');
+    if (isFollowing) {
+        btn.className = 'btn-follow following';
+        btn.innerHTML = '<i class="fas fa-user-check"></i> Following';
+    } else {
+        btn.className = 'btn-follow not-following';
+        btn.innerHTML = '<i class="fas fa-user-plus"></i> Follow';
+    }
+}
+
+async function toggleFollow() {
+    if (isFollowing) {
+        await supabaseClient.from('follows').delete().eq('follower_id', session.user.id).eq('following_id', sellerId);
+        showToast('Unfollowed', 'info');
+    } else {
+        await supabaseClient.from('follows').insert({ follower_id: session.user.id, following_id: sellerId });
+        showToast('Following!', 'success');
+    }
+    isFollowing = !isFollowing;
+    updateFollowBtn();
+    fetchFollowCounts();
+}
+
+async function fetchFollowCounts() {
+    const [{ count: frs }, { count: fng }] = await Promise.all([
+        supabaseClient.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', sellerId),
+        supabaseClient.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', sellerId)
+    ]);
+    document.getElementById('followersCount').innerText = frs || 0;
+    document.getElementById('followingCount').innerText = fng || 0;
+}
+
+async function openFollowersModal(type) {
+    const modal = document.getElementById('followersModal');
+    document.getElementById('followersModalTitle').innerHTML = type === 'followers' ? '<i class="fas fa-users"></i> Followers' : '<i class="fas fa-user-plus"></i> Following';
+    const list = document.getElementById('followersModalList');
+    list.innerHTML = '<p style="color:var(--text-light);font-size:13px;display:flex;align-items:center;gap:6px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
+    modal.classList.add('open');
+
+    const query = type === 'followers'
+        ? supabaseClient.from('follows').select('follower:users!follower_id(id,name,avatar_url,college)').eq('following_id', sellerId)
+        : supabaseClient.from('follows').select('following:users!following_id(id,name,avatar_url,college)').eq('follower_id', sellerId);
+
+    const { data } = await query;
+    if (!data || !data.length) { list.innerHTML = `<div style="text-align:center;padding:24px 0;color:var(--text-light);font-size:13px;"><i class="fas fa-users" style="font-size:28px;opacity:0.4;display:block;margin-bottom:8px;"></i>No ${type} yet</div>`; return; }
+
+    list.innerHTML = data.map(row => {
+        const u = type === 'followers' ? row.follower : row.following;
+        if (!u) return '';
+        const initials = (u.name || 'U').charAt(0).toUpperCase();
+        return `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="location.href='seller_profile.html?id=${u.id}'">
+            <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;flex-shrink:0;overflow:hidden;">${u.avatar_url ? `<img src="${u.avatar_url}" style="width:100%;height:100%;object-fit:cover;">` : initials}</div>
+            <div>
+                <div style="font-weight:700;font-size:13px;">${u.name || 'User'}</div>
+                <div style="font-size:11px;color:var(--text-light);"><i class="fas fa-location-dot" style="font-size:9px;"></i> ${u.college || ''}</div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ══════════════════════════════════════════
+//  REPORT
+// ══════════════════════════════════════════
+function openReportModal() {
+    selectedReportReason = null;
+    document.getElementById('reportDetails').value = '';
+    document.getElementById('reportReasons').innerHTML = REPORT_REASONS.map(r =>
+        `<div class="report-reason" onclick="selectReportReason('${r.id}', this)"><i class="fas ${r.icon}"></i> ${r.label}</div>`
+    ).join('');
+    openModal('reportModal');
+}
+
+function selectReportReason(id, el) {
+    selectedReportReason = id;
+    document.querySelectorAll('.report-reason').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+}
+
+async function submitReport() {
+    if (!selectedReportReason) { showToast('Please select a reason', 'error'); return; }
+    const details = document.getElementById('reportDetails').value.trim();
+
+    const { error } = await supabaseClient.from('reports').insert({
+        reporter_id: session.user.id,
+        reported_id: sellerId,
+        reason: selectedReportReason
+    });
+
+    if (error) { showToast('Failed to submit report', 'error'); }
+    else { showToast('Report submitted. We\'ll review it.', 'success'); closeModal('reportModal'); }
+}
+
+// ══════════════════════════════════════════
+//  BLOCK
+// ══════════════════════════════════════════
+async function blockUser() {
+    if (!confirm('Block this seller? They won\'t be able to message you.')) return;
+    try {
+        await supabaseClient.from('blocked_users').insert({ blocker_id: session.user.id, blocked_id: sellerId });
+        showToast('User blocked', 'success');
+    } catch(e) {
+        showToast('Could not block (may already be blocked)', 'info');
+    }
+}
+
+// ══════════════════════════════════════════
+//  MESSAGE SELLER
+// ══════════════════════════════════════════
+function messageSeller() {
+    location.href = `chats.html?id=${sellerId}`;
+}
+
+// ══════════════════════════════════════════
+//  SHARE
+// ══════════════════════════════════════════
+function shareProfile() {
+    const url = window.location.href;
+    if (navigator.share) {
+        navigator.share({ title: 'Check out this seller on DormKart', url }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => showToast('Link copied!', 'success')).catch(() => showToast('Could not copy', 'error'));
+    }
+}
+
+// ══════════════════════════════════════════
+//  MODAL HELPERS
+// ══════════════════════════════════════════
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => { o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); }); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open')); });
+
+// ══════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════
+function applySavedTheme() {
+    if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
+}
+function toggleDarkMode() {
+    const dark = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+// ══════════════════════════════════════════
+//  TOAST
+// ══════════════════════════════════════════
+let toastTimer;
+function showToast(msg, type) {
+    type = type || 'info';
+    const t = document.getElementById('toast');
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+    t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${msg}</span>`;
+    t.className = 'toast show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
 </body>
 </html>
