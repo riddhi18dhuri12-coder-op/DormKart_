@@ -22,7 +22,6 @@
             --danger: #ef4444;
             --trade: #7c3aed;
             --trade-light: #ede9fe;
-            --warning: #f59e0b;
         }
         body.dark {
             --text: #e8f0e8;
@@ -59,7 +58,6 @@
         }
 
         .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
-        
         .back-btn { 
             background: rgba(255,255,255,0.2); border: none; 
             border-radius: 12px; padding: 8px; cursor: pointer; color: white;
@@ -67,7 +65,6 @@
             width: 38px; height: 38px; transition: background 0.2s;
         }
         .back-btn:hover { background: rgba(255,255,255,0.3); }
-
         .header-actions { display: flex; gap: 8px; }
         .icon-btn-sm {
             width: 38px; height: 38px; border-radius: 12px;
@@ -77,7 +74,6 @@
             transition: background 0.2s;
         }
         .icon-btn-sm:hover { background: rgba(255,255,255,0.35); }
-
         .view-toggle-btn {
             background: white; border: none; color: var(--primary-dark);
             padding: 8px 14px; border-radius: 10px; font-size: 12px;
@@ -86,7 +82,6 @@
             transition: transform 0.15s;
         }
         .view-toggle-btn:active { transform: scale(0.95); }
-
         .header-content { position: relative; z-index: 1; }
         .header-content h1 { margin: 20px 0 0; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 10px; }
         .header-content h1 .wish-count {
@@ -129,13 +124,6 @@
         }
         .filter-btn.active { background: var(--primary-dark); border-color: var(--primary-dark); color: white; }
         .filter-btn i { font-size: 11px; }
-        .filter-select {
-            padding: 7px 12px; border: 1.5px solid var(--border);
-            border-radius: 30px; background: var(--card-bg);
-            color: var(--text); font-size: 12px; font-weight: 600;
-            cursor: pointer; outline: none; font-family: 'Inter', sans-serif;
-            white-space: nowrap;
-        }
 
         .result-info {
             padding: 10px 20px 0; font-size: 12px; color: var(--text-light);
@@ -167,6 +155,16 @@
             border-radius: 20px; display: flex; align-items: center; gap: 3px;
         }
         .trade-badge-sm i { font-size: 8px; }
+        .cond-badge-sm {
+            position: absolute; bottom: 8px; left: 8px; background: rgba(5,150,105,0.9);
+            color: white; font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
+        }
+        .status-badge-sold {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 14px; letter-spacing: 0.05em;
+        }
 
         .heart-btn {
             position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9);
@@ -180,10 +178,10 @@
 
         .item-details { padding: 4px 2px 0; }
         .price { font-weight: 800; font-size: 17px; margin-top: 4px; color: var(--text); }
-        .price .og-price { font-size: 12px; font-weight: 400; color: var(--text-light); text-decoration: line-through; margin-left: 5px; }
         .title { font-size: 12px; color: var(--text-light); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .item-meta { font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
         .item-meta i { font-size: 10px; }
+        .item-meta .sold-label { color: var(--danger); font-weight: 700; }
 
         .btn-group { display: flex; gap: 6px; margin-top: 8px; }
         .view-prod-btn {
@@ -197,7 +195,7 @@
         .btn-seller { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
         .btn-seller:hover { background: #047857; color: white; border-color: #047857; }
 
-        /* ── LIST VIEW OVERRIDES ── */
+        /* List view */
         .grid.list-view .product-item { display: flex; align-items: center; gap: 14px; padding: 12px; }
         .grid.list-view .img-wrap { width: 90px; height: 90px; flex-shrink: 0; border-radius: 12px; }
         .grid.list-view .img-wrap img { width: 100%; height: 100%; aspect-ratio: auto; }
@@ -205,9 +203,8 @@
         .grid.list-view .heart-btn i { font-size: 13px; }
         .grid.list-view .item-details { flex: 1; min-width: 0; }
         .grid.list-view .title { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .grid.list-view .btn-group { margin-top: 6px; }
 
-        /* ── SKELETON ── */
+        /* Skeleton */
         .skeleton {
             background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
             background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px;
@@ -216,10 +213,8 @@
         .skel-img { aspect-ratio: 1/1; }
         @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
 
-        /* ── EMPTY STATE ── */
-        .empty-state {
-            grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-light);
-        }
+        /* Empty */
+        .empty-state { grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-light); }
         .empty-state i { font-size: 48px; margin-bottom: 14px; opacity: 0.4; display: block; }
         .empty-state p { font-size: 15px; margin-bottom: 6px; }
         .empty-state .empty-sub { font-size: 13px; opacity: 0.7; }
@@ -231,7 +226,7 @@
         }
         .empty-state .empty-action:active { transform: scale(0.96); }
 
-        /* ── REMOVE CONFIRM ── */
+        /* Remove overlay */
         .remove-overlay {
             position: absolute; inset: 0; background: rgba(0,0,0,0.6);
             border-radius: 18px; display: none; align-items: center;
@@ -249,11 +244,8 @@
         .remove-confirm-btn.yes { background: var(--danger); color: white; }
         .remove-confirm-btn.no { background: white; color: var(--text); }
 
-        /* ── CLEAR ALL BAR ── */
-        .clear-bar {
-            display: flex; justify-content: flex-end; padding: 0 20px;
-            margin-bottom: 4px;
-        }
+        /* Clear bar */
+        .clear-bar { display: flex; justify-content: flex-end; padding: 0 20px; margin-bottom: 4px; }
         .clear-all-btn {
             background: none; border: none; color: var(--danger);
             font-size: 12px; font-weight: 700; cursor: pointer;
@@ -262,7 +254,7 @@
         }
         .clear-all-btn:hover { background: #fee2e2; }
 
-        /* ── TOAST ── */
+        /* Toast */
         .toast {
             position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%;
             transform: translateX(-50%) translateY(20px);
@@ -278,7 +270,7 @@
         .toast.error i { color: #f87171; }
         .toast.info i { color: #60a5fa; }
 
-        /* ── SCROLL TO TOP ── */
+        /* Scroll top */
         .scroll-top-btn {
             position: fixed; bottom: calc(var(--nav-height) + 16px); right: 16px;
             width: 44px; height: 44px; border-radius: 50%;
@@ -337,6 +329,7 @@
     <button class="filter-btn" data-sort="low" onclick="setSort('low', this)"><i class="fas fa-arrow-up-short-wide"></i> Price Low</button>
     <button class="filter-btn" data-sort="high" onclick="setSort('high', this)"><i class="fas fa-arrow-down-wide-short"></i> Price High</button>
     <button class="filter-btn" data-sort="trade" onclick="setSort('trade', this)"><i class="fas fa-arrows-rotate"></i> Trades</button>
+    <button class="filter-btn" data-sort="available" onclick="setSort('available', this)"><i class="fas fa-check-circle"></i> Available</button>
 </div>
 
 <div class="result-info" id="resultInfo" style="display:none;">
@@ -394,31 +387,48 @@
         applySavedTheme();
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = 'login-signup.html';
-        
-    const { data, error } = await supabaseClient
-        .from("wishlist")
-        .select(`
-            id, 
-            created_at,
-            product:products!product_id(
-                id, 
-                title, 
-                price, 
-                original_price, 
-                image_url, 
-                seller_id, 
-                swap_enabled, 
-                category,
-                seller:users(id, name, college)
-            )
-        `)
-        .eq("user_id", session.user.id)
-        .order("created_at", { ascending: false });
 
-    if (error) {
-        console.error("Supabase Error:", error.message);
-        showToast('Error loading wishlist', 'error');
-        return;
+        // ── FIX: Only select columns that exist in the products table ──
+        // products table has: id, seller_id, title, description, price, category,
+        // image_url, created_at, condition, views, likes, status,
+        // allow_swap, swap_with, swap_enabled, swap_item
+        // NO "original_price" column exists — that was breaking the join
+
+        const { data, error } = await supabaseClient
+            .from("wishlist")
+            .select(`
+                id,
+                created_at,
+                product:products(
+                    id,
+                    title,
+                    price,
+                    category,
+                    image_url,
+                    condition,
+                    status,
+                    swap_enabled,
+                    seller_id,
+                    created_at,
+                    seller:users(
+                        id,
+                        name,
+                        college
+                    )
+                )
+            `)
+            .eq("user_id", session.user.id)
+            .order("created_at", { ascending: false });
+
+        if (error) {
+            console.error("Wishlist fetch error:", error);
+            showToast('Error loading wishlist', 'error');
+        }
+
+        // Filter out any items where product join failed (null product)
+        wishlistData = (data || []).filter(item => item.product);
+        updateCount();
+        renderWishlist();
     }
 
     function updateCount() {
@@ -445,16 +455,20 @@
 
     function getFilteredData() {
         const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-        let filtered = wishlistData.filter(item =>
-            item.product.title.toLowerCase().includes(searchTerm) ||
-            (item.product.category || '').toLowerCase().includes(searchTerm) ||
-            (item.product.seller?.name || '').toLowerCase().includes(searchTerm)
-        );
+        let filtered = wishlistData.filter(item => {
+            const p = item.product;
+            return p.title.toLowerCase().includes(searchTerm) ||
+                   (p.category || '').toLowerCase().includes(searchTerm) ||
+                   (p.seller?.name || '').toLowerCase().includes(searchTerm);
+        });
 
-        if (currentSort === 'low') filtered.sort((a, b) => (a.product.price || 0) - (b.product.price || 0));
-        if (currentSort === 'high') filtered.sort((a, b) => (b.product.price || 0) - (a.product.price || 0));
-        if (currentSort === 'newest') filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        if (currentSort === 'trade') filtered = filtered.filter(item => Boolean(item.product.swap_enabled));
+        switch (currentSort) {
+            case 'low':    filtered.sort((a, b) => (a.product.price || 0) - (b.product.price || 0)); break;
+            case 'high':   filtered.sort((a, b) => (b.product.price || 0) - (a.product.price || 0)); break;
+            case 'newest': filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); break;
+            case 'trade':  filtered = filtered.filter(item => Boolean(item.product.swap_enabled)); break;
+            case 'available': filtered = filtered.filter(item => item.product.status === 'active'); break;
+        }
 
         return filtered;
     }
@@ -487,12 +501,13 @@
 
         if (filtered.length === 0) {
             const isTradeFilter = currentSort === 'trade';
+            const isAvailFilter = currentSort === 'available';
             grid.innerHTML = `
                 <div class="empty-state">
-                    <i class="fas ${isTradeFilter ? 'fa-arrows-rotate' : 'far fa-heart'}"></i>
-                    <p>${isTradeFilter ? 'No trade items in wishlist' : (q ? 'No matching items found' : 'Your wishlist is empty')}</p>
-                    <p class="empty-sub">${isTradeFilter ? 'Save items with trade enabled to see them here' : (q ? 'Try a different search term' : 'Browse the marketplace and tap the heart icon')}</p>
-                    ${!q && !isTradeFilter ? '<a href="dashboard.html" class="empty-action"><i class="fas fa-compass"></i> Explore Items</a>' : ''}
+                    <i class="fas ${isTradeFilter ? 'fa-arrows-rotate' : (isAvailFilter ? 'fa-check-circle' : 'far fa-heart')}"></i>
+                    <p>${isTradeFilter ? 'No trade items in wishlist' : (isAvailFilter ? 'No available items' : (q ? 'No matching items found' : 'Your wishlist is empty'))}</p>
+                    <p class="empty-sub">${isTradeFilter ? 'Save items with swap enabled to see them here' : (q ? 'Try a different search term' : 'Browse the marketplace and tap the heart icon')}</p>
+                    ${!q && !isTradeFilter && !isAvailFilter ? '<a href="dashboard.html" class="empty-action"><i class="fas fa-compass"></i> Explore Items</a>' : ''}
                 </div>`;
             return;
         }
@@ -502,31 +517,43 @@
             const p = item.product;
             const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
             const isTrade = Boolean(p.swap_enabled);
-            const ogPrice = p.original_price ? `₹${Math.floor(p.original_price).toLocaleString('en-IN')}` : '';
+            const isSold = p.status === 'sold';
+            const isCond = !!p.condition;
             const sellerName = p.seller?.name || 'Seller';
 
             grid.innerHTML += `
-                <div class="product-item" onclick="location.href='product_detail.html?id=${p.id}'">
+                <div class="product-item" onclick="${isSold ? '' : `location.href='product_detail.html?id=${p.id}'`}" style="${isSold ? 'opacity:0.65;cursor:default;' : ''}">
                     <div class="img-wrap">
                         ${isTrade ? '<div class="trade-badge-sm"><i class="fas fa-arrows-rotate"></i> Trade</div>' : ''}
+                        ${isCond ? `<div class="cond-badge-sm">${p.condition}</div>` : ''}
+                        ${isSold ? '<div class="status-badge-sold">SOLD</div>' : ''}
                         <button class="heart-btn" onclick="event.stopPropagation(); showRemoveConfirm(this, '${item.id}')">
                             <i class="fas fa-heart"></i>
                         </button>
                         <img src="${img}" loading="lazy" onerror="this.src='placeholder.png'">
                     </div>
                     <div class="item-details">
-                        <div class="price">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}${ogPrice ? `<span class="og-price">${ogPrice}</span>` : ''}</div>
+                        <div class="price">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}</div>
                         <div class="title">${p.title}</div>
-                        <div class="item-meta"><i class="fas fa-store"></i> ${sellerName}</div>
+                        <div class="item-meta">
+                            ${isSold ? '<span class="sold-label"><i class="fas fa-circle-xmark"></i> Sold</span>' : `<span><i class="fas fa-store"></i> ${sellerName}</span>`}
+                            ${p.category ? `<span><i class="fas fa-tag"></i> ${p.category}</span>` : ''}
+                        </div>
                         
+                        ${!isSold ? `
                         <div class="btn-group">
                             <button class="view-prod-btn" onclick="event.stopPropagation(); location.href='product_detail.html?id=${p.id}'">
                                 <i class="fas fa-eye"></i> View
                             </button>
-                            <button class="view-prod-btn btn-seller" onclick="event.stopPropagation(); location.href='profile.html?uid=${p.seller_id}'">
+                            <button class="view-prod-btn btn-seller" onclick="event.stopPropagation(); location.href='seller_profile.html?id=${p.seller_id}'">
                                 <i class="fas fa-user"></i> Seller
                             </button>
-                        </div>
+                        </div>` : `
+                        <div class="btn-group">
+                            <button class="view-prod-btn" style="flex:1;color:var(--danger);border-color:#fecdd3;" onclick="event.stopPropagation(); showRemoveConfirm(this, '${item.id}')">
+                                <i class="fas fa-trash-can"></i> Remove
+                            </button>
+                        </div>`}
                     </div>
                     <div class="remove-overlay" id="remove-${item.id}">
                         <p>Remove from wishlist?</p>
