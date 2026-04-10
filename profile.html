@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
@@ -23,6 +24,17 @@
             --gold: #f59e0b;
             --silver: #94a3b8;
             --bronze: #d97706;
+            --trade: #7c3aed;
+            --trade-light: #ede9fe;
+        }
+        body.dark {
+            --text: #e8f0e8;
+            --text-light: #7a8c7a;
+            --bg: #0a0f0a;
+            --card-bg: #111811;
+            --border: #1e2a1e;
+            --primary-glow: rgba(0, 230, 118, 0.10);
+            --trade-light: #2e1a4a;
         }
 
         * { box-sizing: border-box; }
@@ -32,27 +44,66 @@
             background-color: var(--bg);
             margin: 0;
             padding-bottom: calc(var(--nav-height) + 40px);
+            transition: background 0.3s, color 0.3s;
         }
 
         .container { max-width: 600px; margin: auto; padding: 20px; }
 
         .card {
-            background: white; border-radius: 20px; padding: 20px;
+            background: var(--card-bg); border-radius: 20px; padding: 20px;
             margin-bottom: 20px; border: 1px solid var(--border);
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: background 0.3s, border 0.3s;
         }
 
+        /* ── PROFILE COVER BANNER ── */
+        .profile-banner {
+            height: 120px; border-radius: 20px 20px 0 0; margin-bottom: -50px;
+            background: linear-gradient(135deg, #059669, #10b981, #34d399);
+            position: relative; overflow: hidden;
+        }
+        .profile-banner::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.08'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+        .profile-banner .banner-actions {
+            position: absolute; top: 12px; right: 12px; display: flex; gap: 8px;
+        }
+        .banner-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+            border: none; color: white; font-size: 14px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .banner-btn:hover { background: rgba(255,255,255,0.35); }
+
         /* Profile Header */
-        .profile-header { text-align: center; position: relative; }
+        .profile-header { text-align: center; position: relative; padding-top: 10px; }
         .avatar {
-            width: 90px; height: 90px; border-radius: 50%;
+            width: 96px; height: 96px; border-radius: 50%;
             background: linear-gradient(135deg, #10b981, #059669);
             margin: 0 auto 15px; overflow: hidden; display: flex;
             align-items: center; justify-content: center; color: white;
-            font-weight: 600; cursor: pointer; border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); font-size: 13px;
+            font-weight: 600; cursor: pointer; border: 4px solid var(--card-bg);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12); font-size: 13px;
+            position: relative; transition: transform 0.2s;
         }
+        .avatar:hover { transform: scale(1.05); }
         .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-edit-badge {
+            position: absolute; bottom: 2px; right: 2px;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--primary-dark); color: white; border: 2px solid var(--card-bg);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; cursor: pointer;
+        }
+        .online-indicator {
+            position: absolute; top: 4px; right: 4px;
+            width: 14px; height: 14px; border-radius: 50%;
+            background: #22c55e; border: 3px solid var(--card-bg);
+        }
 
         .info-display p { margin: 5px 0; color: var(--text); font-weight: 500; }
         .info-display label { display: block; font-size: 11px; color: var(--text-light); font-weight: 700; text-transform: uppercase; margin-top: 12px; }
@@ -60,31 +111,45 @@
 
         input, textarea, select {
             width: 100%; padding: 12px; border-radius: 12px;
-            border: 1px solid var(--border); background: #fdfdfd;
-            font-family: inherit; margin-top: 5px;
+            border: 1px solid var(--border); background: var(--bg);
+            font-family: inherit; margin-top: 5px; color: var(--text);
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        input:focus, textarea:focus, select:focus {
+            outline: none; border-color: var(--primary-dark);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
         }
         textarea { resize: vertical; }
 
         .btn-primary {
             width: 100%; padding: 14px; border: none; border-radius: 12px;
-            cursor: pointer; background: var(--primary); color: white;
-            font-weight: 700; margin-top: 15px;
+            cursor: pointer; background: var(--primary-dark); color: white;
+            font-weight: 700; margin-top: 15px; font-size: 14px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: opacity 0.2s, transform 0.2s;
         }
+        .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
         .btn-outline {
-            background: none; border: 1px solid var(--primary); color: var(--primary);
-            padding: 8px 16px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            background: none; border: 1.5px solid var(--primary-dark); color: var(--primary-dark);
+            padding: 9px 18px; border-radius: 10px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 6px; font-size: 13px;
+            transition: all 0.2s;
         }
+        .btn-outline:hover { background: var(--primary-dark); color: white; }
         .btn-sm {
             padding: 6px 14px; border-radius: 8px; border: none;
             font-weight: 600; font-size: 12px; cursor: pointer;
         }
 
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .section-header h3 { margin: 0; font-size: 16px; }
-        .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; }
+        .section-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
+        .section-header h3 i { font-size: 16px; color: var(--primary-dark); }
+        .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
+        .see-all-btn i { font-size: 11px; }
 
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
-        .product-item { background: #fff; border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; }
+        .product-item { background: var(--card-bg); border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .product-item:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
         .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
 
         .heart-btn {
@@ -92,37 +157,41 @@
             border-radius: 50%; width: 28px; height: 28px; display: flex;
             align-items: center; justify-content: center; border: 1px solid #eee;
             cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;
+            transition: transform 0.2s;
         }
-        .heart-btn svg { width: 16px; height: 16px; fill: #ef4444; }
+        .heart-btn:hover { transform: scale(1.15); }
+        .heart-btn i { font-size: 13px; color: #ef4444; }
 
         /* ── COLLEGE DROPDOWN ── */
         .college-dropdown-wrap { position: relative; margin-top: 5px; }
         .college-dropdown-wrap input { margin-top: 0; }
         .college-suggestions {
             position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-            background: white; border: 1px solid var(--border); border-radius: 12px;
+            background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px;
             max-height: 200px; overflow-y: auto; z-index: 999;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1); display: none;
         }
         .college-suggestions.open { display: block; }
         .college-suggestion-item {
             padding: 10px 14px; cursor: pointer; font-size: 14px;
-            border-bottom: 1px solid #f1f5f9; transition: background 0.15s;
+            border-bottom: 1px solid var(--border); transition: background 0.15s; color: var(--text);
         }
         .college-suggestion-item:last-child { border-bottom: none; }
         .college-suggestion-item:hover { background: #f0fdf4; color: var(--primary-dark); }
 
         /* ── FOLLOW STATS ── */
-        .follow-stats { display: flex; gap: 20px; justify-content: center; margin: 12px 0 0; }
-        .follow-stat { text-align: center; cursor: pointer; }
+        .follow-stats { display: flex; gap: 24px; justify-content: center; margin: 12px 0 0; }
+        .follow-stat { text-align: center; cursor: pointer; transition: transform 0.15s; }
+        .follow-stat:hover { transform: scale(1.05); }
         .follow-stat strong { display: block; font-size: 18px; font-weight: 800; }
         .follow-stat span { font-size: 11px; color: var(--text-light); font-weight: 600; }
         .follow-btn {
-            margin-top: 10px; padding: 8px 24px; border-radius: 10px; font-weight: 700;
+            margin-top: 10px; padding: 9px 28px; border-radius: 10px; font-weight: 700;
             border: none; cursor: pointer; transition: all 0.2s; font-size: 13px;
+            display: inline-flex; align-items: center; gap: 6px;
         }
         .follow-btn.following { background: #f1f5f9; color: var(--text-light); }
-        .follow-btn.not-following { background: var(--primary-dark); color: white; }
+        .follow-btn.not-following { background: var(--primary-dark); color: white; box-shadow: 0 3px 12px rgba(5,150,105,0.3); }
 
         /* ── REPUTATION BADGE ── */
         .rep-badge {
@@ -134,52 +203,133 @@
         .rep-badge.trusted { background: linear-gradient(135deg,#d1fae5,#a7f3d0); color: #065f46; }
         .rep-badge.rising { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); color: #3730a3; }
         .rep-badge.newbie { background: #f1f5f9; color: var(--text-light); }
-        .rep-score { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+        .rep-score { font-size: 11px; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+
+        /* ── PROFILE COMPLETION ── */
+        .completion-bar-wrap { margin-top: 14px; }
+        .completion-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .completion-header span { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; }
+        .completion-header strong { font-size: 13px; color: var(--primary-dark); }
+        .completion-bar { height: 6px; background: var(--border); border-radius: 6px; overflow: hidden; }
+        .completion-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #059669, #34d399); transition: width 0.8s ease; }
+        .completion-hints { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        .completion-hint {
+            font-size: 10px; padding: 3px 8px; border-radius: 20px;
+            background: var(--bg); color: var(--text-light); font-weight: 600;
+            display: flex; align-items: center; gap: 3px;
+        }
+        .completion-hint.done { color: var(--primary-dark); background: #dcfce7; }
+        .completion-hint.done i { display: inline; }
+        .completion-hint i { display: none; font-size: 9px; }
+
+        /* ── MEMBER SINCE ── */
+        .member-since {
+            font-size: 12px; color: var(--text-light); margin-top: 6px;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .member-since i { font-size: 11px; }
+
+        /* ── QUICK ACTIONS ── */
+        .quick-actions {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;
+        }
+        .quick-action {
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            padding: 12px 4px; border-radius: 14px; background: var(--bg);
+            border: 1px solid var(--border); cursor: pointer; transition: all 0.2s;
+            text-decoration: none; color: var(--text);
+        }
+        .quick-action:hover { border-color: var(--primary-dark); transform: translateY(-2px); }
+        .quick-action .qa-icon {
+            width: 36px; height: 36px; border-radius: 10px; display: flex;
+            align-items: center; justify-content: center; font-size: 15px; color: white;
+        }
+        .quick-action span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
 
         /* ── SELLER STATS ── */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .stat-box {
-            background: linear-gradient(135deg,#f0fdf4,#dcfce7); border-radius: 14px;
-            padding: 16px; text-align: center; border: 1px solid #bbf7d0;
+            border-radius: 14px; padding: 16px; text-align: center;
+            border: 1px solid #bbf7d0; transition: transform 0.2s;
         }
+        .stat-box:hover { transform: translateY(-2px); }
+        .stat-box.green { background: linear-gradient(135deg,#f0fdf4,#dcfce7); border-color: #bbf7d0; }
         .stat-box.blue { background: linear-gradient(135deg,#eff6ff,#dbeafe); border-color: #bfdbfe; }
         .stat-box.amber { background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: #fde68a; }
         .stat-box.rose { background: linear-gradient(135deg,#fff1f2,#ffe4e6); border-color: #fecdd3; }
-        .stat-box strong { display: block; font-size: 24px; font-weight: 800; color: var(--text); }
+        .stat-box.purple { background: linear-gradient(135deg,#f5f3ff,#ede9fe); border-color: #ddd6fe; }
+        .stat-box .stat-icon { font-size: 20px; margin-bottom: 6px; }
+        .stat-box strong { display: block; font-size: 22px; font-weight: 800; color: var(--text); }
         .stat-box span { font-size: 11px; color: var(--text-light); font-weight: 600; text-transform: uppercase; }
 
         /* ── INVENTORY ── */
+        .inventory-search {
+            position: relative; margin-bottom: 10px;
+        }
+        .inventory-search i {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            font-size: 14px; color: var(--text-light);
+        }
+        .inventory-search input {
+            padding-left: 36px; margin-top: 0;
+        }
+        .inventory-tabs {
+            display: flex; gap: 4px; margin-bottom: 12px; background: var(--bg);
+            border-radius: 12px; padding: 3px;
+        }
+        .inventory-tab {
+            flex: 1; padding: 8px; border: none; border-radius: 10px;
+            background: transparent; color: var(--text-light); font-weight: 600;
+            font-size: 12px; cursor: pointer; transition: all 0.2s;
+            font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+        .inventory-tab.active { background: var(--card-bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .inventory-tab .tab-count {
+            background: var(--border); padding: 1px 6px; border-radius: 20px; font-size: 10px;
+        }
+        .inventory-tab.active .tab-count { background: var(--primary-dark); color: white; }
         .inventory-item {
             display: flex; gap: 12px; align-items: center;
             padding: 10px 0; border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
         }
         .inventory-item:last-child { border-bottom: none; }
         .inventory-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
         .inventory-item-info { flex: 1; min-width: 0; }
         .inventory-item-info strong { display: block; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .inventory-item-info span { font-size: 11px; color: var(--text-light); }
+        .inventory-item-info span { font-size: 11px; color: var(--text-light); display: flex; align-items: center; gap: 4px; }
+        .inventory-item-info span i { font-size: 10px; }
         .trade-badge {
-            font-size: 10px; padding: 2px 8px; border-radius: 6px; font-weight: 700;
+            font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 700;
             background: #d1fae5; color: #065f46; white-space: nowrap;
+            display: flex; align-items: center; gap: 3px;
         }
+        .trade-badge i { font-size: 9px; }
         .trade-badge.no { background: #f1f5f9; color: var(--text-light); }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+        .status-dot.active { background: #22c55e; }
+        .status-dot.sold { background: #ef4444; }
+        .status-dot.pending { background: #f59e0b; }
 
         /* ── COLLECTION TAGS ── */
         .collection-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .collection-tag {
             padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
             cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
-            background: #f1f5f9; color: var(--text-light);
+            background: var(--bg); color: var(--text-light);
+            display: flex; align-items: center; gap: 4px;
         }
+        .collection-tag i { font-size: 12px; }
         .collection-tag.active { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
 
         /* ── LEADERBOARD ── */
         .leader-item {
             display: flex; align-items: center; gap: 12px;
             padding: 10px 0; border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
         }
         .leader-item:last-child { border-bottom: none; }
-        .leader-rank { font-size: 18px; font-weight: 800; width: 28px; text-align: center; flex-shrink: 0; }
+        .leader-rank { font-size: 16px; font-weight: 800; width: 28px; text-align: center; flex-shrink: 0; }
         .rank-1 .leader-rank { color: var(--gold); }
         .rank-2 .leader-rank { color: var(--silver); }
         .rank-3 .leader-rank { color: var(--bronze); }
@@ -202,9 +352,11 @@
         .trend-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .trend-scroll::-webkit-scrollbar { display: none; }
         .trader-card {
-            flex-shrink: 0; width: 120px; background: #f8fafc; border-radius: 14px;
+            flex-shrink: 0; width: 120px; background: var(--bg); border-radius: 14px;
             padding: 14px 10px; text-align: center; border: 1px solid var(--border); cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        .trader-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
         .trader-card .t-avatar {
             width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 8px;
             background: linear-gradient(135deg,#10b981,#059669);
@@ -216,51 +368,103 @@
         .trader-card span { font-size: 10px; color: var(--text-light); }
         .fire-badge { font-size: 16px; }
 
-        /* ── SAFETY ── */
-        .safety-actions { display: flex; flex-direction: column; gap: 10px; }
-        .safety-btn {
-            display: flex; align-items: center; gap: 10px;
-            padding: 12px 16px; border-radius: 12px; border: 1px solid var(--border);
-            background: white; cursor: pointer; font-weight: 600; font-size: 14px;
-            color: var(--text); transition: background 0.2s;
+        /* ── REVIEWS SECTION ── */
+        .review-item {
+            padding: 14px 0; border-bottom: 1px solid var(--border);
         }
-        .safety-btn:hover { background: #f8fafc; }
-        .safety-btn.danger { color: var(--danger); border-color: #fecdd3; }
-        .safety-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .review-item:last-child { border-bottom: none; }
+        .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+        .review-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            background: linear-gradient(135deg,#10b981,#059669);
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 13px; flex-shrink: 0; overflow: hidden;
+        }
+        .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .review-name { font-weight: 700; font-size: 13px; }
+        .review-date { font-size: 11px; color: var(--text-light); }
+        .review-stars { color: var(--gold); font-size: 12px; margin-bottom: 4px; }
+        .review-text { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+
+        /* ── ACTIVITY TIMELINE ── */
+        .timeline-item {
+            display: flex; gap: 12px; padding: 10px 0; position: relative;
+        }
+        .timeline-item:not(:last-child)::before {
+            content: '';
+            position: absolute; left: 17px; top: 38px; bottom: -2px;
+            width: 2px; background: var(--border);
+        }
+        .timeline-icon {
+            width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px;
+        }
+        .timeline-icon.sold { background: #dcfce7; color: #16a34a; }
+        .timeline-icon.listed { background: #dbeafe; color: #2563eb; }
+        .timeline-icon.trade { background: var(--trade-light); color: var(--trade); }
+        .timeline-icon.review { background: #fef3c7; color: #d97706; }
+        .timeline-content { flex: 1; }
+        .timeline-content strong { font-size: 13px; display: block; }
+        .timeline-content span { font-size: 11px; color: var(--text-light); }
+
+        /* ── ACHIEVEMENTS ── */
+        .achievements-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+        .achievement {
+            width: 60px; text-align: center; cursor: default;
+            transition: transform 0.2s;
+        }
+        .achievement:hover { transform: scale(1.1); }
+        .achievement.locked { opacity: 0.35; }
+        .achievement .ach-icon {
+            width: 50px; height: 50px; border-radius: 14px; margin: 0 auto 4px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; background: var(--bg); border: 1px solid var(--border);
+        }
+        .achievement:not(.locked) .ach-icon { border-color: #bbf7d0; background: #f0fdf4; }
+        .achievement span { font-size: 9px; font-weight: 700; color: var(--text-light); line-height: 1.2; }
 
         /* ── MODAL ── */
         .modal-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
             z-index: 9999; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(4px);
         }
         .modal-overlay.open { display: flex; }
         .modal-sheet {
-            background: white; border-radius: 20px 20px 0 0; padding: 24px;
+            background: var(--card-bg); border-radius: 20px 20px 0 0; padding: 24px;
             width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto;
             animation: slideUp 0.3s ease;
         }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
-        .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); }
-
-        /* ── SCAM WARNING ── */
-        .scam-warning {
-            background: linear-gradient(135deg,#fffbeb,#fef3c7); border: 1px solid #fde68a;
-            border-radius: 14px; padding: 14px; display: flex; gap: 10px; align-items: flex-start;
-            margin-bottom: 20px; display: none;
-        }
-        .scam-warning.show { display: flex; }
-        .scam-warning svg { width: 20px; height: 20px; color: var(--warning); flex-shrink: 0; margin-top: 2px; }
-        .scam-warning p { margin: 0; font-size: 13px; color: #92400e; font-weight: 500; }
+        .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); transition: color 0.2s; }
+        .modal-close:hover { color: var(--text); }
 
         /* ── TOAST ── */
         .toast {
             position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%; transform: translateX(-50%) translateY(20px);
             background: #0f172a; color: white; padding: 10px 20px; border-radius: 20px;
             font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s; z-index: 9998;
-            white-space: nowrap;
+            white-space: nowrap; display: flex; align-items: center; gap: 8px; max-width: 90vw;
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .toast i { font-size: 15px; }
+        .toast.success i { color: #4ade80; }
+        .toast.error i { color: #f87171; }
+        .toast.info i { color: #60a5fa; }
+
+        /* ── SCROLL TO TOP ── */
+        .scroll-top-btn {
+            position: fixed; bottom: calc(var(--nav-height) + 16px); right: 16px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--primary-dark); color: white; border: none;
+            font-size: 16px; cursor: pointer; z-index: 1500;
+            display: none; align-items: center; justify-content: center;
+            box-shadow: 0 4px 16px rgba(5,150,105,0.35); transition: all 0.2s;
+        }
+        .scroll-top-btn.visible { display: flex; }
+        .scroll-top-btn:hover { transform: translateY(-2px); }
 
         /* ── BOTTOM NAV ── */
         .bottom-nav {
@@ -269,13 +473,20 @@
             border-top: 1px solid var(--border); display: flex;
             justify-content: space-around; align-items: center;
             z-index: 2000; padding-bottom: env(safe-area-inset-bottom);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            transition: background 0.3s, border 0.3s;
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
             color: var(--text-light); text-decoration: none; font-size: 10px;
-            font-weight: 600; gap: 3px; transition: color 0.2s;
+            font-weight: 600; gap: 3px; transition: color 0.2s; position: relative;
         }
         .nav-item.active { color: var(--primary-dark); }
+        .nav-item.active::before {
+            content: '';
+            position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+            width: 24px; height: 3px; background: var(--primary-dark); border-radius: 0 0 4px 4px;
+        }
         .nav-item svg { width: 22px; height: 22px; }
         .nav-sell {
             background: var(--primary-dark); width: 52px; height: 52px;
@@ -283,15 +494,7 @@
             margin-top: -30px; border: 4px solid var(--bg); color: white !important;
             box-shadow: 0 4px 20px rgba(5,150,105,0.4); transition: transform 0.2s;
         }
-
-        /* ── TRADE MODAL SPECIFIC ── */
-        .trade-select-item {
-            display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-            border-radius: 12px; border: 2px solid var(--border); margin-bottom: 8px;
-            cursor: pointer; transition: all 0.2s;
-        }
-        .trade-select-item.selected { border-color: var(--primary-dark); background: #f0fdf4; }
-        .trade-select-item img { width: 48px; height: 48px; object-fit: cover; border-radius: 8px; }
+        .nav-sell:hover { transform: scale(1.08); }
 
         /* Followers modal list */
         .follow-list-item {
@@ -308,70 +511,166 @@
 
         .empty-state { text-align: center; padding: 24px 0; color: var(--text-light); font-size: 14px; }
         .empty-state div { font-size: 32px; margin-bottom: 8px; }
+        .empty-state i { font-size: 36px; margin-bottom: 8px; display: block; opacity: 0.5; }
+
+        /* ── THEME TOGGLE (HEADER) ── */
+        .profile-top-bar {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 0;
+        }
+        .profile-top-bar .back-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--border); background: var(--card-bg);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 16px; color: var(--text);
+            transition: all 0.2s;
+        }
+        .profile-top-bar .back-btn:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
+        .profile-top-bar .top-actions { display: flex; gap: 8px; }
+        .icon-btn-sm {
+            width: 38px; height: 38px; border-radius: 50%;
+            border: 1px solid var(--border); background: var(--card-bg);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 15px; color: var(--text);
+            transition: all 0.2s;
+        }
+        .icon-btn-sm:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
+
+        /* ── EARNINGS CARD ── */
+        .earnings-card {
+            background: linear-gradient(135deg, #059669, #10b981);
+            border-radius: 16px; padding: 18px; color: white;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px;
+        }
+        .earnings-card .earn-label { font-size: 12px; opacity: 0.85; font-weight: 600; display: flex; align-items: center; gap: 4px; }
+        .earnings-card .earn-amount { font-size: 26px; font-weight: 800; margin-top: 2px; }
+        .earnings-card .earn-icon { font-size: 36px; opacity: 0.3; }
     </style>
 </head>
 
 <body>
 
 <!-- Toast -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast"><i></i><span></span></div>
 
-<!-- Scam Warning Banner -->
-<div class="container" style="padding-bottom:0; margin-top:20px;">
-    <div class="scam-warning" id="scamWarning">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-        <p id="scamWarningText">⚠️ This profile has been reported for suspicious activity. Trade with caution.</p>
-    </div>
-</div>
+<!-- Scroll to top -->
+<button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <i class="fas fa-chevron-up"></i>
+</button>
 
 <div class="container">
 
+    <!-- ── TOP BAR ── -->
+    <div class="profile-top-bar" style="margin-bottom:12px;">
+        <button class="back-btn" onclick="history.back()">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <div style="font-weight:700;font-size:15px;color:var(--text);">Profile</div>
+        <div class="top-actions">
+            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button class="icon-btn-sm" onclick="shareProfile()">
+                <i class="fas fa-share-nodes"></i>
+            </button>
+        </div>
+    </div>
+
     <!-- ── PROFILE HEADER ── -->
-    <div class="card profile-header">
-        <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">Upload</div>
-        <input type="file" id="avatarUpload" hidden accept="image/*">
-        <h2 id="viewName" style="margin:0 0 4px;">Loading...</h2>
-        <p id="viewCollege" style="color:var(--text-light);margin:0;"></p>
-
-        <!-- Reputation Badge -->
-        <div id="repBadge" class="rep-badge newbie" style="margin:10px auto 0; display:inline-flex;">🌱 Newbie</div>
-        <div id="repScore" class="rep-score">Reputation score: 0</div>
-
-        <!-- Follow Stats -->
-        <div class="follow-stats">
-            <div class="follow-stat" onclick="openFollowersModal('followers')">
-                <strong id="followersCount">0</strong>
-                <span>Followers</span>
-            </div>
-            <div class="follow-stat" onclick="openFollowersModal('following')">
-                <strong id="followingCount">0</strong>
-                <span>Following</span>
+    <div class="card" style="padding-top:0;overflow:hidden;">
+        <div class="profile-banner">
+            <div class="banner-actions">
+                <button class="banner-btn" onclick="showToast('Cover photo coming soon!','info')" title="Change cover">
+                    <i class="fas fa-camera"></i>
+                </button>
             </div>
         </div>
+        <div class="profile-header" style="position:relative;">
+            <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">
+                Upload
+                <div class="online-indicator"></div>
+                <div class="avatar-edit-badge" id="avatarEditBadge"><i class="fas fa-camera"></i></div>
+            </div>
+            <input type="file" id="avatarUpload" hidden accept="image/*">
+            <h2 id="viewName" style="margin:0 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">Loading...</h2>
+            <p id="viewCollege" style="color:var(--text-light);margin:0;display:flex;align-items:center;justify-content:center;gap:4px;font-size:13px;"><i class="fas fa-location-dot" style="font-size:11px;"></i> <span></span></p>
 
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
-            <button class="btn-outline" id="editProfileBtn" onclick="toggleEditMode(true)">Edit Profile</button>
-            <button id="followBtn" class="follow-btn not-following" onclick="toggleFollow()" style="display:none;">Follow</button>
+            <!-- Reputation Badge -->
+            <div id="repBadge" class="rep-badge newbie" style="margin:10px auto 0; display:inline-flex;">🌱 Newbie</div>
+            <div id="repScore" class="rep-score"><i class="fas fa-chart-line" style="font-size:10px;"></i> Reputation score: 0</div>
+
+            <!-- Member Since -->
+            <div class="member-since" id="memberSince"><i class="far fa-calendar"></i> Member since ...</div>
+
+            <!-- Follow Stats -->
+            <div class="follow-stats">
+                <div class="follow-stat" onclick="openFollowersModal('followers')">
+                    <strong id="followersCount">0</strong>
+                    <span><i class="fas fa-users" style="font-size:10px;"></i> Followers</span>
+                </div>
+                <div class="follow-stat" onclick="openFollowersModal('following')">
+                    <strong id="followingCount">0</strong>
+                    <span><i class="fas fa-user-plus" style="font-size:10px;"></i> Following</span>
+                </div>
+            </div>
+
+            <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
+                <button class="btn-outline" id="editProfileBtn" onclick="toggleEditMode(true)"><i class="fas fa-pen"></i> Edit Profile</button>
+                <button id="followBtn" class="follow-btn not-following" onclick="toggleFollow()" style="display:none;"><i class="fas fa-user-plus"></i> Follow</button>
+            </div>
+
+            <!-- Profile Completion (own only) -->
+            <div class="completion-bar-wrap" id="completionWrap">
+                <div class="completion-header">
+                    <span><i class="fas fa-circle-check"></i> Profile completion</span>
+                    <strong id="completionPct">0%</strong>
+                </div>
+                <div class="completion-bar">
+                    <div class="completion-fill" id="completionFill" style="width:0%"></div>
+                </div>
+                <div class="completion-hints" id="completionHints"></div>
+            </div>
+
+            <!-- Quick Actions (own only) -->
+            <div class="quick-actions" id="quickActions">
+                <a href="add_product.html" class="quick-action">
+                    <div class="qa-icon" style="background:linear-gradient(135deg,#059669,#34d399);"><i class="fas fa-plus"></i></div>
+                    <span>Sell Item</span>
+                </a>
+                <a href="chats.html" class="quick-action">
+                    <div class="qa-icon" style="background:linear-gradient(135deg,#2563eb,#60a5fa);"><i class="fas fa-comment-dots"></i></div>
+                    <span>Messages</span>
+                </a>
+                <a href="orders.html" class="quick-action">
+                    <div class="qa-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);"><i class="fas fa-receipt"></i></div>
+                    <span>Orders</span>
+                </a>
+                <a href="wishlist.html" class="quick-action">
+                    <div class="qa-icon" style="background:linear-gradient(135deg,#ef4444,#f87171);"><i class="fas fa-heart"></i></div>
+                    <span>Wishlist</span>
+                </a>
+            </div>
         </div>
     </div>
 
     <!-- ── ACCOUNT INFORMATION ── -->
     <div class="card">
-        <h3 style="margin:0 0 16px;">Account Information</h3>
+        <h3 style="margin:0 0 16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-circle-info" style="color:var(--primary-dark);"></i> Account Information</h3>
         <div id="infoDisplay" class="info-display">
-            <label>Full Name</label>
+            <label><i class="fas fa-user"></i> Full Name</label>
             <p id="displayNameText">-</p>
-            <label>College</label>
+            <label><i class="fas fa-building-columns"></i> College</label>
             <p id="displayCollegeText">-</p>
-            <label>Bio</label>
+            <label><i class="fas fa-pen-fancy"></i> Bio</label>
             <p id="displayBioText">-</p>
-            <label>UPI ID</label>
+            <label><i class="fas fa-wallet"></i> UPI ID</label>
             <p id="displayUpiText">Not set</p>
         </div>
 
         <div id="infoEdit" class="edit-form">
             <label>Full Name</label>
-            <input id="nameInput">
+            <input id="nameInput" placeholder="Enter your name">
 
             <label>College</label>
             <div class="college-dropdown-wrap">
@@ -381,12 +680,33 @@
             </div>
 
             <label>Bio</label>
-            <textarea id="bioInput" rows="2"></textarea>
+            <textarea id="bioInput" rows="2" placeholder="Tell others about yourself..."></textarea>
             <label>UPI ID</label>
             <input id="upiInput" placeholder="example@upi">
             <div style="display:flex;gap:10px;">
-                <button class="btn-primary" onclick="saveProfile()">Save</button>
-                <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)">Cancel</button>
+                <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-check"></i> Save Changes</button>
+                <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)"><i class="fas fa-xmark"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── EARNINGS OVERVIEW ── -->
+    <div class="card" id="earningsCard" style="padding:16px 20px;">
+        <div class="earnings-card">
+            <div>
+                <div class="earn-label"><i class="fas fa-indian-rupee-sign"></i> Total Earnings</div>
+                <div class="earn-amount" id="totalEarnings">₹0</div>
+            </div>
+            <div class="earn-icon"><i class="fas fa-coins"></i></div>
+        </div>
+        <div style="display:flex;gap:8px;">
+            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:18px;font-weight:800;" id="thisMonthEarnings">₹0</div>
+                <div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">This month</div>
+            </div>
+            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;">
+                <div style="font-size:18px;font-weight:800;" id="pendingPayout">₹0</div>
+                <div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">Pending</div>
             </div>
         </div>
     </div>
@@ -394,52 +714,117 @@
     <!-- ── SELLER STATS DASHBOARD ── -->
     <div class="card">
         <div class="section-header">
-            <h3>Seller Stats</h3>
-            <span style="font-size:11px;color:var(--text-light);font-weight:600;">This month</span>
+            <h3><i class="fas fa-chart-pie"></i> Seller Stats</h3>
+            <span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="far fa-calendar"></i> This month</span>
         </div>
         <div class="stats-grid">
-            <div class="stat-box">
+            <div class="stat-box green">
+                <div class="stat-icon">👁️</div>
                 <strong id="statViews">0</strong>
                 <span>Total Views</span>
             </div>
             <div class="stat-box blue">
+                <div class="stat-icon">🛒</div>
                 <strong id="statSold">0</strong>
                 <span>Items Sold</span>
             </div>
             <div class="stat-box amber">
+                <div class="stat-icon">⭐</div>
                 <strong id="statRating">–</strong>
                 <span>Avg Rating</span>
             </div>
             <div class="stat-box rose">
+                <div class="stat-icon">💬</div>
                 <strong id="statResponse">–</strong>
                 <span>Response Rate</span>
             </div>
         </div>
+        <!-- Extra stats row -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
+            <div class="stat-box purple" style="padding:12px;">
+                <div class="stat-icon" style="font-size:16px;">🔄</div>
+                <strong id="statTrades" style="font-size:18px;">0</strong>
+                <span>Trades</span>
+            </div>
+            <div class="stat-box green" style="padding:12px;">
+                <div class="stat-icon" style="font-size:16px;">⏱️</div>
+                <strong id="statResponseTime" style="font-size:18px;">–</strong>
+                <span>Resp. Time</span>
+            </div>
+            <div class="stat-box blue" style="padding:12px;">
+                <div class="stat-icon" style="font-size:16px;">📅</div>
+                <strong id="statActive" style="font-size:18px;">0</strong>
+                <span>Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── ACHIEVEMENTS ── -->
+    <div class="card">
+        <div class="section-header">
+            <h3><i class="fas fa-trophy"></i> Achievements</h3>
+            <span style="font-size:11px;color:var(--text-light);font-weight:600;" id="achieveCount">0/8</span>
+        </div>
+        <div class="achievements-grid" id="achievementsGrid"></div>
     </div>
 
     <!-- ── INVENTORY / COLLECTION ── -->
     <div class="card">
         <div class="section-header">
-            <h3>My Inventory</h3>
-            <button class="see-all-btn" onclick="location.href='my-ads.html'">See All</button>
+            <h3><i class="fas fa-box-open"></i> My Inventory</h3>
+            <button class="see-all-btn" onclick="location.href='my-ads.html'">See All <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <!-- Inventory Tabs -->
+        <div class="inventory-tabs" id="inventoryTabs">
+            <button class="inventory-tab active" data-status="all" onclick="filterByStatus('all', this)">
+                All <span class="tab-count" id="tabAll">0</span>
+            </button>
+            <button class="inventory-tab" data-status="active" onclick="filterByStatus('active', this)">
+                <span class="status-dot active"></span> Active <span class="tab-count" id="tabActive">0</span>
+            </button>
+            <button class="inventory-tab" data-status="sold" onclick="filterByStatus('sold', this)">
+                <span class="status-dot sold"></span> Sold <span class="tab-count" id="tabSold">0</span>
+            </button>
+        </div>
+        <!-- Inventory Search -->
+        <div class="inventory-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="inventorySearchInput" placeholder="Search your items..." oninput="searchInventory()">
         </div>
         <!-- Collection Filter Tags -->
         <div class="collection-tags" id="collectionTags">
-            <span class="collection-tag active" data-cat="all" onclick="filterInventory('all', this)">All</span>
-            <span class="collection-tag" data-cat="Books" onclick="filterInventory('Books', this)">📚 Books</span>
-            <span class="collection-tag" data-cat="Electronics" onclick="filterInventory('Electronics', this)">💻 Electronics</span>
-            <span class="collection-tag" data-cat="Stationery" onclick="filterInventory('Stationery', this)">🖊️ Stationery</span>
-            <span class="collection-tag" data-cat="Gaming" onclick="filterInventory('Gaming', this)">🎮 Gaming</span>
-            <span class="collection-tag" data-cat="Hostel Essentials" onclick="filterInventory('Hostel Essentials', this)">🛏️ Hostel</span>
+            <span class="collection-tag active" data-cat="all" onclick="filterInventory('all', this)"><i class="fas fa-border-all"></i> All</span>
+            <span class="collection-tag" data-cat="Books" onclick="filterInventory('Books', this)"><i class="fas fa-book"></i> Books</span>
+            <span class="collection-tag" data-cat="Electronics" onclick="filterInventory('Electronics', this)"><i class="fas fa-microchip"></i> Electronics</span>
+            <span class="collection-tag" data-cat="Stationery" onclick="filterInventory('Stationery', this)"><i class="fas fa-pen"></i> Stationery</span>
+            <span class="collection-tag" data-cat="Gaming" onclick="filterInventory('Gaming', this)"><i class="fas fa-gamepad"></i> Gaming</span>
+            <span class="collection-tag" data-cat="Hostel Essentials" onclick="filterInventory('Hostel Essentials', this)"><i class="fas fa-bed"></i> Hostel</span>
         </div>
         <div id="inventoryList" style="margin-top:14px;"></div>
+    </div>
+
+    <!-- ── RECENT ACTIVITY ── -->
+    <div class="card">
+        <div class="section-header">
+            <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
+        </div>
+        <div id="activityTimeline"></div>
+    </div>
+
+    <!-- ── REVIEWS ── -->
+    <div class="card">
+        <div class="section-header">
+            <h3><i class="fas fa-star"></i> Reviews</h3>
+            <button class="see-all-btn" id="reviewsSeeAll" onclick="showToast('Full reviews coming soon!','info')">See All <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div id="reviewsList"></div>
     </div>
 
     <!-- ── CAMPUS TRENDING TRADERS ── -->
     <div class="card">
         <div class="section-header">
-            <h3>🔥 Trending Traders</h3>
-            <span style="font-size:11px;color:var(--text-light);font-weight:600;">Your college</span>
+            <h3><i class="fas fa-fire" style="color:#ef4444;"></i> Trending Traders</h3>
+            <span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="fas fa-building-columns"></i> Your college</span>
         </div>
         <div class="trend-scroll" id="trendingTraders"></div>
     </div>
@@ -447,7 +832,7 @@
     <!-- ── SELLER LEADERBOARD ── -->
     <div class="card">
         <div class="section-header">
-            <h3>🏆 College Leaderboard</h3>
+            <h3><i class="fas fa-ranking-star" style="color:var(--gold);"></i> College Leaderboard</h3>
         </div>
         <div id="leaderboard"></div>
     </div>
@@ -455,8 +840,8 @@
     <!-- ── WISHLIST ── -->
     <div class="card">
         <div class="section-header">
-            <h3>My Wishlist</h3>
-            <button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'" style="display:none;">See All</button>
+            <h3><i class="fas fa-heart" style="color:#ef4444;"></i> My Wishlist</h3>
+            <button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button>
         </div>
         <div id="wishlistGrid" class="grid"></div>
     </div>
@@ -464,55 +849,24 @@
     <!-- ── ORDERS ── -->
     <div class="card">
         <div class="section-header">
-            <h3>My Orders</h3>
-            <button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'" style="display:none;">See All</button>
+            <h3><i class="fas fa-bag-shopping" style="color:var(--trade);"></i> My Orders</h3>
+            <button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button>
         </div>
         <div id="ordersGrid" class="grid"></div>
     </div>
 
-    <!-- ── CAMPUS SAFETY ── -->
-    <div class="card">
-        <div class="section-header">
-            <h3>🛡️ Campus Safety</h3>
-        </div>
-        <div class="safety-actions" id="safetyActions">
-            <button class="safety-btn danger" onclick="openReportModal()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"/></svg>
-                Report User
-            </button>
-            <button class="safety-btn danger" onclick="blockUser()">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
-                Block User
-            </button>
-        </div>
-        <p style="font-size:11px;color:var(--text-light);margin:10px 0 0;line-height:1.6;">
-            DormKart prioritizes campus safety. Always trade in public spaces and verify identities before transactions.
-        </p>
-    </div>
-
-    <button style="background:#fee2e2;color:#ef4444;border:none;width:100%;padding:14px;border-radius:12px;font-weight:700;margin-bottom:20px;cursor:pointer;" onclick="logout()">Logout</button>
+    <button style="background:#fee2e2;color:#ef4444;border:none;width:100%;padding:14px;border-radius:12px;font-weight:700;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;transition:background 0.2s;" onclick="logout()">
+        <i class="fas fa-right-from-bracket"></i> Logout
+    </button>
 </div>
 
 <!-- ── FOLLOWERS MODAL ── -->
 <div class="modal-overlay" id="followersModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
-        <button class="modal-close" onclick="closeModal('followersModal')">×</button>
-        <h3 id="followersModalTitle" style="margin:0 0 16px;">Followers</h3>
+        <button class="modal-close" onclick="closeModal('followersModal')"><i class="fas fa-xmark"></i></button>
+        <h3 id="followersModalTitle" style="margin:0 0 16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-users"></i> Followers</h3>
         <div id="followersModalList"></div>
-    </div>
-</div>
-
-<!-- ── REPORT MODAL ── -->
-<div class="modal-overlay" id="reportModal">
-    <div class="modal-sheet">
-        <div class="modal-handle"></div>
-        <button class="modal-close" onclick="closeModal('reportModal')">×</button>
-        <h3 style="margin:0 0 16px;">Report User</h3>
-        <p style="font-size:14px;color:var(--text-light);margin-bottom:14px;">Why are you reporting this profile?</p>
-        <div id="reportReasons"></div>
-        <textarea id="reportDetails" rows="3" placeholder="Additional details (optional)" style="margin-top:12px;"></textarea>
-        <button class="btn-primary" onclick="submitReport()">Submit Report</button>
     </div>
 </div>
 
@@ -584,17 +938,31 @@ const MUMBAI_COLLEGES = [
     "Datta Meghe College of Engineering"
 ];
 
+const ACHIEVEMENTS = [
+    { id: 'first_sale', icon: '🛒', label: 'First Sale', check: (d) => (d.items_sold || 0) >= 1 },
+    { id: 'five_sales', icon: '🔥', label: '5 Sales', check: (d) => (d.items_sold || 0) >= 5 },
+    { id: 'ten_sales', icon: '💎', label: '10 Sales', check: (d) => (d.items_sold || 0) >= 10 },
+    { id: 'first_trade', icon: '🔄', label: 'First Trade', check: (d) => (d.successful_trades || 0) >= 1 },
+    { id: 'five_trades', icon: '🤝', label: '5 Trades', check: (d) => (d.successful_trades || 0) >= 5 },
+    { id: 'five_star', icon: '⭐', label: '5-Star Avg', check: (d) => (d.rating || 0) >= 4.8 },
+    { id: 'ten_reviews', icon: '💬', label: '10 Reviews', check: (d) => (d.review_count || 0) >= 10 },
+    { id: 'verified', icon: '✅', label: 'Verified', check: (d) => d.is_verified === true },
+];
+
 
 let currentUser = null;
-let profileUserId = null;  // could be own or another user's
+let profileUserId = null;
 let allInventory = [];
-let selectedReportReason = null;
 let isOwnProfile = true;
+let currentStatusFilter = 'all';
+let currentCategoryFilter = 'all';
 
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 async function init() {
+    applySavedTheme();
+
     const { data: { session } } = await supabaseClient.auth.getSession();
     if (!session) return location.href = "login-signup.html";
     currentUser = session.user;
@@ -607,19 +975,22 @@ async function init() {
         await supabaseClient.rpc('increment_profile_views', { target_user_id: profileUserId });
     }
 
-    // Show/hide safety actions only for other profiles
+    // Show/hide sections based on own vs other
     if (isOwnProfile) {
-        document.getElementById('safetyActions').style.display = 'none';
         document.getElementById('followBtn').style.display = 'none';
-        document.getElementById('editProfileBtn').style.display = 'inline-block';
+        document.getElementById('editProfileBtn').style.display = 'inline-flex';
+        document.getElementById('avatarEditBadge').style.display = 'flex';
+        document.getElementById('completionWrap').style.display = 'block';
+        document.getElementById('quickActions').style.display = 'grid';
+        document.getElementById('earningsCard').style.display = 'block';
     } else {
-        document.getElementById('safetyActions').style.display = 'flex';
-        document.getElementById('followBtn').style.display = 'inline-block';
+        document.getElementById('followBtn').style.display = 'inline-flex';
         document.getElementById('editProfileBtn').style.display = 'none';
+        document.getElementById('avatarEditBadge').style.display = 'none';
+        document.getElementById('completionWrap').style.display = 'none';
+        document.getElementById('quickActions').style.display = 'none';
+        document.getElementById('earningsCard').style.display = 'none';
         checkFollowStatus();
-        checkScamWarning();
-        await loadProfile();
-    loadSellerStats();
     }
 
     // Avatar upload
@@ -633,6 +1004,8 @@ async function init() {
     loadFollowCounts();
     loadTrendingTraders();
     loadLeaderboard();
+    loadReviews();
+    loadActivity();
 }
 
 // ══════════════════════════════════════════
@@ -642,8 +1015,11 @@ async function loadProfile() {
     const { data } = await supabaseClient.from("users").select("*").eq("id", profileUserId).single();
     if (!data) return;
 
-    document.getElementById('viewName').innerText = data.name || "Student";
-    document.getElementById('viewCollege').innerText = data.college || "";
+    const nameEl = document.getElementById('viewName');
+    nameEl.innerHTML = (data.name || "Student") + (data.is_verified ? ' <i class="fas fa-circle-check" style="color:var(--primary-dark);font-size:16px;" title="Verified"></i>' : '');
+
+    const collegeSpan = document.querySelector('#viewCollege span');
+    if (collegeSpan) collegeSpan.innerText = data.college || "";
     document.getElementById('displayNameText').innerText = data.name || "Not set";
     document.getElementById('displayCollegeText').innerText = data.college || "Not set";
     document.getElementById('displayBioText').innerText = data.bio || "No bio added";
@@ -655,11 +1031,24 @@ async function loadProfile() {
     document.getElementById('upiInput').value = data.upi_id || "";
 
     if (data.avatar_url) {
-        document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}">`;
+        document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:${isOwnProfile?'flex':'none'}"><i class="fas fa-camera"></i></div>`;
     }
 
     // Reputation
     computeAndDisplayReputation(data);
+
+    // Member since
+    if (data.created_at) {
+        const d = new Date(data.created_at);
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        document.getElementById('memberSince').innerHTML = `<i class="far fa-calendar"></i> Member since ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
+
+    // Profile completion (own only)
+    if (isOwnProfile) computeCompletion(data);
+
+    // Achievements
+    renderAchievements(data);
 }
 
 function computeAndDisplayReputation(data) {
@@ -677,28 +1066,74 @@ function computeAndDisplayReputation(data) {
         (responseRate * 0.5)
     );
 
-    document.getElementById('repScore').innerText = `Reputation score: ${score}`;
+    document.getElementById('repScore').innerHTML = `<i class="fas fa-chart-line" style="font-size:10px;"></i> Reputation score: ${score}`;
 
     const badge = document.getElementById('repBadge');
     if (score >= 500) {
         badge.className = 'rep-badge legend';
-        badge.innerText = '⭐ Legend';
+        badge.innerHTML = '<i class="fas fa-crown"></i> Legend';
     } else if (score >= 200) {
         badge.className = 'rep-badge trusted';
-        badge.innerText = '✅ Trusted Trader';
+        badge.innerHTML = '<i class="fas fa-circle-check"></i> Trusted Trader';
     } else if (score >= 50) {
         badge.className = 'rep-badge rising';
-        badge.innerText = '📈 Rising Star';
+        badge.innerHTML = '<i class="fas fa-arrow-trend-up"></i> Rising Star';
     } else {
         badge.className = 'rep-badge newbie';
-        badge.innerText = '🌱 Newbie';
+        badge.innerHTML = '<i class="fas fa-seedling"></i> Newbie';
     }
+}
+
+// ── PROFILE COMPLETION ──
+function computeCompletion(data) {
+    const checks = [
+        { label: 'Photo', done: !!data.avatar_url },
+        { label: 'Name', done: !!data.name },
+        { label: 'College', done: !!data.college },
+        { label: 'Bio', done: !!data.bio && data.bio.length > 5 },
+        { label: 'UPI ID', done: !!data.upi_id },
+        { label: 'First listing', done: false },
+    ];
+    const doneCount = checks.filter(c => c.done).length;
+    supabaseClient.from("products").select("id", { count: 'exact', head: true }).eq("seller_id", currentUser.id).then(({ count }) => {
+        checks[5].done = (count || 0) > 0;
+        const total = checks.length;
+        const done = checks.filter(c => c.done).length;
+        const pct = Math.round((done / total) * 100);
+        document.getElementById('completionPct').innerText = pct + '%';
+        document.getElementById('completionFill').style.width = pct + '%';
+        document.getElementById('completionHints').innerHTML = checks.map(c =>
+            `<span class="completion-hint ${c.done ? 'done' : ''}"><i class="fas fa-check"></i> ${c.label}</span>`
+        ).join('');
+    });
+    const total = checks.length;
+    const pct = Math.round((doneCount / total) * 100);
+    document.getElementById('completionPct').innerText = pct + '%';
+    document.getElementById('completionFill').style.width = pct + '%';
+    document.getElementById('completionHints').innerHTML = checks.map(c =>
+        `<span class="completion-hint ${c.done ? 'done' : ''}"><i class="fas fa-check"></i> ${c.label}</span>`
+    ).join('');
+}
+
+// ── ACHIEVEMENTS ──
+function renderAchievements(data) {
+    const grid = document.getElementById('achievementsGrid');
+    let unlocked = 0;
+    grid.innerHTML = ACHIEVEMENTS.map(a => {
+        const isUnlocked = a.check(data);
+        if (isUnlocked) unlocked++;
+        return `<div class="achievement ${isUnlocked ? '' : 'locked'}" title="${a.label}">
+            <div class="ach-icon">${a.icon}</div>
+            <span>${a.label}</span>
+        </div>`;
+    }).join('');
+    document.getElementById('achieveCount').innerText = `${unlocked}/${ACHIEVEMENTS.length}`;
 }
 
 function toggleEditMode(isEditing) {
     document.getElementById('infoDisplay').style.display = isEditing ? 'none' : 'block';
     document.getElementById('infoEdit').style.display = isEditing ? 'block' : 'none';
-    document.getElementById('editProfileBtn').style.display = isEditing ? 'none' : 'inline-block';
+    document.getElementById('editProfileBtn').style.display = isEditing ? 'none' : 'inline-flex';
 }
 
 async function saveProfile() {
@@ -709,8 +1144,8 @@ async function saveProfile() {
         upi_id: document.getElementById('upiInput').value
     }).eq('id', currentUser.id);
 
-    if (error) showToast('Error saving: ' + error.message);
-    else { showToast('Profile saved!'); location.reload(); }
+    if (error) showToast('Error saving: ' + error.message, 'error');
+    else { showToast('Profile saved!', 'success'); location.reload(); }
 }
 
 // ══════════════════════════════════════════
@@ -720,16 +1155,17 @@ async function uploadAvatar(e) {
     if (!isOwnProfile) return;
     const file = e.target.files[0];
     if (!file) return;
+    showToast('Uploading avatar...', 'info');
     const ext = file.name.split('.').pop();
     const path = `avatars/${currentUser.id}.${ext}`;
 
     const { error: upErr } = await supabaseClient.storage.from('avatars').upload(path, file, { upsert: true });
-    if (upErr) return showToast('Upload failed');
+    if (upErr) return showToast('Upload failed', 'error');
 
     const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(path);
     await supabaseClient.from("users").update({ avatar_url: urlData.publicUrl }).eq('id', currentUser.id);
-    document.getElementById('avatarBox').innerHTML = `<img src="${urlData.publicUrl}">`;
-    showToast('Avatar updated!');
+    document.getElementById('avatarBox').innerHTML = `<img src="${urlData.publicUrl}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:flex"><i class="fas fa-camera"></i></div>`;
+    showToast('Avatar updated!', 'success');
 }
 
 // ══════════════════════════════════════════
@@ -761,24 +1197,40 @@ function hideColleges() {
 //  SELLER STATS
 // ══════════════════════════════════════════
 async function loadSellerStats() {
-    const { data } = await supabaseClient.from("users").select("items_sold, rating, review_count, response_rate").eq("id", profileUserId).single();
+    const { data } = await supabaseClient.from("users").select("items_sold, rating, review_count, response_rate, response_time, successful_trades").eq("id", profileUserId).single();
     if (!data) return;
 
-    // Total views from products
-    const { data: prods } = await supabaseClient.from("products").select("views").eq("seller_id", profileUserId);
+    const { data: prods } = await supabaseClient.from("products").select("views, status").eq("seller_id", profileUserId);
     const totalViews = prods ? prods.reduce((s, p) => s + (p.views || 0), 0) : 0;
+    const activeCount = prods ? prods.filter(p => p.status === 'active').length : 0;
 
     document.getElementById('statViews').innerText = totalViews.toLocaleString();
     document.getElementById('statSold').innerText = data.items_sold || 0;
     document.getElementById('statRating').innerText = data.rating ? `${parseFloat(data.rating).toFixed(1)}★` : '–';
     document.getElementById('statResponse').innerText = data.response_rate ? `${data.response_rate}%` : '–';
+    document.getElementById('statTrades').innerText = data.successful_trades || 0;
+    document.getElementById('statResponseTime').innerText = data.response_time ? `${data.response_time}m` : '–';
+    document.getElementById('statActive').innerText = activeCount;
+
+    // Earnings
+    if (isOwnProfile) {
+        const { data: orders } = await supabaseClient.from("orders").select("amount, payment_status, created_at").eq("seller_id", currentUser.id).eq("payment_status", 'completed');
+        const total = orders ? orders.reduce((s, o) => s + (o.amount || 0), 0) : 0;
+        document.getElementById('totalEarnings').innerText = '₹' + Math.floor(total).toLocaleString('en-IN');
+
+        const now = new Date();
+        const thisMonth = orders ? orders.filter(o => {
+            const d = new Date(o.created_at);
+            return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+        }).reduce((s, o) => s + (o.amount || 0), 0) : 0;
+        document.getElementById('thisMonthEarnings').innerText = '₹' + Math.floor(thisMonth).toLocaleString('en-IN');
+    }
 }
 
 // ══════════════════════════════════════════
 //  INVENTORY / COLLECTIONS
 // ══════════════════════════════════════════
 async function loadInventory() {
-    // Removed the .eq("status", "active") to show all items
     const { data, error } = await supabaseClient
         .from("products")
         .select("*")
@@ -786,31 +1238,44 @@ async function loadInventory() {
 
     if (error) return;
     allInventory = data || [];
+
+    document.getElementById('tabAll').innerText = allInventory.length;
+    document.getElementById('tabActive').innerText = allInventory.filter(p => p.status === 'active').length;
+    document.getElementById('tabSold').innerText = allInventory.filter(p => p.status === 'sold').length;
+
     renderInventory(allInventory);
+}
+
+function getFilteredInventory() {
+    let items = [...allInventory];
+    if (currentStatusFilter !== 'all') items = items.filter(p => p.status === currentStatusFilter);
+    if (currentCategoryFilter !== 'all') items = items.filter(p => p.category === currentCategoryFilter);
+    const q = document.getElementById('inventorySearchInput').value.toLowerCase().trim();
+    if (q) items = items.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+    return items;
 }
 
 function renderInventory(items) {
     const list = document.getElementById('inventoryList');
     if (!items.length) {
-        list.innerHTML = `<div class="empty-state"><div>📦</div>No items in inventory</div>`;
+        list.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i>No items found</div>`;
         return;
     }
     list.innerHTML = items.slice(0, 5).map(p => {
         const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
-        
-        // Check if item is sold to apply a different style/label
         const isSold = p.status === 'sold';
-        
+        const isPending = p.status === 'pending';
         return `
-        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'" 
+        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'"
              style="cursor:pointer; opacity: ${isSold ? '0.6' : '1'};">
             <img src="${img}" onerror="this.src='placeholder.png'">
             <div class="inventory-item-info">
-                <strong>${p.title} ${isSold ? '<span style="color:var(--danger)">[SOLD]</span>' : ''}</strong>
-                <span>${p.category || 'Uncategorized'} • ₹${p.price}</span>
+                <strong>${p.title} ${isSold ? '<span style="color:var(--danger)">[SOLD]</span>' : ''} ${isPending ? '<span style="color:var(--warning)">[PENDING]</span>' : ''}</strong>
+                <span><i class="fas fa-tag"></i> ${p.category || 'Uncategorized'} • ₹${p.price}</span>
             </div>
-            <span class="trade-badge ${isSold ? 'no' : (p.trade_available ? '' : 'no')}">
-                ${isSold ? 'Sold' : (p.trade_available ? ' Trade OK' : 'No Trade')}
+            <span class="trade-badge ${isSold ? 'no' : (p.swap_enabled ? '' : 'no')}">
+                <i class="fas ${isSold ? 'fa-check' : (p.swap_enabled ? 'fa-arrows-rotate' : 'fa-xmark')}"></i>
+                ${isSold ? 'Sold' : (p.swap_enabled ? ' Trade' : 'No Trade')}
             </span>
         </div>`;
     }).join('');
@@ -819,8 +1284,101 @@ function renderInventory(items) {
 function filterInventory(cat, el) {
     document.querySelectorAll('.collection-tag').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    const filtered = cat === 'all' ? allInventory : allInventory.filter(p => p.category === cat);
-    renderInventory(filtered);
+    currentCategoryFilter = cat;
+    renderInventory(getFilteredInventory());
+}
+
+function filterByStatus(status, el) {
+    document.querySelectorAll('.inventory-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    currentStatusFilter = status;
+    renderInventory(getFilteredInventory());
+}
+
+function searchInventory() {
+    renderInventory(getFilteredInventory());
+}
+
+// ══════════════════════════════════════════
+//  REVIEWS
+// ══════════════════════════════════════════
+async function loadReviews() {
+    const container = document.getElementById('reviewsList');
+    try {
+        const { data } = await supabaseClient
+            .from("reviews")
+            .select("*, reviewer:users!reviewer_id(id, name, avatar_url)")
+            .eq("seller_id", profileUserId)
+            .order("created_at", { ascending: false })
+            .limit(3);
+        if (!data || !data.length) {
+            container.innerHTML = `<div class="empty-state"><i class="far fa-comment-dots"></i>No reviews yet</div>`;
+            return;
+        }
+        container.innerHTML = data.map(r => {
+            const initials = (r.reviewer?.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
+            const timeAgo = getTimeAgo(r.created_at);
+            return `
+            <div class="review-item">
+                <div class="review-header">
+                    <div class="review-avatar">${r.reviewer?.avatar_url ? `<img src="${r.reviewer.avatar_url}">` : initials}</div>
+                    <div>
+                        <div class="review-name">${r.reviewer?.name || 'User'}</div>
+                        <div class="review-date">${timeAgo}</div>
+                    </div>
+                </div>
+                <div class="review-stars">${stars}</div>
+                <div class="review-text">${r.comment || 'No comment'}</div>
+            </div>`;
+        }).join('');
+    } catch(e) {
+        container.innerHTML = `<div class="empty-state"><i class="far fa-comment-dots"></i>No reviews yet</div>`;
+    }
+}
+
+// ══════════════════════════════════════════
+//  ACTIVITY TIMELINE
+// ══════════════════════════════════════════
+async function loadActivity() {
+    const container = document.getElementById('activityTimeline');
+    try {
+        const { data: products } = await supabaseClient
+            .from("products")
+            .select("id, title, status, created_at")
+            .eq("seller_id", profileUserId)
+            .order("created_at", { ascending: false })
+            .limit(5);
+
+        if (!products || !products.length) {
+            container.innerHTML = `<div class="empty-state"><i class="fas fa-clock"></i>No activity yet</div>`;
+            return;
+        }
+
+        const items = products.map(p => {
+            const isSold = p.status === 'sold';
+            return {
+                type: isSold ? 'sold' : 'listed',
+                title: isSold ? `Sold "${p.title}"` : `Listed "${p.title}"`,
+                time: getTimeAgo(p.created_at),
+                link: `product-details.html?id=${p.id}`
+            };
+        });
+
+        container.innerHTML = items.map(item => `
+            <div class="timeline-item" onclick="location.href='${item.link}'" style="cursor:pointer;">
+                <div class="timeline-icon ${item.type}">
+                    <i class="fas ${item.type === 'sold' ? 'fa-check' : 'fa-plus'}"></i>
+                </div>
+                <div class="timeline-content">
+                    <strong>${item.title}</strong>
+                    <span><i class="far fa-clock" style="font-size:10px;"></i> ${item.time}</span>
+                </div>
+            </div>
+        `).join('');
+    } catch(e) {
+        container.innerHTML = `<div class="empty-state"><i class="fas fa-clock"></i>No activity yet</div>`;
+    }
 }
 
 // ══════════════════════════════════════════
@@ -840,7 +1398,7 @@ async function loadTrendingTraders() {
 
     const container = document.getElementById('trendingTraders');
     if (!data || !data.length) {
-        container.innerHTML = `<div class="empty-state" style="width:100%;">No traders yet in your college</div>`;
+        container.innerHTML = `<div class="empty-state" style="width:100%;"><i class="fas fa-users"></i>No traders yet in your college</div>`;
         return;
     }
     container.innerHTML = data.map((u, i) => {
@@ -853,7 +1411,7 @@ async function loadTrendingTraders() {
             <div class="t-avatar">${avatarHtml}</div>
             <span class="fire-badge">${i < 3 ? '🔥' : '⭐'}</span>
             <strong>${u.name || 'Student'}</strong>
-            <span>${u.items_sold || 0} sold</span>
+            <span><i class="fas fa-shopping-bag" style="font-size:9px;"></i> ${u.items_sold || 0} sold</span>
         </div>`;
     }).join('');
 }
@@ -874,7 +1432,7 @@ async function loadLeaderboard() {
 
     const container = document.getElementById('leaderboard');
     if (!data || !data.length) {
-        container.innerHTML = `<div class="empty-state">No sellers in this college yet</div>`;
+        container.innerHTML = `<div class="empty-state"><i class="fas fa-trophy"></i>No sellers in this college yet</div>`;
         return;
     }
 
@@ -883,13 +1441,15 @@ async function loadLeaderboard() {
         const initials = (u.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
         const avatarHtml = u.avatar_url ? `<img src="${u.avatar_url}">` : initials;
         const rank = medals[i] || `#${i + 1}`;
-        const stars = '★'.repeat(Math.round(u.rating || 0)) + '☆'.repeat(5 - Math.round(u.rating || 0));
+        const starCount = Math.round(u.rating || 0);
+        const stars = '<i class="fas fa-star" style="font-size:11px;"></i>'.repeat(starCount) + '<i class="far fa-star" style="font-size:11px;"></i>'.repeat(5 - starCount);
+        const isMe = u.id === profileUserId;
         return `
-        <div class="leader-item rank-${Math.min(i+1, 4)}" onclick="location.href='profile.html?uid=${u.id}'" style="cursor:pointer;">
+        <div class="leader-item rank-${Math.min(i+1, 4)}" onclick="location.href='profile.html?uid=${u.id}'" style="cursor:pointer;${isMe ? 'background:var(--bg);border-radius:12px;padding:10px;margin:-2px -4px;' : ''}">
             <div class="leader-rank">${rank}</div>
             <div class="leader-avatar">${avatarHtml}</div>
             <div class="leader-info">
-                <strong>${u.name || 'Student'}</strong>
+                <strong>${u.name || 'Student'} ${isMe ? '<span style="font-size:10px;color:var(--primary-dark);font-weight:600;">(You)</span>' : ''}</strong>
                 <span><span class="star-rating">${stars}</span> ${(u.rating || 0).toFixed(1)}</span>
             </div>
             <div class="leader-meta">
@@ -901,7 +1461,7 @@ async function loadLeaderboard() {
 }
 
 // ══════════════════════════════════════════
-//  WISHLIST (original, preserved)
+//  WISHLIST
 // ══════════════════════════════════════════
 async function loadWishlist() {
     const { data, error } = await supabaseClient
@@ -914,8 +1474,8 @@ async function loadWishlist() {
     const toggleBtn = document.getElementById("wishlistToggle");
     const items = data || [];
 
-    if (items.length > 2) toggleBtn.style.display = "block";
-    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><div>💚</div>No wishlist items yet</div>`; return; }
+    if (items.length > 2) toggleBtn.style.display = "flex";
+    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><i class="far fa-heart"></i>No wishlist items yet</div>`; return; }
 
     items.slice(0, 2).forEach(item => {
         const p = item.product;
@@ -924,7 +1484,7 @@ async function loadWishlist() {
         grid.innerHTML += `
             <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
                 <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    <i class="fas fa-heart"></i>
                 </div>
                 <img src="${img}">
                 <div style="font-weight:700;margin-top:5px;">₹${p.price}</div>
@@ -935,11 +1495,11 @@ async function loadWishlist() {
 
 async function removeFromWishlist(wishlistId) {
     const { error } = await supabaseClient.from("wishlist").delete().eq("id", wishlistId);
-    if (error) showToast('Error removing'); else location.reload();
+    if (error) showToast('Error removing', 'error'); else { showToast('Removed from wishlist', 'info'); location.reload(); }
 }
 
 // ══════════════════════════════════════════
-//  ORDERS (original, preserved)
+//  ORDERS
 // ══════════════════════════════════════════
 async function loadOrders() {
     const { data, error } = await supabaseClient
@@ -952,8 +1512,8 @@ async function loadOrders() {
     const toggleBtn = document.getElementById("ordersToggle");
     const items = data || [];
 
-    if (items.length > 2) toggleBtn.style.display = "block";
-    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><div>🛍️</div>No orders yet</div>`; return; }
+    if (items.length > 2) toggleBtn.style.display = "flex";
+    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><i class="fas fa-bag-shopping"></i>No orders yet</div>`; return; }
 
     items.slice(0, 2).forEach(item => {
         const p = item.product;
@@ -984,8 +1544,8 @@ async function checkFollowStatus() {
     const { data } = await supabaseClient.from("follows")
         .select("id").eq("follower_id", currentUser.id).eq("following_id", profileUserId).single();
     const btn = document.getElementById('followBtn');
-    if (data) { btn.className = 'follow-btn following'; btn.innerText = 'Following'; }
-    else { btn.className = 'follow-btn not-following'; btn.innerText = 'Follow'; }
+    if (data) { btn.className = 'follow-btn following'; btn.innerHTML = '<i class="fas fa-user-check"></i> Following'; }
+    else { btn.className = 'follow-btn not-following'; btn.innerHTML = '<i class="fas fa-user-plus"></i> Follow'; }
 }
 
 async function toggleFollow() {
@@ -994,21 +1554,23 @@ async function toggleFollow() {
     if (isFollowing) {
         await supabaseClient.from("follows").delete()
             .eq("follower_id", currentUser.id).eq("following_id", profileUserId);
-        btn.className = 'follow-btn not-following'; btn.innerText = 'Follow';
-        showToast('Unfollowed');
+        btn.className = 'follow-btn not-following'; btn.innerHTML = '<i class="fas fa-user-plus"></i> Follow';
+        showToast('Unfollowed', 'info');
     } else {
         await supabaseClient.from("follows").insert({ follower_id: currentUser.id, following_id: profileUserId });
-        btn.className = 'follow-btn following'; btn.innerText = 'Following';
-        showToast('Following!');
+        btn.className = 'follow-btn following'; btn.innerHTML = '<i class="fas fa-user-check"></i> Following';
+        showToast('Following!', 'success');
     }
     loadFollowCounts();
 }
 
 async function openFollowersModal(type) {
     const modal = document.getElementById('followersModal');
-    document.getElementById('followersModalTitle').innerText = type === 'followers' ? 'Followers' : 'Following';
+    document.getElementById('followersModalTitle').innerHTML = type === 'followers'
+        ? '<i class="fas fa-users"></i> Followers'
+        : '<i class="fas fa-user-plus"></i> Following';
     const list = document.getElementById('followersModalList');
-    list.innerHTML = '<p style="color:var(--text-light);font-size:14px;">Loading...</p>';
+    list.innerHTML = '<p style="color:var(--text-light);font-size:14px;display:flex;align-items:center;gap:6px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     modal.classList.add('open');
 
     let query;
@@ -1019,7 +1581,7 @@ async function openFollowersModal(type) {
     }
 
     const { data, error } = await query;
-    if (error || !data.length) { list.innerHTML = `<div class="empty-state"><div>👤</div>No ${type} yet</div>`; return; }
+    if (error || !data.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i>No ${type} yet</div>`; return; }
 
     list.innerHTML = data.map(row => {
         const u = type === 'followers' ? row.follower : row.following;
@@ -1030,13 +1592,43 @@ async function openFollowersModal(type) {
             <div class="follow-list-avatar">${u.avatar_url ? `<img src="${u.avatar_url}">` : initials}</div>
             <div>
                 <strong style="font-size:14px;">${u.name || 'Student'}</strong>
-                <div style="font-size:11px;color:var(--text-light);">${u.college || ''}</div>
+                <div style="font-size:11px;color:var(--text-light);display:flex;align-items:center;gap:4px;"><i class="fas fa-location-dot" style="font-size:10px;"></i> ${u.college || ''}</div>
             </div>
+            <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--text-light);font-size:12px;"></i>
         </div>`;
     }).join('');
 }
 
+// ══════════════════════════════════════════
+//  SHARE PROFILE
+// ══════════════════════════════════════════
+function shareProfile() {
+    const url = window.location.origin + window.location.pathname + '?uid=' + profileUserId;
+    if (navigator.share) {
+        navigator.share({ title: 'Check out this profile on DormKart', url: url }).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            showToast('Profile link copied!', 'success');
+        }).catch(() => {
+            showToast('Could not copy link', 'error');
+        });
+    }
+}
 
+// ══════════════════════════════════════════
+//  THEME
+// ══════════════════════════════════════════
+function applySavedTheme() {
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark');
+        document.getElementById('themeIcon').className = 'fas fa-sun';
+    }
+}
+function toggleDarkMode() {
+    const dark = document.body.classList.toggle('dark');
+    localStorage.setItem('theme', dark ? 'dark' : 'light');
+    document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
+}
 
 // ══════════════════════════════════════════
 //  HELPERS
@@ -1044,11 +1636,28 @@ async function openFollowersModal(type) {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
+function getTimeAgo(dateStr) {
+    if (!dateStr) return 'Just now';
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'Just now';
+    if (mins < 60) return mins + 'm ago';
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + 'h ago';
+    const days = Math.floor(hrs / 24);
+    if (days < 7) return days + 'd ago';
+    const weeks = Math.floor(days / 7);
+    if (weeks < 4) return weeks + 'w ago';
+    return Math.floor(days / 30) + 'mo ago';
+}
+
 let toastTimer;
-function showToast(msg) {
+function showToast(msg, type) {
+    type = type || 'info';
     const t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.add('show');
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+    t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${msg}</span>`;
+    t.className = 'toast show ' + type;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
@@ -1058,6 +1667,18 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
         if (e.target === overlay) overlay.classList.remove('open');
     });
+});
+
+// Scroll to top
+window.addEventListener('scroll', () => {
+    document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
+});
+
+// Keyboard escape
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+    }
 });
 
 async function logout() {
