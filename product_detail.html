@@ -2,213 +2,355 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>DormKart • Product Details</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>DormKart • Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary: #10b981;
+            --primary: #4ade80;
             --primary-dark: #059669;
             --text: #0f172a;
             --text-light: #64748b;
             --bg: #f8fafc;
+            --card-bg: #ffffff;
             --border: #e2e8f0;
+            --nav-height: 70px;
         }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: var(--text); }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding-bottom: calc(var(--nav-height) + 40px);
+        }
 
-        /* Modal Content Styling */
-        .modal-content { background: white; min-height: 100vh; position: relative; padding-bottom: 40px; }
-        .slider-container { position: relative; width: 100%; height: 380px; background: #f1f5f9; overflow: hidden; }
-        .slider-wrapper { display: flex; height: 100%; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
-        .slide { min-width: 100%; height: 100%; object-fit: contain; }
-        
-        .close-btn { position: absolute; top: 20px; left: 20px; z-index: 10; background: white; color: var(--text); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
-        
-        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); color: var(--text); border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; z-index: 5; font-weight: bold; }
-        .prev-btn { left: 10px; } .next-btn { right: 10px; }
-        
-        .slider-dots { position: absolute; bottom: 15px; width: 100%; display: flex; justify-content: center; gap: 6px; }
-        .dot { width: 7px; height: 7px; background: rgba(0,0,0,0.2); border-radius: 50%; transition: 0.3s; }
-        .dot.active { background: var(--primary-dark); width: 18px; border-radius: 4px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; }
 
-        .modal-body { padding: 25px 20px; }
-        .modal-price-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .modal-price { font-size: 34px; font-weight: 800; color: var(--primary-dark); }
-        .verified-badge { background: #dcfce7; color: #15803d; font-size: 11px; padding: 5px 12px; border-radius: 20px; font-weight: 700; text-transform: uppercase; }
+        .card {
+            background: white; border-radius: 20px; padding: 20px;
+            margin-bottom: 20px; border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        /* Reputation & Header */
+        .reputation-badge {
+            position: absolute; top: 15px; right: 15px;
+            background: #fef3c7; color: #92400e; padding: 4px 10px;
+            border-radius: 20px; font-size: 10px; font-weight: 800;
+        }
+
+        .avatar {
+            width: 85px; height: 85px; border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            margin: 0 auto 12px; overflow: hidden; display: flex;
+            align-items: center; justify-content: center; color: white;
+            font-weight: 600; cursor: pointer; border: 3px solid white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Seller Stats Dashboard */
+        .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 15px 0; }
+        .stat-item { text-align: center; background: #f1f5f9; padding: 10px; border-radius: 12px; }
+        .stat-item b { display: block; font-size: 15px; color: var(--text); }
+        .stat-item label { font-size: 9px; color: var(--text-light); text-transform: uppercase; font-weight: 700; }
+
+        /* College Searchable Dropdown */
+        .dropdown-wrapper { position: relative; }
+        .college-results {
+            position: absolute; width: 100%; background: white; border: 1px solid var(--border);
+            border-radius: 12px; max-height: 180px; overflow-y: auto; z-index: 100; display: none;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+        .college-results div { padding: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .college-results div:hover { background: #f8fafc; }
+
+        .info-display label { display: block; font-size: 11px; color: var(--text-light); font-weight: 700; text-transform: uppercase; margin-top: 12px; }
+        .info-display p { margin: 4px 0; font-weight: 500; }
+        .edit-form { display: none; }
         
-        .modal-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 12px; line-height: 1.2; }
-        .condition-chip { display: inline-flex; align-items: center; background: #f1f5f9; padding: 6px 14px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-light); }
-        .safety-tip { background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 14px; border-radius: 16px; font-size: 13px; margin: 20px 0; line-height: 1.4; }
+        input, textarea {
+            width: 100%; padding: 12px; border-radius: 12px;
+            border: 1px solid var(--border); margin-top: 5px; box-sizing: border-box;
+        }
+
+        .btn-primary { width: 100%; padding: 14px; border: none; border-radius: 12px; cursor: pointer; background: var(--primary); color: white; font-weight: 700; margin-top: 10px; }
+        .btn-outline { background: none; border: 1px solid var(--primary); color: var(--primary); padding: 8px 16px; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 10px;}
+
+        /* Grids & Headers */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .see-all-btn { color: var(--primary-dark); font-size: 12px; font-weight: 700; cursor: pointer; border: none; background: none; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .product-item { background: #fff; border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; }
+        .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
         
-        .desc-section h4 { margin: 0 0 8px 0; font-size: 16px; font-weight: 700; }
-        .desc-section p { margin: 0; color: var(--text-light); line-height: 1.6; font-size: 14.5px; }
+        .heart-btn {
+            position: absolute; top: 8px; right: 8px; background: white;
+            border-radius: 50%; width: 26px; height: 26px; display: flex;
+            align-items: center; justify-content: center; border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 5;
+        }
+        .heart-btn svg { width: 14px; height: 14px; fill: #ef4444; }
 
-        /* Seller Card Redirection Area */
-        .seller-card { display: flex; align-items: center; gap: 12px; padding: 16px; background: white; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; margin-top: 25px; transition: 0.2s; }
-        .seller-card:active { transform: scale(0.98); background: #f8fafc; }
-        .seller-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 18px; overflow: hidden; border: 2px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .seller-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .seller-name { font-weight: 700; font-size: 16px; color: var(--text); }
-        .seller-college { font-size: 12px; color: var(--text-light); }
-        .seller-arrow { margin-left: auto; font-size: 20px; color: var(--border); }
-
-        /* Buttons Section */
-        .btn-row { padding: 0 20px 30px; display: flex; flex-direction: column; gap: 12px; }
-        .btn { border: none; border-radius: 16px; padding: 18px; font-size: 16px; font-weight: 700; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-buy { background: var(--primary-dark); color: white; box-shadow: 0 8px 20px rgba(5, 150, 105, 0.25); }
-        .btn-secondary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .btn-small { background: #f1f5f9; color: var(--text); font-size: 12px; padding: 14px 5px; }
-        .btn-message { background: #0f172a; color: white; }
-        .btn:active { transform: scale(0.96); opacity: 0.9; }
-
-        /* UPI Modal */
-        #upiModal { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
-        .upi-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
-        .upi-title { font-weight: 800; font-size: 22px; margin-bottom: 5px; }
-        #upiQR { width: 200px; height: 200px; margin: 20px auto; border: 1px solid #f1f5f9; padding: 10px; border-radius: 20px; }
-        .upi-btns { display: flex; gap: 10px; margin-top: 20px; }
+        /* Bottom Nav */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: white; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 1000; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600; }
+        .nav-item.active { color: var(--primary-dark); }
+        .nav-item svg { width: 22px; height: 22px; }
+        .nav-sell { background: var(--primary-dark); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -25px; border: 4px solid var(--bg); color: white !important; }
     </style>
 </head>
 <body>
 
-<div id="productModal">
-    <div class="modal-content" id="modalContent">
-        <div style="padding:100px 20px; text-align:center; color: var(--text-light);">
-            Loading product details...
+<div class="container">
+    <div style="background: #fff1f2; color: #be123c; padding: 12px; border-radius: 15px; font-size: 11px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; border: 1px solid #fecdd3;">
+        <svg style="width:18px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <b>Campus Safety:</b> Meet in public areas like the library or canteen for trades.
+    </div>
+
+    <div class="card" style="text-align: center;">
+        <div id="repBadge" class="reputation-badge">New Trader</div>
+        <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">Upload</div>
+        <input type="file" id="avatarUpload" hidden>
+        
+        <h2 id="viewName" style="margin: 5px 0 0 0;">Loading...</h2>
+        <p id="viewCollege" style="color: var(--text-light); font-size: 13px; margin-top: 5px;"></p>
+        
+        <div style="display: flex; justify-content: center; gap: 15px; margin: 10px 0; font-size: 13px;">
+            <span><b id="followerCount">0</b> Followers</span>
+            <span><b id="followingCount">0</b> Following</span>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-item"><b id="statSold">0</b><label>Items Sold</label></div>
+            <div class="stat-item"><b id="statRating">5.0</b><label>Rating</label></div>
+            <div class="stat-item"><b id="statResp">100%</b><label>Response</label></div>
+        </div>
+
+        <button class="btn-outline" id="editProfileBtn" onclick="toggleEditMode(true)">Edit Profile</button>
+    </div>
+
+    <div class="card">
+        <h3>Account Info</h3>
+        <div id="infoDisplay" class="info-display">
+            <label>College</label><p id="displayCollegeText">-</p>
+            <label>Bio</label><p id="displayBioText">-</p>
+            <label>UPI ID</label><p id="displayUpiText">Not set</p>
+        </div>
+
+        <div id="infoEdit" class="edit-form">
+            <label>Full Name</label><input id="nameInput">
+            
+            <label>College</label>
+            <div class="dropdown-wrapper">
+                <input id="collegeInput" oninput="searchColleges(this.value)" placeholder="Search Mumbai colleges...">
+                <div id="collegeList" class="college-results"></div>
+            </div>
+
+            <label>Bio</label><textarea id="bioInput" rows="2"></textarea>
+            <label>UPI ID</label><input id="upiInput">
+            
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn-primary" onclick="saveProfile()">Save</button>
+                <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)">Cancel</button>
+            </div>
         </div>
     </div>
+
+    <div class="card">
+        <div class="section-header">
+            <h3>My Inventory (Tradeable)</h3>
+            <button class="see-all-btn" onclick="location.href='add_product.html'">+ Add</button>
+        </div>
+        <div id="inventoryGrid" class="grid"></div>
+    </div>
+
+    <div class="card">
+        <div class="section-header">
+            <h3>My Wishlist</h3>
+            <button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'">See All</button>
+        </div>
+        <div id="wishlistGrid" class="grid"></div>
+    </div>
+
+    <div class="card">
+        <div class="section-header">
+            <h3>My Orders</h3>
+            <button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'">See All</button>
+        </div>
+        <div id="ordersGrid" class="grid"></div>
+    </div>
+
+    <div class="card">
+        <div class="section-header">
+            <h3>College Leaderboard</h3>
+        </div>
+        <div id="leaderboardList" style="font-size: 13px;"></div>
+    </div>
+
+    <button style="background: #fee2e2; color: #ef4444; border:none; width:100%; padding:14px; border-radius:12px; font-weight:700; margin-bottom: 20px; cursor:pointer;" onclick="logout()">Logout</button>
 </div>
 
-<div id="upiModal">
-    <div class="upi-content">
-        <div class="upi-title">Pay via UPI</div>
-        <div id="upiAmount" style="font-size: 26px; font-weight: 800; color: var(--primary-dark);"></div>
-        <img id="upiQR" src="" alt="UPI QR">
-        <p style="font-size: 12px; color: var(--text-light); margin: 0;">Scan with any UPI App (GPay, PhonePe, etc.)</p>
-        <div class="upi-btns">
-            <a id="upiLink" href="#" class="btn btn-buy" style="flex:2; text-decoration:none;">Open App</a>
-            <button onclick="document.getElementById('upiModal').style.display='none'" class="btn btn-small" style="flex:1; border: 1px solid var(--border);">Close</button>
-        </div>
-    </div>
-</div>
+<nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
+    </a>
+    <a href="chats.html" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+        Chats
+    </a>
+    <a href="add_product.html" class="nav-item nav-sell">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+    </a>
+    <a href="my-ads.html" class="nav-item">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        Ads
+    </a>
+    <a href="profile.html" class="nav-item active">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+        Profile
+    </a>
+</nav>
 
 <script>
-    let slideIndex = 0;
+    const colleges = ["University of Mumbai", "Datta Meghe College Of Engineering", "VJTI", "SPIT", "DJ Sanghvi", "KJ Somaiya", "Thadomal Shahani", "Fr CRCE", "Xavier Institute", "Don Bosco Institute", "Atharva College"];
+    let currentUser;
 
-    window.onload = async () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id');
-        if (productId) fetchProductDetails(productId);
-    };
-
-    async function fetchProductDetails(id) {
-        // Fetch only the specific product and join the seller data
-        const { data: p, error } = await supabaseClient
-            .from('products')
-            .select('*, seller:users(*)')
-            .eq('id', id)
-            .single();
-
-        if (error || !p) {
-            document.getElementById('modalContent').innerHTML = `
-                <div style='padding:100px 20px; text-align:center;'>
-                    <h3>Product not found</h3>
-                    <button onclick="history.back()" class="btn btn-small" style="display:inline-block; margin-top:10px;">Go Back</button>
-                </div>`;
-            return;
-        }
-
-        const images = p.image_url ? p.image_url.split(',') : ['https://via.placeholder.com/400?text=No+Image'];
-        const slidesHTML = images.map(img => `<img src="${img.trim()}" class="slide">`).join('');
-        const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('');
-
-        const content = document.getElementById('modalContent');
-        content.innerHTML = `
-            <div class="slider-container">
-                <button class="close-btn" onclick="history.back()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                ${images.length > 1 ? `
-                    <button class="slider-btn prev-btn" onclick="moveSlide(-1,${images.length})">❮</button>
-                    <button class="slider-btn next-btn" onclick="moveSlide(1,${images.length})">❯</button>
-                    <div class="slider-dots">${dotsHTML}</div>
-                ` : ''}
-                <div class="slider-wrapper" id="sliderWrapper">${slidesHTML}</div>
-            </div>
-            
-            <div class="modal-body">
-                <div class="modal-price-row">
-                    <div class="modal-price">₹${Math.floor(p.price).toLocaleString('en-IN')}</div>
-                    ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified Student</span>' : ''}
-                </div>
-                
-                <div class="modal-title">${p.title}</div>
-                
-                <div class="condition-chip">🏷️ ${p.condition || 'Used'}</div>
-                
-                <div class="safety-tip">🛡️ <b>Safety First:</b> Meet at public campus spots like the Canteen, Library, or Admin Block.</div>
-                
-                <div class="desc-section">
-                    <h4>Description</h4>
-                    <p>${p.description || 'The seller hasn\'t provided a description for this item yet.'}</p>
-                </div>
-
-                <div class="seller-card" onclick="window.location.href='seller_profile.html?id=${p.seller_id}'">
-                    <div class="seller-avatar">
-                        ${p.seller?.avatar_url ? `<img src="${p.seller.avatar_url}">` : (p.seller?.name?.charAt(0)?.toUpperCase() || 'S')}
-                    </div>
-                    <div>
-                        <div class="seller-name">${p.seller?.name || 'Verified Seller'}</div>
-                        <div class="seller-college">${p.seller?.college || 'Campus Member'}</div>
-                    </div>
-                    <div class="seller-arrow">❯</div>
-                </div>
-            </div>
-
-            <div class="btn-row">
-                <button class="btn btn-buy" onclick="openUPI(${p.price}, '${p.seller?.upi_id || ''}', '${p.seller?.name || 'Seller'}')">
-                    ⚡ Buy Now
-                </button>
-                
-                <div class="btn-secondary-row">
-                    <button class="btn btn-small" onclick="alert('Added to Cart!')">🛒 Cart</button>
-                    <button class="btn btn-small" onclick="window.location.href='chat_room.html?user=${p.seller_id}'">💬 Offer</button>
-                    <button class="btn btn-small" onclick="alert('Saved to Wishlist!')">♡ Save</button>
-                </div>
-                
-                <button class="btn btn-message" onclick="window.location.href='chat_room.html?user=${p.seller_id}'">
-                    Message Seller
-                </button>
-            </div>
-        `;
+    async function init() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return location.href = "login-signup.html";
+        currentUser = session.user;
+        loadProfile();
+        loadWishlist();
+        loadInventory();
+        loadOrders();
     }
 
-    function moveSlide(step, total) {
-        const wrapper = document.getElementById('sliderWrapper');
-        const dots = document.querySelectorAll('.dot');
-        slideIndex = (slideIndex + step + total) % total;
-        wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
-        dots.forEach((dot, i) => dot.classList.toggle('active', i === slideIndex));
+    // Feature 1: College Dropdown Search
+    function searchColleges(val) {
+        const list = document.getElementById('collegeList');
+        list.innerHTML = "";
+        if(!val) { list.style.display = "none"; return; }
+        const filtered = colleges.filter(c => c.toLowerCase().includes(val.toLowerCase()));
+        if(filtered.length > 0) {
+            list.style.display = "block";
+            filtered.forEach(c => {
+                const div = document.createElement('div');
+                div.innerText = c;
+                div.onclick = () => { document.getElementById('collegeInput').value = c; list.style.display = "none"; };
+                list.appendChild(div);
+            });
+        }
     }
 
-    function openUPI(amount, upiId, name) {
-        if (!upiId) {
-            alert("The seller hasn't linked a UPI ID. Please message them to discuss payment.");
-            return;
-        }
-        const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR`;
-        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(upiLink)}`;
+    async function loadProfile() {
+        const { data } = await supabaseClient.from("users").select("*").eq("id", currentUser.id).single();
+        if (!data) return;
+
+        document.getElementById('viewName').innerText = data.name || "Student";
+        document.getElementById('viewCollege').innerText = data.college || "No College Selected";
+        document.getElementById('displayCollegeText').innerText = data.college || "Not set";
+        document.getElementById('displayBioText').innerText = data.bio || "No bio added";
+        document.getElementById('displayUpiText').innerText = data.upi_id || "Not set";
+
+        // Feature 8: Dashboard Stats
+        document.getElementById('statSold').innerText = data.items_sold || 0;
+        document.getElementById('statRating').innerText = data.rating || '5.0';
+        document.getElementById('followerCount').innerText = data.followers_count || 0;
+        document.getElementById('followingCount').innerText = data.following_count || 0;
         
-        document.getElementById('upiAmount').innerText = `₹${amount}`;
-        document.getElementById('upiQR').src = qrUrl;
-        document.getElementById('upiLink').href = upiLink;
-        document.getElementById('upiModal').style.display = 'flex';
-    }
-</script>
+        // Feature 5: Reputation Badges
+        const score = data.reputation_score || 0;
+        document.getElementById('repBadge').innerText = score > 100 ? "Campus Legend" : (score > 50 ? "Pro Trader" : "New Trader");
 
+        if (data.avatar_url) document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}">`;
+        if (data.college) loadLeaderboard(data.college);
+
+        // Prep inputs for Edit Mode
+        document.getElementById('nameInput').value = data.name || "";
+        document.getElementById('collegeInput').value = data.college || "";
+        document.getElementById('bioInput').value = data.bio || "";
+        document.getElementById('upiInput').value = data.upi_id || "";
+    }
+
+    // Feature 2: Inventory Showcase
+    async function loadInventory() {
+        const { data } = await supabaseClient.from("products").select("*").eq("seller_id", currentUser.id).limit(4);
+        const grid = document.getElementById('inventoryGrid');
+        grid.innerHTML = data && data.length ? "" : "<p style='font-size:11px; color:gray;'>No items listed for trade.</p>";
+        data?.forEach(p => {
+            const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+            grid.innerHTML += `<div class="product-item" onclick="location.href='product-details.html?id=${p.id}'"><img src="${img}"><div style="font-weight:700; font-size:12px; margin-top:5px;">${p.title}</div></div>`;
+        });
+    }
+
+    // Existing: Wishlist Logic
+    async function loadWishlist() {
+        const { data } = await supabaseClient.from("wishlist").select("id, product:products(*)").eq("user_id", currentUser.id).limit(2);
+        const grid = document.getElementById('wishlistGrid');
+        grid.innerHTML = data && data.length ? "" : "<p style='font-size:11px; color:gray;'>Wishlist is empty.</p>";
+        data?.forEach(item => {
+            if (!item.product) return;
+            const p = item.product;
+            const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+            grid.innerHTML += `
+                <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+                    <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <img src="${img}"><div style="font-weight:700; font-size:12px; margin-top:5px;">₹${p.price}</div>
+                </div>`;
+        });
+    }
+
+    async function removeFromWishlist(id) {
+        await supabaseClient.from("wishlist").delete().eq("id", id);
+        location.reload();
+    }
+
+    // Existing: Orders Logic
+    async function loadOrders() {
+        const { data } = await supabaseClient.from("orders").select("product:products(*)").eq("buyer_id", currentUser.id).limit(2);
+        const grid = document.getElementById('ordersGrid');
+        grid.innerHTML = data && data.length ? "" : "<p style='font-size:11px; color:gray;'>No recent orders.</p>";
+        data?.forEach(item => {
+            if (!item.product) return;
+            const p = item.product;
+            grid.innerHTML += `<div class="product-item" onclick="location.href='product-details.html?id=${p.id}'"><img src="${p.image_url.split(',')[0]}"><div style="font-weight:700; font-size:12px; margin-top:5px;">₹${p.price}</div></div>`;
+        });
+    }
+
+    // Feature 3: Leaderboard Logic
+    async function loadLeaderboard(college) {
+        const { data } = await supabaseClient.from("users").select("name, items_sold, rating").eq("college", college).order("items_sold", {ascending: false}).limit(3);
+        const list = document.getElementById('leaderboardList');
+        list.innerHTML = data.map((u, i) => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f1f5f9;"><span>#${i+1} ${u.name}</span><b>${u.items_sold} sold</b></div>`).join('');
+    }
+
+    function toggleEditMode(show) {
+        document.getElementById('infoDisplay').style.display = show ? 'none' : 'block';
+        document.getElementById('infoEdit').style.display = show ? 'block' : 'none';
+        document.getElementById('editProfileBtn').style.display = show ? 'none' : 'inline-block';
+    }
+
+    async function saveProfile() {
+        const { error } = await supabaseClient.from("users").update({
+            name: document.getElementById('nameInput').value,
+            college: document.getElementById('collegeInput').value,
+            bio: document.getElementById('bioInput').value,
+            upi_id: document.getElementById('upiInput').value
+        }).eq('id', currentUser.id);
+        if (error) alert(error.message); else location.reload();
+    }
+
+    async function logout() { await supabaseClient.auth.signOut(); location.href = "login-signup.html"; }
+
+    window.onload = init;
+</script>
 </body>
 </html>
