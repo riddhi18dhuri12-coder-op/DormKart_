@@ -194,7 +194,34 @@
         wrapper.style.transform = `translateX(-${slideIndex * 100}%)`;
         dots.forEach((dot, i) => dot.classList.toggle('active', i === slideIndex));
     }
+async function sendTradeOffer(requestedProductId, sellerId) {
+    // 1. Fetch current user's inventory
+    const { data: myItems } = await supabaseClient
+        .from("products")
+        .select("id, title")
+        .eq("seller_id", currentUser.id);
 
+    if (myItems.length === 0) {
+        alert("You need to add items to your inventory first to trade!");
+        return;
+    }
+
+    // 2. Open a simple prompt or modal (Simplified for logic)
+    const offerMsg = "Select Item ID to trade: \n" + myItems.map(i => `${i.title} (ID: ${i.id})`).join("\n");
+    const offeredItemId = prompt(offerMsg);
+
+    if (offeredItemId) {
+        const { error } = await supabaseClient.from("trades").insert([{
+            sender_id: currentUser.id,
+            receiver_id: sellerId,
+            offered_item_id: offeredItemId,
+            requested_item_id: requestedProductId,
+            status: 'pending'
+        }]);
+
+        if(!error) alert("Trade offer sent! Check your chats.");
+    }
+}
     function openUPI(amount, upiId, name) {
         if (!upiId) {
             alert("The seller hasn't linked a UPI ID. Please message them to discuss payment.");
