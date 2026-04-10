@@ -738,26 +738,7 @@ function showDetails(p) {
   const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
   const slidesHTML = images.map(url => `<img src="${url.trim()}" onerror="this.src='placeholder.jpg'">`).join('');
   const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
-const tradeSection = document.getElementById("tradeSection");
-const tradeWanted = document.getElementById("tradeWanted");
-const tradeInput = document.getElementById("buyerTradeItem");
 
-tradeSection.style.display = "none";
-
-if(product.swap_enabled){
-
-    tradeSection.style.display = "block";
-
-    if(product.swap_item){
-        tradeWanted.innerHTML = "🔁 Seller wants: <b>" + product.swap_item + "</b>";
-        tradeInput.style.display = "none";
-    }
-    else{
-        tradeWanted.innerHTML = "🔁 Seller is open to trade offers";
-        tradeInput.style.display = "block";
-    }
-
-}
   content.innerHTML = `
     <div class="modal-drag"></div>
     <div class="slider-container">
@@ -814,6 +795,26 @@ if(product.swap_enabled){
     </div>
   `;
   modal.style.display = 'flex';
+  const tradeSection = document.getElementById("tradeSection");
+const tradeWanted = document.getElementById("tradeWanted");
+const tradeInput = document.getElementById("buyerTradeItem");
+
+tradeSection.style.display = "none";
+
+if(product.swap_enabled){
+
+    tradeSection.style.display = "block";
+
+    if(product.swap_item){
+        tradeWanted.innerHTML = "🔁 Seller wants: <b>" + product.swap_item + "</b>";
+        tradeInput.style.display = "none";
+    }
+    else{
+        tradeWanted.innerHTML = "🔁 Seller is open to trade offers";
+        tradeInput.style.display = "block";
+    }
+
+}
 }
 
 function closeModal() {
