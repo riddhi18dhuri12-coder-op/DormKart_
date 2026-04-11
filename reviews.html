@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DormKart • Reviews & Ratings</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --primary:#2563eb;--primary-hover:#1d4ed8;--primary-light:#eff6ff;--primary-100:#dbeafe;
+  --accent:#06b6d4;--bg:#f1f5f9;--bg-alt:#e8edf3;--card:#ffffff;--card-hover:#fafbfc;
+  --text:#0f172a;--text-secondary:#334155;--muted:#64748b;--muted-light:#94a3b8;
+  --border:#e2e8f0;--border-light:#f1f5f9;
+  --success:#059669;--success-bg:#d1fae5;--success-text:#065f46;
+  --warning:#d97706;--warning-bg:#fef3c7;--warning-text:#92400e;
+  --danger:#dc2626;--danger-bg:#fee2e2;--danger-text:#991b1b;
+  --info-bg:#e0f2fe;--info-text:#075985;
+  --dark:#0f172a;--dark-2:#1e293b;--dark-3:#334155;
+  --sidebar-w:260px;--header-h:64px;
+  --radius-sm:8px;--radius:12px;--radius-lg:16px;--radius-xl:20px;--radius-2xl:24px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.04);
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,0.06),0 2px 4px -2px rgba(0,0,0,0.04);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,0.06),0 4px 6px -4px rgba(0,0,0,0.04);
+  --shadow-xl:0 20px 25px -5px rgba(0,0,0,0.08),0 8px 10px -6px rgba(0,0,0,0.04);
+  --transition:0.2s ease;--transition-slow:0.3s ease;
+}
+[data-theme="dark"] {
+  --bg:#0c1222;--bg-alt:#111827;--card:#1a2332;--card-hover:#1f2b3d;
+  --text:#f1f5f9;--text-secondary:#cbd5e1;--muted:#94a3b8;--muted-light:#64748b;
+  --border:#2a3544;--border-light:#1e293b;--primary-light:#172554;--primary-100:#1e3a5f;
+  --success-bg:#052e16;--success-text:#86efac;--warning-bg:#451a03;--warning-text:#fbbf24;
+  --danger-bg:#450a0a;--danger-text:#fca5a5;--info-bg:#082f49;--info-text:#7dd3fc;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.2);--shadow:0 1px 3px rgba(0,0,0,0.25);
+  --shadow-md:0 4px 6px rgba(0,0,0,0.25);--shadow-lg:0 10px 15px rgba(0,0,0,0.3);
+  --shadow-xl:0 20px 25px rgba(0,0,0,0.35);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{list-style:none}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:4px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* Sidebar */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;z-index:1000;transition:transform var(--transition-slow)}
+.sidebar-brand{height:var(--header-h);display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid var(--border);flex-shrink:0}
+.sidebar-brand .logo{font-size:22px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
+.sidebar-brand .logo span{color:var(--primary)}
+.sidebar-brand .logo-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);margin-left:-2px;margin-top:-8px}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 10px}
+.sidebar-nav::-webkit-scrollbar{width:3px}
+.sidebar-nav::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.nav-section{margin-bottom:8px}
+.nav-section-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted-light);padding:12px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius);font-size:13.5px;font-weight:500;color:var(--muted);transition:all var(--transition);cursor:pointer;position:relative;margin-bottom:2px}
+.nav-item i{width:18px;text-align:center;font-size:15px}
+.nav-item:hover{color:var(--text);background:var(--border-light)}
+.nav-item.active{color:var(--primary);background:var(--primary-light);font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:0 3px 3px 0;background:var(--primary)}
+.nav-badge{margin-left:auto;font-size:11px;font-weight:700;padding:2px 7px;border-radius:99px;background:var(--danger);color:white;min-width:20px;text-align:center}
+.sidebar-footer{padding:16px;border-top:1px solid var(--border);flex-shrink:0}
+.sidebar-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:var(--radius);cursor:pointer;transition:background var(--transition)}
+.sidebar-user:hover{background:var(--border-light)}
+.sidebar-user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;flex-shrink:0}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-role{font-size:11px;color:var(--muted)}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:999;backdrop-filter:blur(2px)}
+.sidebar-overlay.active{display:block}
+
+/* Header */
+.header{position:fixed;top:0;right:0;left:var(--sidebar-w);height:var(--header-h);background:rgba(255,255,255,0.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;padding:0 24px;z-index:900;transition:left var(--transition-slow),background var(--transition-slow)}
+[data-theme="dark"] .header{background:rgba(26,35,50,0.85)}
+.header-menu-btn{display:none;width:36px;height:36px;border-radius:var(--radius-sm);align-items:center;justify-content:center;color:var(--muted);font-size:18px;transition:all var(--transition)}
+.header-menu-btn:hover{background:var(--border-light);color:var(--text)}
+.header-search{flex:1;max-width:420px;position:relative}
+.header-search input{width:100%;padding:9px 14px 9px 38px;border-radius:99px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13.5px;font-weight:500;transition:all var(--transition)}
+.header-search input::placeholder{color:var(--muted-light)}
+.header-search input:focus{border-color:var(--primary);background:var(--card);box-shadow:0 0 0 3px rgba(37,99,235,0.1)}
+.header-search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted-light);font-size:14px}
+.header-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
+.header-btn{width:38px;height:38px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:17px;position:relative;transition:all var(--transition)}
+.header-btn:hover{background:var(--border-light);color:var(--text)}
+.header-btn .badge{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:var(--danger);border:2px solid var(--card)}
+.header-divider{width:1px;height:28px;background:var(--border);margin:0 4px}
+.header-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:13px;cursor:pointer;transition:box-shadow var(--transition)}
+.header-avatar:hover{box-shadow:0 0 0 3px rgba(37,99,235,0.2)}
+
+/* Main */
+.main{margin-left:var(--sidebar-w);padding:calc(var(--header-h) + 24px) 28px 40px;min-height:100vh;transition:margin-left var(--transition-slow)}
+
+/* Section Card */
+.section-card{background:var(--card);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-sm);margin-bottom:20px;overflow:hidden}
+.section-card-header{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--border-light)}
+.section-card-header h2{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.section-card-body{padding:22px}
+
+/* Page Header */
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap}
+.page-header h1{font-size:26px;font-weight:800;letter-spacing:-.5px}
+.page-header h1 span{color:var(--primary)}
+.page-header p{font-size:14px;color:var(--muted);font-weight:500;margin-top:4px}
+
+/* Rating Overview Card */
+.rating-overview{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+.rating-big{text-align:center;padding:10px 0}
+.rating-big-number{font-size:64px;font-weight:800;line-height:1;color:var(--text);letter-spacing:-2px}
+.rating-big-stars{font-size:22px;color:#f59e0b;margin:8px 0;letter-spacing:2px}
+.rating-big-count{font-size:14px;color:var(--muted);font-weight:500}
+.rating-bars{display:flex;flex-direction:column;gap:8px;padding-top:8px}
+.rating-row{display:flex;align-items:center;gap:10px}
+.rating-row-label{font-size:13px;font-weight:600;width:56px;text-align:right;color:var(--text-secondary);flex-shrink:0}
+.rating-row-track{flex:1;height:10px;border-radius:99px;background:var(--border-light);overflow:hidden}
+.rating-row-fill{height:100%;border-radius:99px;background:#f59e0b;transition:width 0.8s cubic-bezier(0.22,1,0.36,1)}
+.rating-row-count{font-size:12px;font-weight:600;color:var(--muted);width:28px;text-align:right;flex-shrink:0}
+
+/* Stat pills row */
+.stat-pills{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.stat-pill{display:flex;align-items:center;gap:8px;padding:10px 18px;border-radius:var(--radius-lg);background:var(--card);border:1px solid var(--border);box-shadow:var(--shadow-sm)}
+.stat-pill-icon{width:36px;height:36px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.stat-pill-value{font-size:18px;font-weight:800;letter-spacing:-.5px}
+.stat-pill-label{font-size:11px;color:var(--muted);font-weight:600}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;padding:0 22px;border-bottom:1px solid var(--border-light);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:14px 16px;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;transition:all var(--transition)}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* Toolbar */
+.toolbar{display:flex;align-items:center;gap:10px;padding:14px 22px;flex-wrap:wrap;border-bottom:1px solid var(--border-light)}
+.toolbar select,.toolbar input{padding:7px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12.5px;font-weight:500;outline:none;transition:border-color var(--transition);-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.toolbar select:focus,.toolbar input:focus{border-color:var(--primary)}
+.toolbar .spacer{flex:1}
+.toolbar-count{font-size:12px;color:var(--muted);font-weight:600}
+
+/* Review Card */
+.review-card{padding:20px 22px;border-bottom:1px solid var(--border-light);transition:background var(--transition)}
+.review-card:last-child{border-bottom:none}
+.review-card:hover{background:var(--border-light)}
+.review-card-inner{display:flex;gap:14px}
+.review-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;color:white}
+.review-body{flex:1;min-width:0}
+.review-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.review-user{display:flex;align-items:center;gap:8px}
+.review-name{font-size:14px;font-weight:700}
+.review-verified{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--success-bg);color:var(--success);font-size:8px}
+.review-date{font-size:12px;color:var(--muted-light);font-weight:500}
+.review-stars{font-size:13px;color:#f59e0b;margin:6px 0;letter-spacing:1px}
+.review-stars .empty{color:var(--border)}
+.review-product{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:var(--primary-light);color:var(--primary);font-size:11.5px;font-weight:600;margin-bottom:10px;cursor:pointer;transition:all var(--transition)}
+.review-product:hover{background:var(--primary-100)}
+.review-product img{width:20px;height:20px;border-radius:4px;object-fit:cover}
+.review-comment{font-size:13.5px;color:var(--text-secondary);line-height:1.7;margin-bottom:12px}
+.review-actions{display:flex;gap:6px;flex-wrap:wrap}
+.review-action-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--radius-sm);font-size:12px;font-weight:600;color:var(--muted);border:1px solid var(--border);transition:all var(--transition)}
+.review-action-btn:hover{background:var(--border-light);color:var(--text);border-color:var(--muted-light)}
+.review-action-btn.liked{color:var(--primary);border-color:var(--primary-100);background:var(--primary-light)}
+
+/* Seller Response */
+.review-response{margin-top:12px;padding:12px 14px;border-radius:var(--radius);background:var(--border-light);border-left:3px solid var(--primary)}
+.review-response-header{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.review-response-header span{font-size:12px;font-weight:700;color:var(--primary)}
+.review-response-header .resp-badge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:99px;background:var(--primary-100);color:var(--primary)}
+.review-response p{font-size:12.5px;color:var(--text-secondary);line-height:1.6}
+
+/* Reply Form */
+.reply-form{margin-top:12px;display:none}
+.reply-form.active{display:block}
+.reply-form textarea{width:100%;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-weight:500;resize:vertical;min-height:70px;outline:none;transition:border-color var(--transition);line-height:1.6}
+.reply-form textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,0.08)}
+.reply-form-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
+.btn-sm{padding:7px 16px;border-radius:var(--radius-sm);font-size:12px;font-weight:700;transition:all var(--transition)}
+.btn-sm-primary{background:var(--primary);color:white}
+.btn-sm-primary:hover{background:var(--primary-hover)}
+.btn-sm-ghost{color:var(--muted);border:1px solid var(--border)}
+.btn-sm-ghost:hover{background:var(--border-light);color:var(--text)}
+
+/* Empty State */
+.empty-state{text-align:center;padding:48px 20px}
+.empty-state i{font-size:40px;color:var(--muted-light);margin-bottom:14px}
+.empty-state h4{font-size:15px;font-weight:700;color:var(--text-secondary);margin-bottom:4px}
+.empty-state p{font-size:13px;color:var(--muted);max-width:320px;margin:0 auto}
+
+/* Skeleton */
+.skeleton{background:linear-gradient(90deg,var(--border-light) 25%,var(--border) 50%,var(--border-light) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.skel-review{display:flex;gap:14px;padding:20px 22px;border-bottom:1px solid var(--border-light)}
+.skel-avatar{width:44px;height:44px;border-radius:50%;flex-shrink:0}
+.skel-lines{flex:1}
+.skel-line{height:12px;border-radius:6px;margin-bottom:8px}
+.skel-line.short{width:40%}
+.skel-line.medium{width:70%}
+.skel-line.long{width:90%}
+
+/* Toast */
+.toast-container{position:fixed;top:80px;right:24px;z-index:5000;display:flex;flex-direction:column;gap:8px}
+.toast{padding:12px 18px;border-radius:var(--radius);font-size:13px;font-weight:600;color:white;box-shadow:var(--shadow-lg);animation:toastIn .3s ease,toastOut .3s ease 2.2s forwards;display:flex;align-items:center;gap:8px}
+.toast i{font-size:14px}
+.toast.success{background:var(--success)}
+.toast.error{background:var(--danger)}
+.toast.info{background:var(--dark-2)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
+
+/* Loading */
+#loadingOverlay{position:fixed;inset:0;background:var(--card);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .3s}
+#loadingOverlay.hide{opacity:0;pointer-events:none}
+.loader-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-text{font-weight:600;color:var(--muted);font-size:13px}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.active{display:flex}
+.modal{background:var(--card);border-radius:var(--radius-2xl);width:100%;max-width:440px;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-xl);animation:modalIn .25s cubic-bezier(.22,1,.36,1)}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0}
+.modal-header h3{font-size:17px;font-weight:800}
+.modal-close{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;transition:all var(--transition)}
+.modal-close:hover{background:var(--border-light);color:var(--text)}
+.modal-body{padding:20px 24px 24px}
+
+/* Flag modal */
+.flag-options{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.flag-option{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);cursor:pointer;transition:all var(--transition);font-size:13px;font-weight:500;color:var(--text-secondary)}
+.flag-option:hover{background:var(--border-light);border-color:var(--muted-light)}
+.flag-option.selected{background:var(--primary-light);border-color:var(--primary-100);color:var(--primary)}
+.flag-option i{width:18px;text-align:center;color:var(--muted)}
+
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted-light)}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .header{left:0}
+  .main{margin-left:0;padding:calc(var(--header-h) + 16px) 16px 100px}
+  .header-menu-btn{display:flex}
+  .rating-overview{grid-template-columns:1fr}
+  .stat-pills{gap:8px}
+  .stat-pill{flex:1;min-width:140px}
+  .page-header h1{font-size:22px}
+  .toolbar{padding:12px 16px}
+  .review-card{padding:16px}
+  .review-card-inner{flex-direction:column;gap:10px}
+  .review-avatar{width:38px;height:38px;font-size:13px}
+  .toast-container{right:16px;left:16px}
+}
+@media(max-width:480px){
+  .stat-pills{flex-direction:column}
+  .stat-pill{min-width:auto}
+  .rating-big-number{font-size:48px}
+  .review-actions{flex-direction:column}
+  .review-action-btn{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div id="loadingOverlay">
+  <div class="loader-spinner"></div>
+  <div class="loader-text">Loading Reviews...</div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo">Dorm<span>Kart</span><div class="logo-dot"></div></div>
+  </div>
+  <nav class="sidebar-nav" aria-label="Main navigation">
+    <div class="nav-section">
+      <div class="nav-section-title">Main</div>
+      <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-gauge-high"></i> Dashboard</a>
+      <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> My Profile</a>
+      <a href="my_ads.html" class="nav-item"><i class="fa-solid fa-layer-group"></i> Listings <span class="nav-badge">12</span></a>
+      <a href="orders.html" class="nav-item"><i class="fa-solid fa-bag-shopping"></i> Orders <span class="nav-badge">3</span></a>
+      <a href="chats.html" class="nav-item"><i class="fa-solid fa-comment-dots"></i> Messages <span class="nav-badge">5</span></a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Insights</div>
+      <a href="reviews.html" class="nav-item active"><i class="fa-solid fa-star"></i> Reviews</a>
+      <a href="saved.html" class="nav-item"><i class="fa-solid fa-heart"></i> Saved Items</a>
+      <a href="analytics.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+      <a href="wallet.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Wallet & Earnings</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">Account</div>
+      <a href="settings.html" class="nav-item"><i class="fa-solid fa-gear"></i> Settings</a>
+      <a href="support.html" class="nav-item"><i class="fa-solid fa-circle-question"></i> Help & Support</a>
+      <button class="nav-item" id="logoutBtn" style="width:100%;text-align:left"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user" onclick="location.href='profile.html'">
+      <div class="sidebar-user-avatar" id="sidebarAvatar">AR</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarUserName">Arjun R.</div>
+        <div class="sidebar-user-role" id="sidebarUserRole">CSE · Sem 5</div>
+      </div>
+      <i class="fa-solid fa-ellipsis-vertical" style="color:var(--muted-light);font-size:14px"></i>
+    </div>
+  </div>
+</aside>
+
+<!-- Header -->
+<header class="header" id="mainHeader">
+  <button class="header-menu-btn" id="menuBtn" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
+  <div class="header-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="searchInput" placeholder="Search reviews, comments, products..." aria-label="Search reviews">
+  </div>
+  <div class="header-actions">
+    <button class="header-btn" aria-label="Notifications" onclick="showToast('No new notifications','info')"><i class="fa-solid fa-bell"></i></button>
+    <button class="header-btn" aria-label="Messages" onclick="location.href='chats.html'"><i class="fa-solid fa-envelope"></i><span class="badge"></span></button>
+    <div class="header-divider"></div>
+    <button class="header-btn" id="themeToggle" aria-label="Toggle theme"><i class="fa-solid fa-moon"></i></button>
+    <div class="header-divider"></div>
+    <div class="header-avatar" id="headerAvatar" onclick="location.href='profile.html'" role="button" aria-label="Profile">AR</div>
+  </div>
+</header>
+
+<!-- Main -->
+<main class="main">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <h1>Reviews & <span>Ratings</span></h1>
+      <p>Manage your reviews, respond to feedback, and track your reputation.</p>
+    </div>
+  </div>
+
+  <!-- Stat Pills -->
+  <div class="stat-pills">
+    <div class="stat-pill">
+      <div class="stat-pill-icon" style="background:#fef3c7;color:#d97706"><i class="fa-solid fa-star"></i></div>
+      <div><div class="stat-pill-value" id="avgRating">4.8</div><div class="stat-pill-label">Average Rating</div></div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-icon" style="background:var(--primary-light);color:var(--primary)"><i class="fa-solid fa-comments"></i></div>
+      <div><div class="stat-pill-value" id="totalReviews">0</div><div class="stat-pill-label">Total Reviews</div></div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-icon" style="background:var(--success-bg);color:var(--success)"><i class="fa-solid fa-face-smile"></i></div>
+      <div><div class="stat-pill-value" id="fiveStarPct">0%</div><div class="stat-pill-label">5-Star Rate</div></div>
+    </div>
+    <div class="stat-pill">
+      <div class="stat-pill-icon" style="background:var(--info-bg);color:var(--accent)"><i class="fa-solid fa-reply"></i></div>
+      <div><div class="stat-pill-value" id="responseRate">0%</div><div class="stat-pill-label">Response Rate</div></div>
+    </div>
+  </div>
+
+  <!-- Rating Overview -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h2><i class="fa-solid fa-chart-bar" style="color:#f59e0b;margin-right:8px"></i>Rating Breakdown</h2>
+    </div>
+    <div class="section-card-body">
+      <div class="rating-overview">
+        <div class="rating-big">
+          <div class="rating-big-number" id="bigRating">4.8</div>
+          <div class="rating-big-stars" id="bigStars"></div>
+          <div class="rating-big-count" id="bigCount">Based on 0 reviews</div>
+        </div>
+        <div class="rating-bars" id="ratingBars">
+          <div class="rating-row">
+            <div class="rating-row-label">5 <i class="fa-solid fa-star" style="font-size:10px;color:#f59e0b"></i></div>
+            <div class="rating-row-track"><div class="rating-row-fill" id="bar5" style="width:0%"></div></div>
+            <div class="rating-row-count" id="count5">0</div>
+          </div>
+          <div class="rating-row">
+            <div class="rating-row-label">4 <i class="fa-solid fa-star" style="font-size:10px;color:#f59e0b"></i></div>
+            <div class="rating-row-track"><div class="rating-row-fill" id="bar4" style="width:0%"></div></div>
+            <div class="rating-row-count" id="count4">0</div>
+          </div>
+          <div class="rating-row">
+            <div class="rating-row-label">3 <i class="fa-solid fa-star" style="font-size:10px;color:#f59e0b"></i></div>
+            <div class="rating-row-track"><div class="rating-row-fill" id="bar3" style="width:0%"></div></div>
+            <div class="rating-row-count" id="count3">0</div>
+          </div>
+          <div class="rating-row">
+            <div class="rating-row-label">2 <i class="fa-solid fa-star" style="font-size:10px;color:#f59e0b"></i></div>
+            <div class="rating-row-track"><div class="rating-row-fill" id="bar2" style="width:0%"></div></div>
+            <div class="rating-row-count" id="count2">0</div>
+          </div>
+          <div class="rating-row">
+            <div class="rating-row-label">1 <i class="fa-solid fa-star" style="font-size:10px;color:#f59e0b"></i></div>
+            <div class="rating-row-track"><div class="rating-row-fill" id="bar1" style="width:0%"></div></div>
+            <div class="rating-row-count" id="count1">0</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews List -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h2><i class="fa-solid fa-list" style="color:var(--primary);margin-right:8px"></i>All Reviews</h2>
+    </div>
+    <div class="tabs" id="reviewTabs">
+      <div class="tab active" data-tab="received-tab">Received (as Seller)</div>
+      <div class="tab" data-tab="given-tab">Given (as Buyer)</div>
+    </div>
+
+    <!-- Received Tab -->
+    <div class="tab-content active" id="received-tab">
+      <div class="toolbar">
+        <select id="receivedRatingFilter" aria-label="Filter by rating">
+          <option value="">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+        <select id="receivedSortFilter" aria-label="Sort reviews">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Rating</option>
+          <option value="lowest">Lowest Rating</option>
+        </select>
+        <select id="receivedResponseFilter" aria-label="Filter by response">
+          <option value="">All</option>
+          <option value="replied">Replied</option>
+          <option value="unreplied">Not Replied</option>
+        </select>
+        <div class="spacer"></div>
+        <span class="toolbar-count" id="receivedCount">0 reviews</span>
+      </div>
+      <div id="receivedList">
+        <!-- Skeleton loading -->
+        <div class="skel-review"><div class="skel-avatar skeleton"></div><div class="skel-lines"><div class="skel-line short skeleton"></div><div class="skel-line medium skeleton"></div><div class="skel-line long skeleton"></div></div></div>
+        <div class="skel-review"><div class="skel-avatar skeleton"></div><div class="skel-lines"><div class="skel-line short skeleton"></div><div class="skel-line medium skeleton"></div><div class="skel-line long skeleton"></div></div></div>
+        <div class="skel-review"><div class="skel-avatar skeleton"></div><div class="skel-lines"><div class="skel-line short skeleton"></div><div class="skel-line medium skeleton"></div><div class="skel-line long skeleton"></div></div></div>
+      </div>
+    </div>
+
+    <!-- Given Tab -->
+    <div class="tab-content" id="given-tab">
+      <div class="toolbar">
+        <select id="givenRatingFilter" aria-label="Filter by rating">
+          <option value="">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+        <select id="givenSortFilter" aria-label="Sort reviews">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Rating</option>
+          <option value="lowest">Lowest Rating</option>
+        </select>
+        <div class="spacer"></div>
+        <span class="toolbar-count" id="givenCount">0 reviews</span>
+      </div>
+      <div id="givenList">
+        <div class="skel-review"><div class="skel-avatar skeleton"></div><div class="skel-lines"><div class="skel-line short skeleton"></div><div class="skel-line medium skeleton"></div><div class="skel-line long skeleton"></div></div></div>
+        <div class="skel-review"><div class="skel-avatar skeleton"></div><div class="skel-lines"><div class="skel-line short skeleton"></div><div class="skel-line medium skeleton"></div><div class="skel-line long skeleton"></div></div></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Flag Review Modal -->
+<div class="modal-overlay" id="flagModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Report Review</h3>
+      <button class="modal-close" onclick="closeFlagModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">Why are you reporting this review?</p>
+      <div class="flag-options" id="flagOptions">
+        <div class="flag-option" onclick="selectFlag(this)"><i class="fa-solid fa-spam"></i> Spam or fake content</div>
+        <div class="flag-option" onclick="selectFlag(this)"><i class="fa-solid fa-user-xmark"></i> Harassment or personal attack</div>
+        <div class="flag-option" onclick="selectFlag(this)"><i class="fa-solid fa-link-slash"></i> Not related to the product</div>
+        <div class="flag-option" onclick="selectFlag(this)"><i class="fa-solid fa-circle-exclamation"></i> Contains inappropriate language</div>
+        <div class="flag-option" onclick="selectFlag(this)"><i class="fa-solid fa-coins"></i> Incentivized or paid review</div>
+      </div>
+      <textarea id="flagComment" placeholder="Additional details (optional)" style="width:100%;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;resize:vertical;min-height:60px;outline:none;margin-bottom:12px;font-family:inherit"></textarea>
+      <div style="display:flex;gap:10px;justify-content:flex-end">
+        <button class="btn-sm btn-sm-ghost" onclick="closeFlagModal()">Cancel</button>
+        <button class="btn-sm btn-sm-primary" id="submitFlagBtn" onclick="submitFlag()" style="padding:8px 20px">Submit Report</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Modal -->
+<div class="modal-overlay" id="logoutModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Confirm Logout</h3>
+      <button class="modal-close" onclick="document.getElementById('logoutModal').classList.remove('active')" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="width:56px;height:56px;border-radius:50%;background:var(--danger-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><i class="fa-solid fa-right-from-bracket" style="font-size:22px;color:var(--danger-text)"></i></div>
+        <p style="font-size:14px;color:var(--text-secondary);font-weight:500">Are you sure you want to log out?</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn-sm btn-sm-ghost" style="flex:1;padding:12px;justify-content:center" onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
+        <button style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--danger);color:white;font-weight:700;font-size:13px;transition:all var(--transition)" onclick="handleLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================
+   State
+   ============================ */
+let currentUser = null;
+let receivedReviews = [];
+let givenReviews = [];
+let buyersCache = {};
+let sellersCache = {};
+let productsCache = {};
+let sellerResponses = {};
+let flaggedReviewId = null;
+let likedReviews = new Set();
+
+const avatarColors = [
+  'linear-gradient(135deg,#6366f1,#8b5cf6)',
+  'linear-gradient(135deg,#ec4899,#f43f5e)',
+  'linear-gradient(135deg,#f59e0b,#f97316)',
+  'linear-gradient(135deg,#06b6d4,#0ea5e9)',
+  'linear-gradient(135deg,#10b981,#059669)',
+  'linear-gradient(135deg,#8b5cf6,#a855f7)',
+  'linear-gradient(135deg,#ef4444,#f97316)',
+  'linear-gradient(135deg,#14b8a6,#06b6d4)'
+];
+
+function getAvatarColor(id) {
+  let hash = 0;
+  const str = id || 'default';
+  for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  return avatarColors[Math.abs(hash) % avatarColors.length];
+}
+
+function getInitials(name) {
+  return (name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function timeAgo(dateStr) {
+  const now = new Date();
+  const d = new Date(dateStr);
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+  if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+  if (diff < 2592000) return Math.floor(diff / 604800) + 'w ago';
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function starsHTML(rating) {
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    html += i <= rating
+      ? '<i class="fa-solid fa-star"></i>'
+      : '<i class="fa-solid fa-star empty"></i>';
+  }
+  return html;
+}
+
+function starsHTMLBig(rating) {
+  let html = '';
+  for (let i = 1; i <= 5; i++) {
+    html += i <= Math.floor(rating)
+      ? '<i class="fa-solid fa-star"></i>'
+      : (i - 0.5 <= rating ? '<i class="fa-solid fa-star-half-stroke"></i>' : '<i class="fa-regular fa-star" style="color:#f59e0b"></i>');
+  }
+  return html;
+}
+
+/* ============================
+   Toast
+   ============================ */
+function showToast(msg, type) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+  t.innerHTML = '<i class="fa-solid ' + (icons[type] || icons.info) + '"></i> ' + msg;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 2600);
+}
+
+/* ============================
+   Theme
+   ============================ */
+function getTheme() { return localStorage.getItem('dk-theme') || 'light'; }
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  const icon = document.querySelector('#themeToggle i');
+  if (icon) icon.className = theme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+}
+function toggleTheme() {
+  const next = getTheme() === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('dk-theme', next);
+  applyTheme(next);
+  showToast(next === 'dark' ? 'Dark mode enabled' : 'Light mode enabled', 'info');
+}
+applyTheme(getTheme());
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+/* ============================
+   Sidebar Mobile
+   ============================ */
+const sidebar = document.getElementById('sidebar');
+const overlay = document.getElementById('sidebarOverlay');
+document.getElementById('menuBtn').addEventListener('click', () => {
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+});
+overlay.addEventListener('click', () => {
+  sidebar.classList.remove('open');
+  overlay.classList.remove('active');
+});
+
+/* ============================
+   Tabs
+   ============================ */
+document.querySelectorAll('.tabs').forEach(tg => {
+  tg.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      tg.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const target = tab.getAttribute('data-tab');
+      const parent = tg.closest('.section-card');
+      if (parent) {
+        parent.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+        const el = parent.querySelector('#' + target);
+        if (el) el.classList.add('active');
+      }
+    });
+  });
+});
+
+/* ============================
+   Auth
+   ============================ */
+async function checkAuth() {
+  try {
+    if (typeof supabaseClient === 'undefined') return null;
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    if (!session || error) { window.location.href = 'login-signup.html'; return null; }
+    currentUser = session.user;
+    return currentUser;
+  } catch (e) { return null; }
+}
+
+/* ============================
+   Fetch User Profile
+   ============================ */
+async function fetchUserProfile() {
+  if (!currentUser) return { name: 'User', branch: 'CSE', semester: '5' };
+  try {
+    const { data } = await supabaseClient
+      .from('users')
+      .select('name, branch, semester')
+      .eq('id', currentUser.id)
+      .single();
+    return data || { name: currentUser.email?.split('@')[0] || 'User', branch: 'CSE', semester: '5' };
+  } catch (e) {
+    return { name: currentUser.email?.split('@')[0] || 'User', branch: 'CSE', semester: '5' };
+  }
+}
+
+/* ============================
+   Fetch Reviews Received (where seller_id = me)
+   ============================ */
+async function fetchReceivedReviews() {
+  if (!currentUser) return [];
+  try {
+    const { data, error } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .eq('seller_id', currentUser.id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.error('Fetch received reviews error:', e);
+    return [];
+  }
+}
+
+/* ============================
+   Fetch Reviews Given (where buyer_id = me)
+   ============================ */
+async function fetchGivenReviews() {
+  if (!currentUser) return [];
+  try {
+    const { data, error } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .eq('buyer_id', currentUser.id)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.error('Fetch given reviews error:', e);
+    return [];
+  }
+}
+
+/* ============================
+   Fetch Buyer Info (cached)
+   ============================ */
+async function getBuyerInfo(buyerId) {
+  if (buyersCache[buyerId]) return buyersCache[buyerId];
+  try {
+    const { data } = await supabaseClient
+      .from('users')
+      .select('id, name, college, branch, semester, created_at')
+      .eq('id', buyerId)
+      .single();
+    if (data) buyersCache[buyerId] = data;
+  } catch (e) {}
+  return buyersCache[buyerId] || { id: buyerId, name: 'Student', college: 'Campus' };
+}
+
+/* ============================
+   Fetch Seller Info (cached)
+   ============================ */
+async function getSellerInfo(sellerId) {
+  if (sellersCache[sellerId]) return sellersCache[sellerId];
+  try {
+    const { data } = await supabaseClient
+      .from('users')
+      .select('id, name, college, branch, semester')
+      .eq('id', sellerId)
+      .single();
+    if (data) sellersCache[sellerId] = data;
+  } catch (e) {}
+  return sellersCache[sellerId] || { id: sellerId, name: 'Student', college: 'Campus' };
+}
+
+/* ============================
+   Fetch Product Info (cached)
+   ============================ */
+async function getProductInfo(productId) {
+  if (productsCache[productId]) return productsCache[productId];
+  try {
+    const { data } = await supabaseClient
+      .from('products')
+      .select('id, title, image_url, price, category')
+      .eq('id', productId)
+      .single();
+    if (data) productsCache[productId] = data;
+  } catch (e) {}
+  return productsCache[productId] || { id: productId, title: 'Item', image_url: '', price: 0 };
+}
+
+/* ============================
+   Fetch Seller Responses
+   ============================ */
+async function fetchSellerResponses(reviewIds) {
+  if (!currentUser || !reviewIds.length) return;
+  try {
+    const { data } = await supabaseClient
+      .from('review_responses')
+      .select('*')
+      .eq('seller_id', currentUser.id)
+      .in('review_id', reviewIds);
+    if (data) {
+      data.forEach(r => { sellerResponses[r.review_id] = r; });
+    }
+  } catch (e) {
+    /* Table might not exist, silently ignore */
+  }
+}
+
+/* ============================
+   Update Rating Stats
+   ============================ */
+function updateRatingStats(reviews) {
+  const total = reviews.length;
+  const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  let sum = 0;
+  reviews.forEach(r => {
+    const rating = Math.max(1, Math.min(5, Math.round(r.rating)));
+    counts[rating] = (counts[rating] || 0) + 1;
+    sum += r.rating;
+  });
+  const avg = total > 0 ? (sum / total) : 0;
+  const fivePct = total > 0 ? Math.round((counts[5] / total) * 100) : 0;
+  const respondedCount = Object.keys(sellerResponses).length;
+  const respRate = total > 0 ? Math.round((respondedCount / total) * 100) : 0;
+
+  document.getElementById('avgRating').textContent = avg.toFixed(1);
+  document.getElementById('totalReviews').textContent = total;
+  document.getElementById('fiveStarPct').textContent = fivePct + '%';
+  document.getElementById('responseRate').textContent = respRate + '%';
+  document.getElementById('bigRating').textContent = avg.toFixed(1);
+  document.getElementById('bigStars').innerHTML = starsHTMLBig(avg);
+  document.getElementById('bigCount').textContent = 'Based on ' + total + ' review' + (total !== 1 ? 's' : '');
+
+  for (let i = 1; i <= 5; i++) {
+    const pct = total > 0 ? (counts[i] / total) * 100 : 0;
+    document.getElementById('bar' + i).style.width = pct + '%';
+    document.getElementById('count' + i).textContent = counts[i];
+  }
+}
+
+/* ============================
+   Render Received Review
+   ============================ */
+function renderReceivedReview(r) {
+  const buyer = buyersCache[r.buyer_id] || { name: 'Student', college: 'Campus' };
+  const product = productsCache[r.product_id] || { title: 'Item', image_url: '' };
+  const response = sellerResponses[r.id];
+  const thumbs = product.image_url ? product.image_url.split(',').filter(Boolean)[0] : '';
+  const initials = getInitials(buyer.name);
+  const color = getAvatarColor(r.buyer_id);
+  const isLiked = likedReviews.has(r.id);
+  const rating = Math.max(1, Math.min(5, Math.round(r.rating)));
+
+  return '<div class="review-card" data-rating="' + rating + '" data-response="' + (response ? 'replied' : 'unreplied') + '" data-id="' + r.id + '">' +
+    '<div class="review-card-inner">' +
+      '<div class="review-avatar" style="background:' + color + '">' + initials + '</div>' +
+      '<div class="review-body">' +
+        '<div class="review-top">' +
+          '<div class="review-user">' +
+            '<span class="review-name">' + buyer.name + '</span>' +
+            '<span class="review-verified" title="Verified Student"><i class="fa-solid fa-check"></i></span>' +
+            '<span style="font-size:11px;color:var(--muted-light)">' + (buyer.college || '') + '</span>' +
+          '</div>' +
+          '<span class="review-date">' + timeAgo(r.created_at) + '</span>' +
+        '</div>' +
+        '<div class="review-stars">' + starsHTML(rating) + '</div>' +
+        '<div class="review-product" onclick="showToast(\'Opening product...\',\'info\')">' +
+          (thumbs ? '<img src="' + thumbs + '" alt="" loading="lazy">' : '<i class="fa-solid fa-box" style="font-size:12px"></i>') +
+          product.title + ' · ₹' + product.price +
+        '</div>' +
+        '<div class="review-comment">' + (r.comment || 'No comment left.') + '</div>' +
+        '<div class="review-actions">' +
+          '<button class="review-action-btn ' + (isLiked ? 'liked' : '') + '" onclick="toggleLike(\'' + r.id + '\',this)"><i class="fa-' + (isLiked ? 'solid' : 'regular') + ' fa-thumbs-up"></i> Helpful</button>' +
+          (response
+            ? '<button class="review-action-btn" style="color:var(--primary);border-color:var(--primary-100)"><i class="fa-solid fa-reply"></i> Replied</button>'
+            : '<button class="review-action-btn" onclick="toggleReplyForm(\'' + r.id + '\')"><i class="fa-solid fa-reply"></i> Reply</button>'
+          ) +
+          '<button class="review-action-btn" onclick="openFlagModal(\'' + r.id + '\')"><i class="fa-solid fa-flag"></i> Report</button>' +
+        '</div>' +
+        (response
+          ? '<div class="review-response"><div class="review-response-header"><span>Your Response</span><span class="resp-badge">Seller</span></div><p>' + response.comment + '</p></div>'
+          : '<div class="reply-form" id="reply-' + r.id + '"><textarea placeholder="Write a response to this review..." id="reply-text-' + r.id + '"></textarea><div class="reply-form-actions"><button class="btn-sm btn-sm-ghost" onclick="toggleReplyForm(\'' + r.id + '\')">Cancel</button><button class="btn-sm btn-sm-primary" onclick="submitReply(\'' + r.id + '\')">Post Response</button></div></div>'
+        ) +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ============================
+   Render Given Review
+   ============================ */
+function renderGivenReview(r) {
+  const seller = sellersCache[r.seller_id] || { name: 'Student', college: 'Campus' };
+  const product = productsCache[r.product_id] || { title: 'Item', image_url: '' };
+  const thumbs = product.image_url ? product.image_url.split(',').filter(Boolean)[0] : '';
+  const initials = getInitials(seller.name);
+  const color = getAvatarColor(r.seller_id);
+  const rating = Math.max(1, Math.min(5, Math.round(r.rating)));
+
+  return '<div class="review-card" data-rating="' + rating + '" data-id="' + r.id + '">' +
+    '<div class="review-card-inner">' +
+      '<div class="review-avatar" style="background:' + color + '">' + initials + '</div>' +
+      '<div class="review-body">' +
+        '<div class="review-top">' +
+          '<div class="review-user">' +
+            '<span class="review-name">' + seller.name + '</span>' +
+            '<span class="review-verified" title="Verified Student"><i class="fa-solid fa-check"></i></span>' +
+          '</div>' +
+          '<span class="review-date">' + timeAgo(r.created_at) + '</span>' +
+        '</div>' +
+        '<div class="review-stars">' + starsHTML(rating) + '</div>' +
+        '<div class="review-product" onclick="showToast(\'Opening product...\',\'info\')">' +
+          (thumbs ? '<img src="' + thumbs + '" alt="" loading="lazy">' : '<i class="fa-solid fa-box" style="font-size:12px"></i>') +
+          product.title + ' · ₹' + product.price +
+        '</div>' +
+        '<div class="review-comment">' + (r.comment || 'No comment left.') + '</div>' +
+        '<div class="review-actions">' +
+          '<span style="font-size:12px;color:var(--muted-light)"><i class="fa-solid fa-pen" style="margin-right:4px"></i>Your review</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+/* ============================
+   Render Lists
+   ============================ */
+function renderReceivedList(reviews) {
+  const container = document.getElementById('receivedList');
+  if (!reviews.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-star"></i><h4>No reviews yet</h4><p>When buyers purchase your items, they can leave reviews here.</p></div>';
+    document.getElementById('receivedCount').textContent = '0 reviews';
+    return;
+  }
+  container.innerHTML = reviews.map(renderReceivedReview).join('');
+  document.getElementById('receivedCount').textContent = reviews.length + ' review' + (reviews.length !== 1 ? 's' : '');
+}
+
+function renderGivenList(reviews) {
+  const container = document.getElementById('givenList');
+  if (!reviews.length) {
+    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-comment-dots"></i><h4>No reviews given</h4><p>Your reviews on purchased items will appear here.</p></div>';
+    document.getElementById('givenCount').textContent = '0 reviews';
+    return;
+  }
+  container.innerHTML = reviews.map(renderGivenReview).join('');
+  document.getElementById('givenCount').textContent = reviews.length + ' review' + (reviews.length !== 1 ? 's' : '');
+}
+
+/* ============================
+   Filter & Sort
+   ============================ */
+function applyReceivedFilters() {
+  const rating = document.getElementById('receivedRatingFilter').value;
+  const sort = document.getElementById('receivedSortFilter').value;
+  const responseFilter = document.getElementById('receivedResponseFilter').value;
+
+  let filtered = [...receivedReviews];
+  if (rating) filtered = filtered.filter(r => Math.round(r.rating) === parseInt(rating));
+  if (responseFilter === 'replied') filtered = filtered.filter(r => sellerResponses[r.id]);
+  if (responseFilter === 'unreplied') filtered = filtered.filter(r => !sellerResponses[r.id]);
+
+  switch (sort) {
+    case 'oldest': filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); break;
+    case 'highest': filtered.sort((a, b) => b.rating - a.rating); break;
+    case 'lowest': filtered.sort((a, b) => a.rating - b.rating); break;
+    default: filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+  renderReceivedList(filtered);
+}
+
+function applyGivenFilters() {
+  const rating = document.getElementById('givenRatingFilter').value;
+  const sort = document.getElementById('givenSortFilter').value;
+
+  let filtered = [...givenReviews];
+  if (rating) filtered = filtered.filter(r => Math.round(r.rating) === parseInt(rating));
+
+  switch (sort) {
+    case 'oldest': filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); break;
+    case 'highest': filtered.sort((a, b) => b.rating - a.rating); break;
+    case 'lowest': filtered.sort((a, b) => a.rating - b.rating); break;
+    default: filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+  renderGivenList(filtered);
+}
+
+document.getElementById('receivedRatingFilter').addEventListener('change', applyReceivedFilters);
+document.getElementById('receivedSortFilter').addEventListener('change', applyReceivedFilters);
+document.getElementById('receivedResponseFilter').addEventListener('change', applyReceivedFilters);
+document.getElementById('givenRatingFilter').addEventListener('change', applyGivenFilters);
+document.getElementById('givenSortFilter').addEventListener('change', applyGivenFilters);
+
+/* Search */
+let searchTimeout;
+document.getElementById('searchInput').addEventListener('input', function() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.review-card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+  }, 250);
+});
+
+/* ============================
+   Actions
+   ============================ */
+function toggleLike(id, btn) {
+  if (likedReviews.has(id)) {
+    likedReviews.delete(id);
+    btn.classList.remove('liked');
+    btn.querySelector('i').className = 'fa-regular fa-thumbs-up';
+    showToast('Removed like', 'info');
+  } else {
+    likedReviews.add(id);
+    btn.classList.add('liked');
+    btn.querySelector('i').className = 'fa-solid fa-thumbs-up';
+    showToast('Marked as helpful', 'success');
+  }
+}
+
+function toggleReplyForm(id) {
+  const form = document.getElementById('reply-' + id);
+  if (form) form.classList.toggle('active');
+}
+
+async function submitReply(reviewId) {
+  const textarea = document.getElementById('reply-text-' + reviewId);
+  const comment = textarea ? textarea.value.trim() : '';
+  if (!comment) { showToast('Please write a response', 'error'); return; }
+  if (!currentUser) { showToast('Please login first', 'error'); return; }
+
+  try {
+    const { error } = await supabaseClient
+      .from('review_responses')
+      .insert({
+        review_id: reviewId,
+        seller_id: currentUser.id,
+        comment: comment
+      });
+    if (error) throw error;
+
+    sellerResponses[reviewId] = { review_id: reviewId, seller_id: currentUser.id, comment: comment };
+    showToast('Response posted!', 'success');
+
+    /* Re-render received list to show response */
+    applyReceivedFilters();
+    updateRatingStats(receivedReviews);
+  } catch (e) {
+    console.error('Reply error:', e);
+    /* If table doesn't exist, simulate locally */
+    sellerResponses[reviewId] = { review_id: reviewId, seller_id: currentUser.id, comment: comment };
+    showToast('Response saved locally', 'success');
+    applyReceivedFilters();
+    updateRatingStats(receivedReviews);
+  }
+}
+
+/* ============================
+   Flag Modal
+   ============================ */
+function openFlagModal(id) {
+  flaggedReviewId = id;
+  document.querySelectorAll('.flag-option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('flagComment').value = '';
+  document.getElementById('flagModal').classList.add('active');
+}
+function closeFlagModal() {
+  document.getElementById('flagModal').classList.remove('active');
+  flaggedReviewId = null;
+}
+function selectFlag(el) {
+  document.querySelectorAll('.flag-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+function submitFlag() {
+  const selected = document.querySelector('.flag-option.selected');
+  if (!selected) { showToast('Please select a reason', 'error'); return; }
+  closeFlagModal();
+  showToast('Report submitted. We\'ll review it shortly.', 'success');
+}
+document.getElementById('flagModal').addEventListener('click', function(e) {
+  if (e.target === this) closeFlagModal();
+});
+
+/* ============================
+   Logout
+   ============================ */
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  document.getElementById('logoutModal').classList.add('active');
+});
+async function handleLogout() {
+  document.getElementById('logoutModal').classList.remove('active');
+  try { if (typeof supabaseClient !== 'undefined') await supabaseClient.auth.signOut(); } catch (e) {}
+  window.location.href = 'login-signup.html';
+}
+document.getElementById('logoutModal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('active');
+});
+
+/* ============================
+   Keyboard
+   ============================ */
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeFlagModal();
+    document.getElementById('logoutModal').classList.remove('active');
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+});
+
+/* ============================
+   Demo Data (fallback)
+   ============================ */
+function getDemoData() {
+  const now = Date.now();
+  return {
+    received: [
+      { id: 'dr1', seller_id: 'me', buyer_id: 'b1', product_id: 'p1', rating: 5, comment: 'Book was in excellent condition, exactly as described. Quick meetup at the library. Highly recommend this seller!', created_at: new Date(now - 120000).toISOString() },
+      { id: 'dr2', seller_id: 'me', buyer_id: 'b2', product_id: 'p2', rating: 4, comment: 'Study table is sturdy and well-maintained. Delivery to my hostel was smooth. Small scratch on one corner but overall great deal.', created_at: new Date(now - 432000000).toISOString() },
+      { id: 'dr3', seller_id: 'me', buyer_id: 'b3', product_id: 'p3', rating: 5, comment: 'Fast response, genuine product, and very friendly. The mouse works perfectly. Will buy again from Arjun.', created_at: new Date(now - 604800000).toISOString() },
+      { id: 'dr4', seller_id: 'me', buyer_id: 'b4', product_id: 'p4', rating: 5, comment: 'DSA notes were incredibly well-organized and covered all important topics. Helped me a lot in exam prep. Totally worth it!', created_at: new Date(now - 864000000).toISOString() },
+      { id: 'dr5', seller_id: 'me', buyer_id: 'b5', product_id: 'p5', rating: 4, comment: 'Good quality headphones at a reasonable price. Minor wear on the cushion but sound quality is excellent.', created_at: new Date(now - 1296000000).toISOString() },
+      { id: 'dr6', seller_id: 'me', buyer_id: 'b6', product_id: 'p1', rating: 5, comment: 'Second time buying from Arjun. Always reliable and punctual. The math book was in pristine condition.', created_at: new Date(now - 1728000000).toISOString() },
+      { id: 'dr7', seller_id: 'me', buyer_id: 'b7', product_id: 'p6', rating: 3, comment: 'Product was okay but took a bit longer than expected to meet up. Description could have been more detailed about the wear.', created_at: new Date(now - 2592000000).toISOString() },
+      { id: 'dr8', seller_id: 'me', buyer_id: 'b8', product_id: 'p3', rating: 5, comment: 'Perfect! Mouse works like brand new. Arjun was very transparent about the condition. Great campus seller.', created_at: new Date(now - 3024000000).toISOString() },
+      { id: 'dr9', seller_id: 'me', buyer_id: 'b9', product_id: 'p7', rating: 4, comment: 'Notes are handwritten but very legible. Good value for the price. Would recommend to juniors.', created_at: new Date(now - 3888000000).toISOString() },
+      { id: 'dr10', seller_id: 'me', buyer_id: 'b10', product_id: 'p8', rating: 5, comment: 'Amazing experience! Product exactly as shown, instant response, and very polite seller. 10/10 would trade again.', created_at: new Date(now - 4320000000).toISOString() },
+      { id: 'dr11', seller_id: 'me', buyer_id: 'b11', product_id: 'p4', rating: 5, comment: 'These notes literally saved my semester. Comprehensive coverage of all DSA concepts with solved examples.', created_at: new Date(now - 5184000000).toISOString() },
+      { id: 'dr12', seller_id: 'me', buyer_id: 'b12', product_id: 'p9', rating: 4, comment: 'Decent product for the price. Communication was smooth and the meetup was at a convenient campus location.', created_at: new Date(now - 6048000000).toISOString() },
+      { id: 'dr13', seller_id: 'me', buyer_id: 'b13', product_id: 'p10', rating: 5, comment: 'Best seller on DormKart! Highly trustworthy. The lab manual was in perfect condition with all pages intact.', created_at: new Date(now - 6912000000).toISOString() },
+      { id: 'dr14', seller_id: 'me', buyer_id: 'b14', product_id: 'p5', rating: 4, comment: 'Good headphones. Slight cosmetic issue but fully functional. Price was fair for the condition.', created_at: new Date(now - 7776000000).toISOString() },
+      { id: 'dr15', seller_id: 'me', buyer_id: 'b15', product_id: 'p1', rating: 5, comment: 'Third purchase from this seller. Always consistent quality and punctual meetups. A+ experience.', created_at: new Date(now - 8640000000).toISOString() }
+    ],
+    given: [
+      { id: 'dg1', seller_id: 's1', buyer_id: 'me', product_id: 'gp1', rating: 5, comment: 'Data Structures textbook was exactly as described. Priya was very helpful and met me at the library. Great experience!', created_at: new Date(now - 172800000).toISOString() },
+      { id: 'dg2', seller_id: 's2', buyer_id: 'me', product_id: 'gp2', rating: 4, comment: 'Calculator is in good working condition. Minor scratches but doesn\'t affect functionality. Fair price.', created_at: new Date(now - 864000000).toISOString() },
+      { id: 'dg3', seller_id: 's3', buyer_id: 'me', product_id: 'gp3', rating: 5, comment: 'Excellent notes! Very well organized and covered all exam topics. Delivery was quick. Highly recommend.', created_at: new Date(now - 2592000000).toISOString() }
+    ],
+    buyers: {
+      b1: { id: 'b1', name: 'Priya Sharma', college: 'VIT Pune', branch: 'CSE', semester: '3' },
+      b2: { id: 'b2', name: 'Meera Joshi', college: 'VIT Pune', branch: 'IT', semester: '4' },
+      b3: { id: 'b3', name: 'Amit Tiwari', college: 'VIT Pune', branch: 'CSE', semester: '5' },
+      b4: { id: 'b4', name: 'Rahul Kumar', college: 'VIT Pune', branch: 'CSE', semester: '3' },
+      b5: { id: 'b5', name: 'Sneha Nair', college: 'VIT Pune', branch: 'ECE', semester: '4' },
+      b6: { id: 'b6', name: 'Vikram Patel', college: 'VIT Pune', branch: 'Mech', semester: '3' },
+      b7: { id: 'b7', name: 'Ananya Reddy', college: 'VIT Pune', branch: 'CSE', semester: '5' },
+      b8: { id: 'b8', name: 'Karan Deshmukh', college: 'VIT Pune', branch: 'IT', semester: '3' },
+      b9: { id: 'b9', name: 'Isha Gupta', college: 'VIT Pune', branch: 'CSE', semester: '4' },
+      b10: { id: 'b10', name: 'Rohan Mehta', college: 'COEP', branch: 'CSE', semester: '5' },
+      b11: { id: 'b11', name: 'Divya Singh', college: 'VIT Pune', branch: 'CSE', semester: '3' },
+      b12: { id: 'b12', name: 'Aditya Jadhav', college: 'VIT Pune', branch: 'EXTC', semester: '4' },
+      b13: { id: 'b13', name: 'Pooja Kulkarni', college: 'VIT Pune', branch: 'CSE', semester: '5' },
+      b14: { id: 'b14', name: 'Nikhil Bansal', college: 'COEP', branch: 'IT', semester: '3' },
+      b15: { id: 'b15', name: 'Sanjay Verma', college: 'VIT Pune', branch: 'CSE', semester: '4' }
+    },
+    sellers: {
+      s1: { id: 's1', name: 'Priya Sharma', college: 'VIT Pune' },
+      s2: { id: 's2', name: 'Amit Tiwari', college: 'VIT Pune' },
+      s3: { id: 's3', name: 'Neha Kapoor', college: 'VIT Pune' }
+    },
+    products: {
+      p1: { id: 'p1', title: 'Engineering Mathematics Vol. 2', image_url: 'https://picsum.photos/seed/revp1/80/80', price: 250, category: 'Books' },
+      p2: { id: 'p2', title: 'Study Table with Shelf', image_url: 'https://picsum.photos/seed/revp2/80/80', price: 1800, category: 'Furniture' },
+      p3: { id: 'p3', title: 'Wireless Mouse (Logitech M331)', image_url: 'https://picsum.photos/seed/revp3/80/80', price: 450, category: 'Electronics' },
+      p4: { id: 'p4', title: 'DSA Notes (Handwritten)', image_url: 'https://picsum.photos/seed/revp4/80/80', price: 150, category: 'Notes' },
+      p5: { id: 'p5', title: 'Headphones (Boat Rockerz 450)', image_url: 'https://picsum.photos/seed/revp5/80/80', price: 450, category: 'Electronics' },
+      p6: { id: 'p6', title: 'Physics Lab Manual', image_url: 'https://picsum.photos/seed/revp6/80/80', price: 80, category: 'Notes' },
+      p7: { id: 'p7', title: 'OS Notes (Sem 5 CSE)', image_url: 'https://picsum.photos/seed/revp7/80/80', price: 120, category: 'Notes' },
+      p8: { id: 'p8', title: 'Previous Semester Notes Pack', image_url: 'https://picsum.photos/seed/revp8/80/80', price: 300, category: 'Notes' },
+      p9: { id: 'p9', title: 'Desk Organizer', image_url: 'https://picsum.photos/seed/revp9/80/80', price: 200, category: 'Hostel' },
+      p10: { id: 'p10', title: 'Physics Lab Manual (Original)', image_url: 'https://picsum.photos/seed/revp10/80/80', price: 100, category: 'Notes' },
+      gp1: { id: 'gp1', title: 'Data Structures Textbook', image_url: 'https://picsum.photos/seed/revgp1/80/80', price: 320, category: 'Books' },
+      gp2: { id: 'gp2', title: 'Calculator (Casio FX-991EX)', image_url: 'https://picsum.photos/seed/revgp2/80/80', price: 650, category: 'Electronics' },
+      gp3: { id: 'gp3', title: 'DBMS Complete Notes', image_url: 'https://picsum.photos/seed/revgp3/80/80', price: 180, category: 'Notes' }
+    },
+    responses: {
+      dr7: { review_id: 'dr7', seller_id: 'me', comment: 'Thank you for the honest feedback! I\'ll make sure to add more detailed descriptions going forward. Apologies for the delay in meetup.' }
+    }
+  };
+}
+
+/* ============================
+   Initialize
+   ============================ */
+async function init() {
+  const user = await checkAuth();
+  let profile = { name: 'User', branch: 'CSE', semester: '5' };
+
+  if (user) {
+    profile = await fetchUserProfile();
+    const initials = getInitials(profile.name);
+    document.getElementById('sidebarUserName').textContent = profile.name.length > 16 ? profile.name.slice(0, 16) + '...' : profile.name;
+    document.getElementById('sidebarAvatar').textContent = initials;
+    document.getElementById('headerAvatar').textContent = initials;
+    document.getElementById('sidebarUserRole').textContent = profile.branch + ' · Sem ' + profile.semester;
+  }
+
+  const useDemo = !user || typeof supabaseClient === 'undefined';
+
+  if (useDemo) {
+    /* Load demo data */
+    const demo = getDemoData();
+    buyersCache = demo.buyers;
+    sellersCache = demo.sellers;
+    productsCache = demo.products;
+    sellerResponses = demo.responses;
+    receivedReviews = demo.received;
+    givenReviews = demo.given;
+  } else {
+    /* Fetch real data */
+    const [recv, given] = await Promise.all([
+      fetchReceivedReviews(),
+      fetchGivenReviews()
+    ]);
+    receivedReviews = recv;
+    givenReviews = given;
+
+    /* Enrich with buyer/seller/product info */
+    const buyerIds = [...new Set(receivedReviews.map(r => r.buyer_id))];
+    const sellerIds = [...new Set(givenReviews.map(r => r.seller_id))];
+    const productIds = [...new Set([...receivedReviews, ...givenReviews].map(r => r.product_id))];
+
+    await Promise.all([
+      ...buyerIds.map(id => getBuyerInfo(id)),
+      ...sellerIds.map(id => getSellerInfo(id)),
+      ...productIds.map(id => getProductInfo(id))
+    ]);
+
+    /* Fetch seller responses */
+    const recvIds = receivedReviews.map(r => r.id);
+    await fetchSellerResponses(recvIds);
+  }
+
+  /* Update stats & render */
+  updateRatingStats(receivedReviews);
+  applyReceivedFilters();
+  applyGivenFilters();
+
+  /* Hide loader */
+  const loader = document.getElementById('loadingOverlay');
+  loader.classList.add('hide');
+  setTimeout(() => loader.remove(), 400);
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
