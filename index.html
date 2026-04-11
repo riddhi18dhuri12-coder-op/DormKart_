@@ -1,184 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-    <title>DormKart</title>
-
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusBooks | The Smart Marketplace for Students</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 
     <style>
         :root {
             /* Pastel Rainbow Palette */
             --baby-pink: #ffb3ba;
+            --apricot: #ffdfba;
+            --pale-yellow: #ffffba;
             --mint-green: #baffc9;
             --sky-blue: #bae1ff;
-            --text-dark: #1f2937;
-            --glass: rgba(255, 255, 255, 0.7);
+            
+            /* Professional UI Colors */
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --bg-canvas: #ffffff;
+            --border: #f3f4f6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
+            background-color: var(--bg-canvas);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* --- NAVIGATION --- */
+        nav {
+            height: 80px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            /* Gentle gradient for background */
-            background: linear-gradient(135deg, #f3f6ff 0%, #e8f0fe 100%);
-            color: var(--text-dark);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            margin: 0;
-            overflow: hidden;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
         }
 
-        /* Unified Splash Container */
-        .main-card {
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, var(--sky-blue), var(--mint-green));
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 12px;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .logo-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--baby-pink); }
+
+        .nav-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-login {
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 12px 20px;
+        }
+
+        .btn-signup {
+            text-decoration: none;
+            background: var(--sky-blue);
+            color: var(--text-main);
+            padding: 12px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(186, 225, 255, 0.4);
+        }
+
+        .btn-signup:hover { background: var(--mint-green); transform: translateY(-2px); }
+
+        /* --- HERO --- */
+        .hero {
+            padding: 120px 6% 80px;
             text-align: center;
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 40px 30px;
-            border-radius: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            width: 85%;
-            max-width: 400px;
-            animation: fadeInScale 1s ease-out forwards;
+            background: radial-gradient(circle at top left, var(--baby-pink) 0%, transparent 20%),
+                        radial-gradient(circle at bottom right, var(--sky-blue) 0%, transparent 20%);
         }
 
-        /* Branding Section */
-        .icon-box {
-            background: white;
-            padding: 20px;
-            border-radius: 28px;
-            display: inline-block;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
-            margin-bottom: 20px;
-            animation: pulseSoft 3s infinite ease-in-out;
+        .student-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--pale-yellow);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
-        .startup-icon {
+        .hero h1 {
             font-size: 64px;
-            display: block;
-            background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+
+        .hero h1 span.highlight {
+            background: linear-gradient(to right, var(--sky-blue), var(--mint-green));
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        h1 {
-            font-size: 36px;
-            font-weight: 800;
-            margin: 0;
-            letter-spacing: -1.5px;
-            color: #111827;
+        .hero p {
+            color: var(--text-muted);
+            font-size: 19px;
+            max-width: 650px;
+            margin: 0 auto 40px;
         }
 
-        /* Integrated Info Section */
-        .info-content {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
         }
 
-        .why-label {
-            font-size: 14px;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #3a86ff;
-            margin-bottom: 12px;
+        .btn-main {
+            background: var(--text-main);
+            color: white;
+            padding: 18px 36px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-main:hover { transform: scale(1.05); }
+
+        .btn-secondary {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 18px 36px;
+            border-radius: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        /* --- FEATURES --- */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 40px 6% 100px;
+        }
+
+        .feature-card {
+            padding: 40px;
+            border-radius: 30px;
+            background: white;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .feature-card:nth-child(1) { background-color: #fff5f6; } /* Baby Pink tint */
+        .feature-card:nth-child(2) { background-color: #f6fff9; } /* Mint tint */
+        .feature-card:nth-child(3) { background-color: #f6faff; } /* Sky Blue tint */
+        .feature-card:nth-child(4) { background-color: #fffdf5; } /* Pale Yellow tint */
+
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
+
+        .f-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
             display: block;
         }
 
-        .why-desc {
-            font-size: 15px;
-            line-height: 1.6;
-            color: #4b5563;
-            font-weight: 500;
+        /* --- FOOTER --- */
+        footer {
+            padding: 80px 6% 40px;
+            background: #fafafa;
+            border-top: 1px solid var(--border);
         }
 
-        /* Professional Loading Indicator */
-        .loader-wrapper {
-            margin-top: 25px;
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-col h4 { font-weight: 800; margin-bottom: 20px; font-size: 15px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+
+        .footer-bottom {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            justify-content: space-between;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
-        }
-        .dot:nth-child(1) { animation-delay: -0.32s; background-color: var(--baby-pink); }
-        .dot:nth-child(2) { animation-delay: -0.16s; background-color: var(--mint-green); }
-        .dot:nth-child(3) { background-color: var(--sky-blue); }
-
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes pulseSoft {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); }
-            40% { transform: scale(1); }
-        }
-
-        /* Subtle Footer Brand */
-        .footer-tag {
-            position: absolute;
-            bottom: 30px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #9ca3af;
-            letter-spacing: 1px;
-            text-transform: uppercase;
+        @media (max-width: 800px) {
+            .hero h1 { font-size: 42px; }
+            .nav-links { display: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
-
 <body>
 
-    <div class="main-card">
-        <div class="icon-box">
-            <i class="material-icons startup-icon">storefront</i>
+    <nav>
+        <a href="home.html" class="logo-area">
+            <span class="material-icons-round logo-icon">storefront</span>
+            <span class="logo-text">DormKart</span>
+        </a>
+
+        <div class="nav-links">
+            <a onclick="checkAuth('dashboard.html')">Browse</a>
+            <a onclick="checkAuth('dashboard.html')">Marketplace</a>
+            <a onclick="checkAuth('chats.html')">Messages</a>
         </div>
 
-        <h1>DormKart</h1>
+        <div class="nav-btns">
+            <a href="login-signup.html" class="btn-login">Log In</a>
+            <a href="login-signup.html" class="btn-signup">Sign Up</a>
+        </div>
+    </nav>
 
-        <div class="info-content">
-            <span class="why-label">Why DormKart?</span>
-            <div class="why-desc">
-                Everything you need to find, share, and save on campus essentials. Connecting student communities.
+    <section class="hero">
+        <div class="student-badge">
+            <span class="material-icons-round" style="font-size:16px;">verified</span>
+            Built for students, by students
+        </div>
+        <h1>Your Campus <span class="highlight">Book</span><br>Marketplace</h1>
+        <p>The smartest way to find, share, and save on campus essentials. Connecting student communities across the campus.</p>
+        
+        <div class="hero-btns">
+            <div onclick="checkAuth('dashboard.html')" class="btn-main">
+                Start Browsing <span class="material-icons-round">arrow_forward</span>
+            </div>
+            <div onclick="checkAuth('add_product.html')" class="btn-secondary">List an Item</div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="feature-card" onclick="checkAuth('dashboard.html')">
+            <span class="material-icons-round f-icon" style="color: #f87171;">shield</span>
+            <h3>Verified Students</h3>
+            <p>A trusted community where every user is verified via college email.</p>
+        </div>
+
+        <div class="feature-card" onclick="checkAuth('dashboard.html')">
+            <span class="material-icons-round f-icon" style="color: #34d399;">psychology</span>
+            <h3>Smart Search</h3>
+            <p>Find exactly what you need based on your branch and semester.</p>
+        </div>
+
+        <div class="feature-card" onclick="checkAuth('dashboard.html')">
+            <span class="material-icons-round f-icon" style="color: #60a5fa;">loop</span>
+            <h3>Barter & Swap</h3>
+            <p>Don't just buy—exchange your old materials for something new.</p>
+        </div>
+
+        <div class="feature-card" onclick="checkAuth('dashboard.html')">
+            <span class="material-icons-round f-icon" style="color: #fbbf24;">auto_graph</span>
+            <h3>Fair Pricing</h3>
+            <p>Our engine ensures you get the best value for your used items.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-about">
+                <div class="logo-area">
+                    <span class="material-icons-round logo-icon">storefront</span>
+                    <span class="logo-text">DormKart</span>
+                </div>
+                <p style="font-size: 14px; margin-top: 15px; color: var(--text-muted);">Making campus life affordable and sustainable for every student.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a onclick="checkAuth('dashboard.html')">Browse Books</a></li>
+                    <li><a onclick="checkAuth('add_product.html')">Sell Item</a></li>
+                    <li><a onclick="checkAuth('dashboard.html')">Barter</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="profile.html">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Safety</a></li>
+                    <li><a href="#">Terms</a></li>
+                </ul>
             </div>
         </div>
 
-        <div class="loader-wrapper">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 DormKart. All rights reserved.</p>
+            <p>Made with <span style="color: #ffb3ba;">❤</span> for students</p>
         </div>
-    </div>
+    </footer>
 
-    <div class="footer-tag">Marketplace for Students</div>
-
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
     <script>
-        // Redirect to home.html after 5 seconds
-        setTimeout(function () {
-            window.location.href = "home.html";
-        }, 5000);
+        async function checkAuth(targetUrl) {
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+
+                if (session) {
+                    window.location.href = targetUrl;
+                } else {
+                    alert("Authentication required. Please Login or Sign Up to access campus features.");
+                    window.location.href = "login-signup.html";
+                }
+            } catch (error) {
+                window.location.href = "login-signup.html";
+            }
+        }
     </script>
-
 </body>
-
 </html>
