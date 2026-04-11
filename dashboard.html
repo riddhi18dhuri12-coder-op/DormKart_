@@ -6,106 +6,104 @@
 <title>DormKart • Campus Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
 :root {
+  /* Strict Pastel Palette */
   --pale-yellow: #ffffba;
   --mint-green: #baffc9;
   --sky-blue: #bae1ff;
   --baby-pink: #ffb3ba;
+  
   --text-main: #1e293b;
   --text-muted: #64748b;
-  --bg: #f8fafc;
+  --bg: #ffffff;
+  --border: #f1f5f9;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+body { background: var(--bg); padding-bottom: 110px; color: var(--text-main); }
 
-body { background: var(--bg); padding-bottom: 100px; color: var(--text-main); }
-
-/* Navigation & Header */
+/* --- HEADER --- */
 .app-header {
-  background: white; padding: 15px 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #eee;
+  background: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 1000; border-bottom: 2px solid var(--sky-blue);
 }
-.logo { font-weight: 800; font-size: 22px; color: var(--text-main); letter-spacing: -1px; }
+.logo { font-weight: 800; font-size: 24px; letter-spacing: -1.2px; display: flex; align-items: center; gap: 8px; }
+.logo i { color: var(--text-main); background: var(--mint-green); padding: 5px; border-radius: 8px; }
 
-/* Grid System */
-.product-grid {
-  display: grid; grid-template-columns: repeat(2, 1fr);
-  gap: 16px; padding: 20px;
+/* --- SEARCH & FILTERS --- */
+.search-container { padding: 20px 20px 10px; }
+.search-bar { position: relative; width: 100%; }
+.search-bar input {
+    width: 100%; padding: 14px 14px 14px 48px; border-radius: 14px;
+    border: 2px solid var(--sky-blue); background: #fffdfa; outline: none; font-size: 14px; font-weight: 600;
 }
+.search-bar i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
 
-/* THE NEW PRODUCT CARD (Matching Image) */
+.filter-scroll { display: flex; gap: 10px; overflow-x: auto; padding: 10px 20px; scrollbar-width: none; }
+.filter-btn {
+    padding: 8px 18px; border-radius: 100px; border: 2px solid var(--border);
+    background: white; white-space: nowrap; font-size: 12px; font-weight: 700; cursor: pointer; transition: 0.2s;
+}
+.filter-btn.active { background: var(--pale-yellow); border-color: var(--pale-yellow); }
+
+/* --- PRODUCT GRID (Matching Reference Image) --- */
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 0 20px; }
 .p-card {
-  background: white; border-radius: 12px; overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: 0.3s;
-  cursor: pointer; position: relative; border: 1px solid #f1f5f9;
+  background: white; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03); transition: 0.3s;
+  cursor: pointer; position: relative; border: 1px solid var(--border);
 }
-.p-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+.p-card:hover { transform: translateY(-5px); border-color: var(--sky-blue); }
 
-.p-img { width: 100%; aspect-ratio: 1.1; object-fit: cover; background: #f8fafc; }
-
-.discount-badge {
-    position: absolute; top: 10px; left: 10px;
-    background: var(--mint-green); color: #065f46;
+.discount-tag {
+    position: absolute; top: 10px; left: 10px; z-index: 5;
+    background: var(--mint-green); color: var(--text-main);
     font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
 }
 
+.p-img { width: 100%; aspect-ratio: 1.1; object-fit: cover; background: #fafafa; }
+
 .p-content { padding: 12px; }
-
-.p-meta-top { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
-
-.p-title {
-    font-size: 14px; font-weight: 700; color: #2563eb;
-    margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
-}
-
-.p-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
-.curr-price { font-size: 18px; font-weight: 800; color: var(--text-main); }
+.p-meta { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+.p-title { font-size: 14px; font-weight: 700; color: #3b82f6; margin-bottom: 8px; height: 18px; overflow: hidden; }
+.p-price-row { display: flex; align-items: baseline; gap: 6px; }
+.curr-price { font-size: 18px; font-weight: 800; }
 .old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
 
 .cond-badge {
-    float: right; background: #eff6ff; color: #3b82f6;
-    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+    float: right; background: #f1f5f9; color: var(--text-muted);
+    font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 6px;
 }
 
+/* --- SELLER FOOTER --- */
 .p-footer {
-    border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 5px;
     display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px; padding-top: 10px; border-top: 1px solid #f8fafc;
 }
-.seller-info { display: flex; align-items: center; gap: 6px; }
-.avatar-sm { width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #475569; }
-.seller-name { font-size: 11px; font-weight: 600; color: var(--text-muted); }
-.rating-pill { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 2px; }
+.seller-sm { display: flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.rating-sm { display: flex; align-items: center; font-size: 11px; font-weight: 700; }
 
-/* MODAL STYLING */
+/* --- MODAL --- */
 #pModal {
-    position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+    position: fixed; inset: 0; background: rgba(0,0,0,0.3);
     display: none; z-index: 5000; align-items: flex-end; backdrop-filter: blur(8px);
 }
 .modal-box {
-    background: white; width: 100%; border-radius: 24px 24px 0 0;
-    max-height: 90vh; overflow-y: auto; padding: 20px; animation: slideUp 0.3s ease;
+    background: white; width: 100%; border-radius: 30px 30px 0 0;
+    max-height: 85vh; overflow-y: auto; padding: 24px; animation: slideUp 0.3s ease;
 }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
 
-.m-img-box { width: 100%; height: 280px; border-radius: 16px; overflow: hidden; background: #f8fafc; border: 1px solid #f1f5f9; }
-.m-img-box img { width: 100%; height: 100%; object-fit: contain; }
-
-.action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
-.btn-action {
-    padding: 14px; border-radius: 12px; border: none; font-weight: 800;
-    font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: 0.2s;
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.btn-act {
+    padding: 16px; border-radius: 14px; border: none; font-weight: 800; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
 }
-.btn-chat { background: var(--sky-blue); color: var(--text-main); }
-.btn-offer { background: var(--pale-yellow); color: var(--text-main); }
-.btn-trade { background: var(--mint-green); color: var(--text-main); grid-column: span 2; }
-.btn-close { background: #f1f5f9; color: var(--text-muted); grid-column: span 2; margin-top: 5px; }
 
-/* Bottom Nav */
+/* --- BOTTOM NAV --- */
 .bottom-nav {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   width: 90%; max-width: 400px; background: #1e293b;
@@ -114,18 +112,30 @@ body { background: var(--bg); padding-bottom: 100px; color: var(--text-main); }
 .nav-item { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .nav-item.active { color: var(--mint-green); }
 
-@media (max-width: 400px) { .product-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-    <div class="logo">DormKart</div>
-    <div class="seller-info"><span class="material-icons-round">account_circle</span></div>
+    <div class="logo"><i class="material-icons-round">storefront</i>DormKart</div>
+    <div onclick="location.href='profile.html'"><span class="material-icons-round">account_circle</span></div>
 </header>
 
-<main class="product-grid" id="productGrid">
-    </main>
+<div class="search-container">
+    <div class="search-bar">
+        <i class="material-icons-round">search</i>
+        <input type="text" id="searchInput" placeholder="Search your campus..." oninput="handleSearch()">
+    </div>
+</div>
+
+<div class="filter-scroll">
+    <div class="filter-btn active" onclick="filterByCat('All', this)">All Items</div>
+    <div class="filter-btn" onclick="filterByCat('Books', this)">Books</div>
+    <div class="filter-btn" onclick="filterByCat('Electronics', this)">Gadgets</div>
+    <div class="filter-btn" onclick="filterByCat('Dorm', this)">Dorm Decor</div>
+</div>
+
+<main class="product-grid" id="productGrid"></main>
 
 <div id="pModal">
     <div class="modal-box" id="modalContent"></div>
@@ -164,77 +174,79 @@ function renderCards(products) {
   
   products.forEach(p => {
     const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
-    // Random fake discount logic for UI matching your image
     const oldPrice = Math.floor(p.price * 1.5);
     const disc = Math.round(((oldPrice - p.price) / oldPrice) * 100);
 
     const card = document.createElement('div');
     card.className = 'p-card';
     card.innerHTML = `
-      <div class="discount-badge">${disc}% off</div>
+      <div class="discount-tag">-${disc}% OFF</div>
       <img src="${images[0]}" class="p-img">
       <div class="p-content">
-          <div class="p-meta-top">${p.category || 'Books'} • Sem ${p.semester}</div>
+          <div class="p-meta">${p.category || 'Item'} • Sem ${p.semester}</div>
           <div class="p-title">${p.title}</div>
-          <div class="cond-badge">${p.condition || 'Good'}</div>
+          <div class="cond-badge">${p.condition}</div>
           <div class="p-price-row">
               <span class="curr-price">₹${Math.floor(p.price)}</span>
               <span class="old-price">₹${oldPrice}</span>
           </div>
           <div class="p-footer">
-              <div class="seller-info">
-                  <div class="avatar-sm">${p.seller?.name?.charAt(0) || 'S'}</div>
-                  <span class="seller-name">${p.seller?.name || 'Student'}</span>
-                  ${p.seller?.is_verified ? '<span class="material-icons-round" style="font-size:12px; color:#3b82f6;">verified</span>' : ''}
+              <div class="seller-sm">
+                  <span class="material-icons-round" style="font-size:14px;">person_outline</span>
+                  ${p.seller?.name || 'Student'}
               </div>
-              <div class="rating-pill"><span class="material-icons-round" style="font-size:14px; color:#fbbf24;">star</span> 4.8</div>
+              <div class="rating-sm"><span class="material-icons-round" style="font-size:14px; color:#fbbf24;">star</span> 4.8</div>
           </div>
       </div>
     `;
-    card.onclick = () => showModal(p);
+    card.onclick = () => showModal(p.id);
     grid.appendChild(card);
   });
 }
 
-function showModal(p) {
+function handleSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    renderCards(allProducts.filter(p => p.title.toLowerCase().includes(q)));
+}
+
+function filterByCat(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(cat === 'All' ? allProducts : allProducts.filter(p => p.category === cat));
+}
+
+function showModal(id) {
+    const p = allProducts.find(x => x.id == id);
     const modal = document.getElementById('pModal');
     const box = document.getElementById('modalContent');
     const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
-    
-    // Check if swap/trade is enabled
-    const swapBtn = (p.swap_enabled === true || p.swap_enabled === 'true') 
-        ? `<button class="btn-action btn-trade" onclick="proposeTrade('${p.id}')"><span class="material-icons-round">sync</span>Propose Trade Exchange</button>` 
-        : '';
 
     box.innerHTML = `
         <div style="width:40px;height:4px;background:#e2e8f0;margin:0 auto 15px;border-radius:10px;"></div>
-        <div class="m-img-box"><img src="${images[0]}"></div>
+        <div style="width:100%; height:250px; background:#f8fafc; border-radius:20px; overflow:hidden; border:1px solid var(--border);">
+            <img src="${images[0]}" style="width:100%; height:100%; object-fit:contain;">
+        </div>
         <div style="margin-top:20px;">
-            <h1 style="font-size:24px; font-weight:800;">₹${p.price}</h1>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h1 style="font-size:32px; font-weight:800;">₹${p.price}</h1>
+                <span class="material-icons-round" style="color:var(--text-muted); cursor:pointer;" onclick="shareProd('${p.title}')">share</span>
+            </div>
             <h2 style="font-size:18px; margin:5px 0;">${p.title}</h2>
-            <p style="color:var(--text-muted); font-size:14px; line-height:1.6;">${p.description || 'No description provided.'}</p>
+            <p style="color:var(--text-muted); font-size:14px; line-height:1.6;">${p.description || 'Verified Campus listing.'}</p>
         </div>
 
-        <div class="action-grid">
-            <button class="btn-action btn-chat" onclick="location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'"><span class="material-icons-round">chat</span>Chat</button>
-            <button class="btn-action btn-offer" onclick="makeOffer('${p.price}')"><span class="material-icons-round">local_offer</span>Make Offer</button>
-            ${swapBtn}
-            <button class="btn-action btn-close" onclick="closeModal()">Close</button>
+        <div class="btn-row">
+            <button class="btn-act" style="background:var(--sky-blue);" onclick="location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'"><span class="material-icons-round">chat</span>Chat</button>
+            <button class="btn-act" style="background:var(--pale-yellow);" onclick="prompt('Enter offer (₹):')"><span class="material-icons-round">local_offer</span>Offer</button>
+            ${p.swap_enabled ? `<button class="btn-act" style="background:var(--mint-green); grid-column: span 2;" onclick="alert('Trade requested!')"><span class="material-icons-round">sync</span>Trade Exchange</button>` : ''}
         </div>
+        <button class="btn-act" style="background:#f1f5f9; width:100%; margin-top:10px;" onclick="closeModal()">Close</button>
     `;
     modal.style.display = 'flex';
 }
 
 function closeModal() { document.getElementById('pModal').style.display = 'none'; }
-
-function makeOffer(price) {
-    const offer = prompt(`The listed price is ₹${price}. Enter your offer:`);
-    if(offer) alert(`Your offer of ₹${offer} has been sent to the seller via chat!`);
-}
-
-function proposeTrade(id) {
-    alert("Trade proposal initiated! The seller will see your request in their chats.");
-}
+function shareProd(t) { if(navigator.share) navigator.share({title: t, url: window.location.href}); else alert('Link copied!'); }
 
 window.onclick = (e) => { if(e.target.id === 'pModal') closeModal(); }
 window.onload = init;
