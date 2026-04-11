@@ -1,571 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>DormKart - Sell</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 
 <style>
-*{
-box-sizing:border-box;
-margin:0;
-padding:0;
-font-family:'DM Sans',sans-serif;
+:root {
+    --primary: #22c55e;
+    --primary-dark: #16a34a;
+    --bg: #f8fafc;
+    --card: #ffffff;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
 }
 
-body{
-background:#f6f8fb;
-color:#0a0f1e;
-padding-bottom:80px;
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.container{
-max-width:540px;
-margin:auto;
-padding:20px;
-display:flex;
-flex-direction:column;
-gap:16px;
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 20px;
+    line-height: 1.6;
 }
 
-/* CARD */
-
-.card{
-background:white;
-border-radius:16px;
-padding:22px;
-box-shadow:0 6px 18px rgba(0,0,0,0.05);
-border:1px solid #e8edf5;
+.container {
+    max-width: 580px;
+    margin: 40px auto;
 }
 
-.card-label{
-font-size:12px;
-font-weight:700;
-letter-spacing:1px;
-text-transform:uppercase;
-color:#94a3b8;
-margin-bottom:12px;
+h2 {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    text-align: center;
+    color: var(--text);
 }
 
-/* HEADER */
-
-.header{
-height:60px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-padding:0 20px;
-background:white;
-border-bottom:1px solid #e8edf5;
-position:sticky;
-top:0;
-z-index:100;
+/* Form Sections */
+.form-card {
+    background: var(--card);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.header-logo{
-font-weight:800;
-font-size:20px;
-color:#22c55e;
+.field-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--primary);
+    margin-bottom: 4px;
+    display: block;
 }
 
-.header-sub{
-font-size:12px;
-color:#64748b;
-background:#ecfdf5;
-padding:4px 10px;
-border-radius:20px;
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-/* FORM */
-
-.field{
-display:flex;
-flex-direction:column;
-gap:6px;
+label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
 }
 
-.field label{
-font-size:13px;
-font-weight:600;
-color:#475569;
+/* Inputs */
+input, select, textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: #f9fbff;
+    font-size: 15px;
+    transition: all 0.2s ease;
+    color: var(--text);
 }
 
-.field input,
-.field textarea,
-.field select{
-padding:13px 14px;
-border-radius:10px;
-border:1px solid #e2e8f0;
-background:#fafafa;
-font-size:14px;
-transition:0.2s;
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
 }
 
-.field input:focus,
-.field textarea:focus,
-.field select:focus{
-outline:none;
-border-color:#22c55e;
-box-shadow:0 0 0 3px rgba(34,197,94,0.15);
-background:white;
+textarea {
+    resize: none;
+    height: 100px;
 }
 
-textarea{
-resize:none;
-height:90px;
+/* Grid layout for smaller inputs */
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
-/* GRID */
-
-.two-col{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+/* Custom Image Upload Area */
+.upload-box {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    background: #fdfdfd;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* IMAGE UPLOAD */
-
-.upload-area{
-border:2px dashed #dbe3ef;
-border-radius:14px;
-padding:30px;
-text-align:center;
-background:#f0fdf4;
-cursor:pointer;
-transition:0.2s;
-position:relative;
+.upload-box:hover {
+    border-color: var(--primary);
+    background: #f0fdf4;
 }
 
-.upload-area:hover{
-border-color:#22c55e;
-background:#ecfdf5;
+.image-previews {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
 }
 
-.upload-area input{
-position:absolute;
-inset:0;
-opacity:0;
-cursor:pointer;
+.preview-thumb {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-.upload-icon{
-font-size:26px;
-margin-bottom:8px;
+/* Swap Toggle Section */
+.swap-container {
+    background: #f1f5f9;
+    padding: 16px;
+    border-radius: 12px;
+    margin-top: 10px;
 }
 
-.upload-title{
-font-weight:700;
-font-size:14px;
-margin-bottom:4px;
+.swap-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
 
-.upload-sub{
-font-size:12px;
-color:#94a3b8;
+.swap-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+    cursor: pointer;
 }
 
-.image-previews{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-top:12px;
+/* Button */
+button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
-.preview-thumb{
-width:70px;
-height:70px;
-border-radius:10px;
-object-fit:cover;
-border:2px solid #e2e8f0;
+button:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
 }
 
-/* CONDITION PILLS */
-
-.condition-pills{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
+@media (max-width: 500px) {
+    .row { grid-template-columns: 1fr; }
 }
-
-.pill-input{
-display:none;
-}
-
-.pill-label{
-padding:8px 14px;
-border-radius:30px;
-border:1px solid #e2e8f0;
-font-size:13px;
-cursor:pointer;
-}
-
-.pill-input:checked + .pill-label{
-background:#22c55e;
-border-color:#22c55e;
-color:white;
-}
-
-/* SWAP SWITCH */
-
-.switch{
-position:relative;
-width:42px;
-height:24px;
-}
-
-.switch input{
-opacity:0;
-width:0;
-height:0;
-}
-
-.slider{
-position:absolute;
-inset:0;
-background:#cbd5e1;
-border-radius:30px;
-transition:0.2s;
-}
-
-.slider:before{
-content:"";
-position:absolute;
-width:18px;
-height:18px;
-left:3px;
-top:3px;
-background:white;
-border-radius:50%;
-transition:0.2s;
-}
-
-.switch input:checked + .slider{
-background:#22c55e;
-}
-
-.switch input:checked + .slider:before{
-transform:translateX(18px);
-}
-
-/* SUBMIT BUTTON */
-
-.submit-btn{
-width:100%;
-padding:16px;
-border:none;
-border-radius:12px;
-background:linear-gradient(135deg,#22c55e,#16a34a);
-color:white;
-font-size:15px;
-font-weight:700;
-cursor:pointer;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:8px;
-box-shadow:0 6px 18px rgba(34,197,94,0.35);
-transition:0.2s;
-}
-
-.submit-btn:hover{
-transform:translateY(-1px);
-box-shadow:0 8px 22px rgba(34,197,94,0.4);
-}
-
-/* TOAST */
-
-.toast{
-position:fixed;
-bottom:90px;
-left:50%;
-transform:translateX(-50%);
-background:#0a0f1e;
-color:white;
-padding:12px 20px;
-border-radius:30px;
-font-size:13px;
-opacity:0;
-transition:0.3s;
-}
-
-.toast.show{
-opacity:1;
-}
-
-.toast.error{
-background:#ef4444;
-}
-  </style>
-
+</style>
 </head>
 
 <body>
 
 <div class="container">
+    <h2>Post Product</h2>
+    
+    <div class="form-card">
+        <div class="field">
+            <span class="field-label">General Info</span>
+            <label>Product Title</label>
+            <input type="text" id="title" placeholder="What are you selling?">
+        </div>
 
-<h2>Post Product</h2>
+        <div class="row">
+            <div class="field">
+                <label>Branch</label>
+                <select id="branch" onchange="updateCategories()">
+                    <option value="">Select Branch</option>
+                    <option value="CSE">CSE / IT</option>
+                    <option value="Mechanical">Mechanical</option>
+                    <option value="Civil">Civil</option>
+                    <option value="Electrical">Electrical</option>
+                    <option value="Common">Common</option>
+                </select>
+            </div>
 
-<div class="field">
-<label>Title</label>
-<input type="text" id="title">
-</div>
+            <div class="field">
+                <label>Semester</label>
+                <select id="semester">
+                    <option value="">Select</option>
+                    <option value="1">Sem 1</option>
+                    <option value="2">Sem 2</option>
+                    <option value="3">Sem 3</option>
+                    <option value="4">Sem 4</option>
+                    <option value="5">Sem 5</option>
+                    <option value="6">Sem 6</option>
+                    <option value="7">Sem 7</option>
+                    <option value="8">Sem 8</option>
+                </select>
+            </div>
+        </div>
 
-<div class="field">
-<label>Branch</label>
-<select id="branch" onchange="updateCategories()">
-<option value="">Select Branch</option>
-<option value="CSE">CSE / IT</option>
-<option value="Mechanical">Mechanical</option>
-<option value="Civil">Civil</option>
-<option value="Electrical">Electrical</option>
-<option value="Common">Common</option>
-</select>
-</div>
+        <div class="row">
+            <div class="field">
+                <label>Category</label>
+                <select id="category">
+                    <option value="">Select Category</option>
+                </select>
+            </div>
+            <div class="field">
+                <label>Price (₹)</label>
+                <input type="number" id="price" placeholder="0">
+            </div>
+        </div>
 
-<div class="field">
-<label>Semester</label>
-<select id="semester">
+        <div class="field">
+            <label>Condition</label>
+            <select id="condition">
+                <option>New</option>
+                <option>Like New</option>
+                <option>Good</option>
+                <option>Fair</option>
+            </select>
+        </div>
 
-<option value="">Select Semester</option>
-<option value="1">Semester 1</option>
-<option value="2">Semester 2</option>
-<option value="3">Semester 3</option>
-<option value="4">Semester 4</option>
-<option value="5">Semester 5</option>
-<option value="6">Semester 6</option>
-<option value="7">Semester 7</option>
-<option value="8">Semester 8</option>
+        <div class="field">
+            <label>Description</label>
+            <textarea id="description" placeholder="Describe the item condition, age, etc."></textarea>
+        </div>
 
-</select>
-</div>
+        <div class="field">
+            <span class="field-label">Media</span>
+            <div class="upload-box" onclick="document.getElementById('imageFile').click()">
+                <p style="font-size: 20px;">📸</p>
+                <p style="font-weight: 600; font-size: 14px;">Tap to add photos</p>
+                <p style="color: var(--muted); font-size: 12px;">Up to 5 images</p>
+            </div>
+            <input type="file" id="imageFile" multiple onchange="previewFiles()" style="display: none;">
+            <div class="image-previews" id="previews"></div>
+        </div>
 
-<div class="field">
-<label>Category</label>
-<select id="category">
-<option value="">Select Category</option>
-</select>
-</div>
+        <div class="swap-container">
+            <span class="field-label" style="color: var(--muted)">Options</span>
+            <label class="swap-row">
+                <input type="checkbox" id="enableSwap">
+                <span>Enable Swap / Exchange</span>
+            </label>
+            
+            <div class="field" style="margin-top: 12px;">
+                <label>Swap Item</label>
+                <input type="text" id="swapItem" placeholder="What do you want in return?">
+            </div>
+        </div>
 
-<div class="field">
-<label>Price</label>
-<input type="number" id="price">
-</div>
-
-<div class="field">
-<label>Description</label>
-<textarea id="description"></textarea>
-</div>
-
-<div class="field">
-<label>Condition</label>
-
-<select id="condition">
-<option>New</option>
-<option>Like New</option>
-<option>Good</option>
-<option>Fair</option>
-</select>
-
-</div>
-
-<div class="field">
-<label>Images</label>
-<input type="file" id="imageFile" multiple onchange="previewFiles()">
-<div class="image-previews" id="previews"></div>
-</div>
-
-<div class="field">
-<label>
-<input type="checkbox" id="enableSwap">
-Enable Swap
-</label>
-</div>
-
-<div class="field">
-<label>Swap Item</label>
-<input type="text" id="swapItem">
-</div>
-
-<button onclick="handleFormSubmit()">Post Product</button>
-
+        <button onclick="handleFormSubmit()">Post to Marketplace</button>
+    </div>
 </div>
 
 <script>
-
+// Logic remains identical to your original code
 function updateCategories(){
-
-const branch=document.getElementById("branch").value
-const category=document.getElementById("category")
-
-const data={
-
-CSE:[
-"Programming Books",
-"DSA Books",
-"DBMS Books",
-"Electronics Gadgets"
-],
-
-Mechanical:[
-"Engineering Drawing",
-"Mechanical Tools",
-"Workshop Equipment"
-],
-
-Civil:[
-"Survey Tools",
-"Civil Drawing Tools",
-"Civil Books"
-],
-
-Electrical:[
-"Electrical Machines Books",
-"Circuit Tools",
-"Electrical Instruments"
-],
-
-Common:[
-"Calculator",
-"Stationery",
-"Hostel Essentials",
-"Fashion"
-]
-
-}
-
-category.innerHTML='<option value="">Select Category</option>'
-
-if(data[branch]){
-
-data[branch].forEach(c=>{
-
-category.innerHTML+=`<option value="${c}">${c}</option>`
-
-})
-
-}
-
+    const branch=document.getElementById("branch").value
+    const category=document.getElementById("category")
+    const data={
+        CSE:["Programming Books","DSA Books","DBMS Books","Electronics Gadgets"],
+        Mechanical:["Engineering Drawing","Mechanical Tools","Workshop Equipment"],
+        Civil:["Survey Tools","Civil Drawing Tools","Civil Books"],
+        Electrical:["Electrical Machines Books","Circuit Tools","Electrical Instruments"],
+        Common:["Calculator","Stationery","Hostel Essentials","Fashion"]
+    }
+    category.innerHTML='<option value="">Select Category</option>'
+    if(data[branch]){
+        data[branch].forEach(c=>{
+            category.innerHTML+=`<option value="${c}">${c}</option>`
+        })
+    }
 }
 
 function previewFiles(){
-
-const input=document.getElementById("imageFile")
-const preview=document.getElementById("previews")
-
-preview.innerHTML=""
-
-Array.from(input.files).slice(0,5).forEach(file=>{
-
-const reader=new FileReader()
-
-reader.onload=e=>{
-
-const img=document.createElement("img")
-img.src=e.target.result
-img.className="preview-thumb"
-
-preview.appendChild(img)
-
-}
-
-reader.readAsDataURL(file)
-
-})
-
+    const input=document.getElementById("imageFile")
+    const preview=document.getElementById("previews")
+    preview.innerHTML=""
+    Array.from(input.files).slice(0,5).forEach(file=>{
+        const reader=new FileReader()
+        reader.onload=e=>{
+            const img=document.createElement("img")
+            img.src=e.target.result
+            img.className="preview-thumb"
+            preview.appendChild(img)
+        }
+        reader.readAsDataURL(file)
+    })
 }
 
 async function handleFormSubmit(){
+    const title=document.getElementById("title").value.trim()
+    const price=document.getElementById("price").value
+    const branch=document.getElementById("branch").value
+    const semester=document.getElementById("semester").value
+    const category=document.getElementById("category").value
+    const description=document.getElementById("description").value
+    const condition=document.getElementById("condition").value
+    const swapEnabled=document.getElementById("enableSwap").checked
+    let swapItem=document.getElementById("swapItem").value.trim()
 
-const title=document.getElementById("title").value.trim()
-const price=document.getElementById("price").value
-const branch=document.getElementById("branch").value
-const semester=document.getElementById("semester").value
-const category=document.getElementById("category").value
-const description=document.getElementById("description").value
-const condition=document.getElementById("condition").value
+    if(!swapEnabled) swapItem=null
+    if(!title || !price || !branch || !semester || !category){
+        alert("Fill required fields")
+        return
+    }
 
-const swapEnabled=document.getElementById("enableSwap").checked
-let swapItem=document.getElementById("swapItem").value.trim()
+    const {data:{session}}=await supabaseClient.auth.getSession()
+    const files=document.getElementById("imageFile").files
+    let imageUrls=[]
 
-if(!swapEnabled) swapItem=null
+    for(const file of Array.from(files).slice(0,5)){
+        const path=`${session.user.id}/${Date.now()}-${file.name}`
+        const {error}=await supabaseClient.storage.from("product-images").upload(path,file)
+        if(error){
+            alert(error.message)
+            return
+        }
+        const {data}=supabaseClient.storage.from("product-images").getPublicUrl(path)
+        imageUrls.push(data.publicUrl)
+    }
 
-if(!title || !price || !branch || !semester || !category){
+    const productData={
+        seller_id:session.user.id,
+        title,
+        price:parseFloat(price),
+        branch,
+        semester,
+        category,
+        condition,
+        description,
+        image_url:imageUrls.join(","),
+        swap_enabled:swapEnabled,
+        swap_item:swapItem,
+        status:"active"
+    }
 
-alert("Fill required fields")
-return
-
+    const {error}=await supabaseClient.from("products").insert([productData])
+    if(error){
+        alert(error.message)
+        return
+    }
+    alert("Product posted successfully")
+    window.location="dashboard.html"
 }
-
-const {data:{session}}=await supabaseClient.auth.getSession()
-
-const files=document.getElementById("imageFile").files
-
-let imageUrls=[]
-
-for(const file of Array.from(files).slice(0,5)){
-
-const path=`${session.user.id}/${Date.now()}-${file.name}`
-
-const {error}=await supabaseClient
-.storage
-.from("product-images")
-.upload(path,file)
-
-if(error){
-
-alert(error.message)
-return
-
-}
-
-const {data}=supabaseClient
-.storage
-.from("product-images")
-.getPublicUrl(path)
-
-imageUrls.push(data.publicUrl)
-
-}
-
-const productData={
-
-seller_id:session.user.id,
-title,
-price:parseFloat(price),
-branch,
-semester,
-category,
-condition,
-description,
-image_url:imageUrls.join(","),
-swap_enabled:swapEnabled,
-swap_item:swapItem,
-status:"active"
-
-}
-
-const {error}=await supabaseClient
-.from("products")
-.insert([productData])
-
-if(error){
-
-alert(error.message)
-return
-
-}
-
-alert("Product posted successfully")
-
-window.location="dashboard.html"
-
-}
-
 </script>
 
 </body>
