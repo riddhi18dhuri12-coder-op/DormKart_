@@ -105,20 +105,76 @@
 </div>
 
 <div id="editModal">
-    <div class="modal-content">
-        <h2>Edit Listing</h2>
-        <input type="hidden" id="editId">
-        <label style="font-size: 12px; font-weight: 700; color: var(--text-light);">Product Title</label>
-        <input type="text" id="editTitle">
-        <label style="font-size: 12px; font-weight: 700; color: var(--text-light);">Price (₹)</label>
-        <input type="number" id="editPrice">
-        
-        <div style="display: flex; gap: 10px;">
-            <button onclick="updateAd()" class="btn-action btn-sold" style="flex: 2;">Save Changes</button>
-            <button onclick="closeEditModal()" class="btn-action btn-edit">Cancel</button>
-        </div>
-        <button onclick="deleteAd()" style="width: 100%; margin-top: 10px; color: #ef4444; background: none; border: none; font-weight: 700; cursor: pointer;">Delete Permanently</button>
-    </div>
+<div class="modal-content" style="max-height:90vh; overflow:auto;">
+
+<h2>Edit Listing</h2>
+
+<input type="hidden" id="editId">
+
+<!-- PHOTOS -->
+<label class="label">Product Photos</label>
+<input type="file" id="editImages" multiple accept="image/*">
+
+<!-- TITLE -->
+<label class="label">Title</label>
+<input type="text" id="editTitle">
+
+<!-- CATEGORY -->
+<label class="label">Category</label>
+<select id="editCategory">
+<option value="Books">Books</option>
+<option value="Electronics">Electronics</option>
+<option value="Hostel Items">Hostel Items</option>
+<option value="Clothing">Clothing</option>
+<option value="Notes">Notes</option>
+<option value="Other">Other</option>
+</select>
+
+<!-- PRICE -->
+<label class="label">Price (₹)</label>
+<input type="number" id="editPrice">
+
+<!-- DESCRIPTION -->
+<label class="label">Description</label>
+<textarea id="editDescription" rows="4"></textarea>
+
+<!-- CONDITION -->
+<label class="label">Condition</label>
+<select id="editCondition">
+<option value="New">New</option>
+<option value="Like New">Like New</option>
+<option value="Good">Good</option>
+<option value="Fair">Fair</option>
+</select>
+
+<!-- SWAP OPTION -->
+<label class="label">Enable Swap</label>
+<select id="editSwap">
+<option value="false">No</option>
+<option value="true">Yes</option>
+</select>
+
+<label class="label">Swap Requirement</label>
+<input type="text" id="editSwapItem">
+
+<br>
+
+<div style="display:flex; gap:10px; margin-top:10px;">
+<button onclick="updateAd()" class="btn-action btn-sold" style="flex:2;">
+Save Changes
+</button>
+
+<button onclick="closeEditModal()" class="btn-action btn-edit">
+Cancel
+</button>
+</div>
+
+<button onclick="deleteAd()" 
+style="width:100%; margin-top:10px; color:#ef4444; background:none; border:none; font-weight:700;">
+Delete Permanently
+</button>
+
+</div>
 </div>
 
 <nav class="bottom-nav">
@@ -185,23 +241,53 @@
     }
 
     function openEditModal(id) {
-        const ad = myAdsData.find(a => a.id == id);
-        document.getElementById('editId').value = id;
-        document.getElementById('editTitle').value = ad.title;
-        document.getElementById('editPrice').value = ad.price;
-        document.getElementById('editModal').style.display = 'flex';
-    }
+
+const ad = myAdsData.find(a => a.id == id)
+
+document.getElementById('editId').value = id
+document.getElementById('editTitle').value = ad.title
+document.getElementById('editPrice').value = ad.price
+document.getElementById('editCategory').value = ad.category
+document.getElementById('editDescription').value = ad.description
+document.getElementById('editCondition').value = ad.condition
+document.getElementById('editSwap').value = ad.swap_enabled
+document.getElementById('editSwapItem').value = ad.swap_item
+
+document.getElementById('editModal').style.display = "flex"
+                     }
 
     function closeEditModal() { document.getElementById('editModal').style.display = 'none'; }
 
-    async function updateAd() {
-        const id = document.getElementById('editId').value;
-        const { error } = await supabaseClient.from('products').update({
-            title: document.getElementById('editTitle').value,
-            price: document.getElementById('editPrice').value
-        }).eq('id', id);
+    async function updateAd(){
 
-        if (!error) { closeEditModal(); fetchMyAds(); }
+const id = document.getElementById('editId').value
+
+const title = document.getElementById('editTitle').value
+const price = document.getElementById('editPrice').value
+const category = document.getElementById('editCategory').value
+const description = document.getElementById('editDescription').value
+const condition = document.getElementById('editCondition').value
+const swap_enabled = document.getElementById('editSwap').value === "true"
+const swap_item = document.getElementById('editSwapItem').value
+
+const {error} = await supabaseClient
+.from("products")
+.update({
+title,
+price,
+category,
+description,
+condition,
+swap_enabled,
+swap_item
+})
+.eq("id", id)
+
+if(!error){
+closeEditModal()
+fetchMyAds()
+}
+
     }
 
     async function markAsSold(id) {
