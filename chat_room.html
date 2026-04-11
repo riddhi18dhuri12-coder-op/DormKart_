@@ -2,296 +2,166 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DormKart • Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>DormKart | Chat Room</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --sky-blue: #bae1ff;
             --mint-green: #baffc9;
-            --pale-yellow: #ffffba;
-            --baby-pink: #ffb3ba;
             --text-dark: #0f172a;
-            --text-muted: #64748b;
             --bg-light: #f8fafc;
             --white: #ffffff;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        
-        body, html {
-            height: 100%;
-            margin: 0;
-            overflow: hidden;
-            background-color: var(--bg-light);
-        }
+        body { background-color: var(--bg-light); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        .chat-app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-
-        /* --- STARTUP CHAT HEADER --- */
+        /* Header */
         .chat-header {
             background: var(--white);
             padding: 15px 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid var(--sky-blue);
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(186, 225, 255, 0.15);
+            gap: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            z-index: 10;
         }
+        .back-btn { font-size: 20px; color: var(--text-dark); text-decoration: none; }
+        .user-avatar { width: 40px; height: 40px; background: var(--sky-blue); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; }
 
-        .back-circle {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: var(--bg-light); border: none;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--text-dark); text-decoration: none;
-        }
-
-        .user-meta { display: flex; align-items: center; gap: 12px; flex: 1; margin-left: 10px; }
-        
-        .chat-squircle {
-            width: 42px; height: 42px; border-radius: 14px;
-            background: var(--pale-yellow); display: flex;
-            align-items: center; justify-content: center;
-            overflow: hidden; border: 2px solid white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-        .chat-squircle img { width: 100%; height: 100%; object-fit: cover; }
-
-        .chat-user-name { font-weight: 800; font-size: 16px; letter-spacing: -0.3px; }
-        .online-status { font-size: 11px; color: #22c55e; font-weight: 700; display: flex; align-items: center; gap: 4px; }
-
-        /* --- MESSAGE AREA --- */
-        .chat-content {
+        /* Messages Area */
+        #messageDisplay {
             flex: 1;
-            padding: 20px;
             overflow-y: auto;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23bae1ff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            gap: 10px;
         }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 14px; line-height: 1.4; position: relative; }
+        .sent { align-self: flex-end; background: var(--sky-blue); color: var(--text-dark); border-bottom-right-radius: 4px; }
+        .received { align-self: flex-start; background: var(--white); border: 1px solid #e2e8f0; border-bottom-left-radius: 4px; }
+        .time { font-size: 9px; opacity: 0.6; margin-top: 4px; display: block; text-align: right; }
 
-        .bubble {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.5;
-            position: relative;
-            animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .bubble-received {
+        /* Input Area */
+        .input-box {
             background: var(--white);
-            color: var(--text-dark);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1.5px solid #f1f5f9;
-        }
-
-        .bubble-sent {
-            background: var(--sky-blue);
-            color: var(--text-dark);
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 4px 15px rgba(186, 225, 255, 0.3);
-        }
-
-        .msg-info {
+            padding: 20px;
             display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 4px;
-            font-size: 10px;
-            font-weight: 700;
-            opacity: 0.6;
-            margin-top: 6px;
+            gap: 10px;
+            border-top: 1px solid #e2e8f0;
         }
-
-        /* --- INPUT BAR --- */
-        .chat-footer {
-            padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
-            background: var(--white);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-top: 2px solid var(--sky-blue);
-        }
-
-        .input-pill {
+        #messageInput {
             flex: 1;
-            background: var(--bg-light);
-            border: 2px solid transparent;
-            border-radius: 100px;
-            padding: 12px 20px;
-            font-size: 15px;
-            font-weight: 600;
+            padding: 14px 18px;
+            border-radius: 15px;
+            border: 2px solid var(--bg-light);
             outline: none;
+            background: var(--bg-light);
             transition: 0.2s;
         }
-        .input-pill:focus { border-color: var(--mint-green); background: var(--white); }
-
-        .send-circle {
+        #messageInput:focus { border-color: var(--sky-blue); background: var(--white); }
+        .send-btn {
             background: var(--text-dark);
-            color: var(--mint-green);
+            color: var(--white);
             border: none;
-            width: 48px; height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
             cursor: pointer;
             transition: 0.3s;
-            font-size: 18px;
         }
-        .send-circle:active { transform: scale(0.9); }
-
-        .typing-hint {
-            font-size: 11px; color: var(--text-muted);
-            padding: 5px 25px; font-weight: 700;
-        }
+        .send-btn:hover { transform: scale(1.05); background: #000; }
     </style>
 </head>
 <body>
 
-    <div class="chat-app-container">
-        <header class="chat-header">
-            <a href="chats.html" class="back-circle"><i class="fa-solid fa-chevron-left"></i></a>
-            
-            <div class="user-meta">
-                <div class="chat-squircle" id="userAvatar">
-                    <i class="fa-solid fa-user" style="opacity: 0.5;"></i>
-                </div>
-                <div>
-                    <div class="chat-user-name" id="chatUserName">Loading...</div>
-                    <div class="online-status"><i class="fa-solid fa-circle" style="font-size: 8px;"></i> Active now</div>
-                </div>
-            </div>
+    <header class="chat-header">
+        <a href="chats.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <div class="user-avatar" id="headerAvatar">?</div>
+        <div>
+            <h4 id="headerName" style="font-weight: 800;">Loading...</h4>
+            <p style="font-size: 11px; color: #64748b;">Active now</p>
+        </div>
+    </header>
 
-            <button class="back-circle" onclick="location.reload()"><i class="fa-solid fa-rotate-right"></i></button>
-        </header>
+    <main id="messageDisplay"></main>
 
-        <main class="chat-content" id="chatDisplay">
-            <div style="text-align: center; color: var(--text-muted); font-size: 12px; margin-top: 20px;">
-                <i class="fa-solid fa-lock" style="margin-right: 5px;"></i> Campus chats are private & encrypted
-            </div>
-        </main>
-
-        <div class="typing-hint" id="typingMsg" style="display: none;">Student is typing...</div>
-
-        <form class="chat-footer" id="msgForm">
-            <button type="button" class="back-circle" style="background: var(--pale-yellow);"><i class="fa-solid fa-plus"></i></button>
-            <input type="text" id="msgInput" class="input-pill" placeholder="Type a message..." autocomplete="off" required>
-            <button type="submit" class="send-circle">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
-        </form>
+    <div class="input-box">
+        <input type="text" id="messageInput" placeholder="Type your message..." onkeypress="if(event.key === 'Enter') sendMessage()">
+        <button class="send-btn" onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
     </div>
 
     <script>
-        let me = null;
-        let them = null;
-        let roomChannel = null;
+        let currentUserId = null;
+        const urlParams = new URLSearchParams(window.location.search);
+        const receiverId = urlParams.get('user');
+        const productId = urlParams.get('product');
 
         window.onload = async () => {
             const { data: { session } } = await supabaseClient.auth.getSession();
-            if (!session) return window.location.href = 'login-signup.html';
-            me = session.user.id;
+            if (!session) return window.location.href = 'index.html';
+            currentUserId = session.user.id;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            them = urlParams.get('user');
+            // Load Recipient Info
+            const { data: user } = await supabaseClient.from('users').select('name').eq('id', receiverId).single();
+            if (user) {
+                document.getElementById('headerName').innerText = user.name;
+                document.getElementById('headerAvatar').innerText = user.name.charAt(0);
+            }
 
-            if (!them) return window.location.href = 'chats.html';
-
-            await loadReceiverProfile();
-            await loadChatHistory();
-            subscribeToMessages();
-
-            document.getElementById('msgForm').addEventListener('submit', handleSend);
+            fetchMessages();
+            
+            // Realtime subscription for live chat
+            supabaseClient
+                .channel('chat-room')
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats' }, () => {
+                    fetchMessages();
+                })
+                .subscribe();
         };
 
-        async function loadReceiverProfile() {
-            const { data } = await supabaseClient.from('users').select('name, avatar_url').eq('id', them).single();
-            if (data) {
-                document.getElementById('chatUserName').innerText = data.name;
-                if(data.avatar_url) {
-                    document.getElementById('userAvatar').innerHTML = `<img src="${data.avatar_url}">`;
-                }
-            }
-        }
-
-        async function loadChatHistory() {
-            const { data } = await supabaseClient
+        async function fetchMessages() {
+            const { data, error } = await supabaseClient
                 .from('chats')
                 .select('*')
-                .or(`and(sender_id.eq.${me},receiver_id.eq.${them}),and(sender_id.eq.${them},receiver_id.eq.${me})`)
+                .or(`and(sender_id.eq.${currentUserId},receiver_id.eq.${receiverId}),and(sender_id.eq.${receiverId},receiver_id.eq.${currentUserId})`)
                 .order('created_at', { ascending: true });
 
-            if (data) {
-                data.forEach(m => appendBubble(m));
-                scrollBottom();
-            }
+            if (error) return console.error(error);
+
+            const container = document.getElementById('messageDisplay');
+            container.innerHTML = data.map(msg => `
+                <div class="msg ${msg.sender_id === currentUserId ? 'sent' : 'received'}">
+                    ${msg.message}
+                    <span class="time">${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
         }
 
-        function appendBubble(m) {
-            const container = document.getElementById('chatDisplay');
-            const isMe = m.sender_id === me;
-            const time = new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            const div = document.createElement('div');
-            div.className = `bubble ${isMe ? 'bubble-sent' : 'bubble-received'}`;
-            div.innerHTML = `
-                <div>${m.message}</div>
-                <div class="msg-info">${time} ${isMe ? '<i class="fa-solid fa-check-double"></i>' : ''}</div>
-            `;
-            container.appendChild(div);
-        }
-
-        function subscribeToMessages() {
-            supabaseClient.channel('realtime_chats')
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'chats' }, payload => {
-                    const m = payload.new;
-                    if ((m.sender_id === me && m.receiver_id === them) || (m.sender_id === them && m.receiver_id === me)) {
-                        appendBubble(m);
-                        scrollBottom();
-                    }
-                }).subscribe();
-        }
-
-        async function handleSend(e) {
-            e.preventDefault();
-            const input = document.getElementById('msgInput');
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
             const text = input.value.trim();
-            if(!text) return;
+            if (!text || !receiverId) return;
 
-            input.value = '';
-            const { error } = await supabaseClient.from('chats').insert([{
-                sender_id: me,
-                receiver_id: them,
-                message: text,
-                is_read: false
-            }]);
+            const { error } = await supabaseClient.from('chats').insert([
+                {
+                    sender_id: currentUserId,
+                    receiver_id: receiverId,
+                    product_id: productId || null,
+                    message: text
+                }
+            ]);
 
-            if(error) {
-                alert("Failed to send: " + error.message);
-                input.value = text;
+            if (error) alert("Error: " + error.message);
+            else {
+                input.value = '';
+                fetchMessages();
             }
-        }
-
-        function scrollBottom() {
-            const d = document.getElementById('chatDisplay');
-            d.scrollTop = d.scrollHeight;
         }
     </script>
 </body>
