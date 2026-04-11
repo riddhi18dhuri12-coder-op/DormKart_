@@ -500,15 +500,6 @@ body {
   width: 100%;
 }
 .btn-trade:hover { background: #6d28d9; }
-.no-trade {
-  padding: 12px 14px;
-  background: var(--bg);
-  border-radius: 14px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: var(--text-light);
-  text-align: center;
-}
 .filter-item.trade-active {
   background: var(--trade) !important;
   color: white !important;
@@ -634,30 +625,31 @@ body {
   font-family: 'DM Sans', sans-serif;
   gap: 3px;
   transition: color 0.2s;
+  position: relative;
 }
 .nav-item.active { color: var(--primary-dark); }
-  .nav-item.active::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 50%;
-    transform: translateX(-50%);
-    width: 24px; height: 3px;
-    background: var(--primary-dark);
-    border-radius: 0 0 4px 4px;
-  }
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 24px; height: 3px;
+  background: var(--primary-dark);
+  border-radius: 0 0 4px 4px;
+}
 .nav-item svg { width: 22px; height: 22px; }
-  .nav-sell {
-    background: var(--primary-dark);
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    margin-top: -30px;
-    border: 4px solid var(--bg);
-    color: white !important;
-    box-shadow: 0 4px 20px rgba(0,200,83,0.4);
-    transition: transform 0.2s;
-  }
-  .nav-sell:hover { transform: scale(1.08); }
+.nav-sell {
+  background: var(--primary-dark);
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: -30px;
+  border: 4px solid var(--bg);
+  color: white !important;
+  box-shadow: 0 4px 20px rgba(0,200,83,0.4);
+  transition: transform 0.2s;
+}
+.nav-sell:hover { transform: scale(1.08); }
 </style>
 </head>
 <body>
@@ -756,7 +748,7 @@ async function init() {
   fetchProducts();
 }
 
-async function isTradeEnabled(p) {
+function isTradeEnabled(p) {
   return p.swap_enabled === true || p.allow_swap === true ||
          p.swap_enabled === 'true' || p.allow_swap === 'true';
 }
@@ -840,7 +832,7 @@ function showDetails(p) {
       <input type="text" class="trade-input" id="tradeInput" placeholder="What would you like to offer in exchange?">
       <button class="btn btn-trade" onclick="handleTradeProposal('${p.id}', '${p.seller_id}')">💬 Propose Trade</button>
     </div>
-  ` : `<div class="no-trade">🔁 This item is not available for trade.</div>`;
+  ` : '';
 
   content.innerHTML = `
     <div class="modal-drag"></div>
@@ -884,7 +876,7 @@ function showDetails(p) {
         <button class="btn btn-offer" onclick="makeOffer('${p.id}', '${p.seller_id}')">💬 Offer</button>
         <button class="btn btn-wish"  onclick="addToWishlist('${p.id}')">♡ Save</button>
       </div>
-      <button class="btn btn-message" onclick="window.location.href='chats.html?id=${p.seller_id}'">Message Seller</button>
+      <button class="btn btn-message" onclick="window.location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'">Message Seller</button>
     </div>
   `;
   modal.style.display = 'flex';
@@ -929,7 +921,7 @@ async function handleTradeProposal(productId, sellerId) {
     });
 
     closeModal();
-    window.location.href = `chats.html?user=${sellerId}&product=${productId}`;
+    window.location.href = `chat_room.html?seller_id=${sellerId}&product_id=${productId}`;
   } catch (e) {
     console.error('Trade error:', e);
     alert('Failed to send trade proposal. Please try again.');
@@ -990,7 +982,7 @@ async function makeOffer(productId, sellerId) {
     message: `Someone made an offer of ₹${amount} on your listing.`,
     type: 'offer'
   });
-  window.location.href = `chats.html?id=${sellerId}&product=${productId}`;
+  window.location.href = `chat_room.html?seller_id=${sellerId}&product_id=${productId}`;
 }
 
 function applySavedTheme() {
@@ -1006,7 +998,7 @@ function toggleDarkMode() {
   document.getElementById('themeBtn').innerText = isDark ? '☀️' : '🌙';
 }
 
-window.onload = init;
+window.onload = init
 </script>
 </body>
 </html>
