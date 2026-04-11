@@ -738,6 +738,7 @@ function renderGrid(products) {
     const isSaved = wishlistSet.has(p.id);
     const ogPrice = p.original_price ? Math.floor(p.original_price).toLocaleString('en-IN') : '';
     const catIcon = getCategoryIcon(p.category);
+       const userCollege = p.seller?.college || 'Campus';
 
     card.innerHTML = `
       <div class="p-img-wrap">
@@ -827,15 +828,7 @@ function applyFilters() {
 
   renderGrid(f);
 }
-  if (q)    f = f.filter(p => (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
-  if (cat)  f = f.filter(p => p.category === cat);
-  if (tradeOnly) f = f.filter(p => Boolean(p.swap_enabled));
-  if (srt === 'low')    f.sort((a,b) => (a.price||0) - (b.price||0));
-  if (srt === 'high')   f.sort((a,b) => (b.price||0) - (a.price||0));
-  if (srt === 'newest') f.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
-  if (srt === 'oldest') f.sort((a,b) => new Date(a.created_at) - new Date(b.created_at));
-  renderGrid(f);
-}
+
 
 function toggleTradeFilter() {
   tradeOnly = !tradeOnly;
@@ -1157,8 +1150,23 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+     function updateStats() {
+  document.getElementById('statProducts').textContent = allProducts.length;
+  
+  // Extract unique college names from the seller data
+  const campuses = new Set(
+    allProducts
+      .map(p => p.seller?.college)
+      .filter(college => college && college !== "NULL")
+  );
+  
+  document.getElementById('statCampuses').textContent = campuses.size || '0';
+}
+
 // ── START ──
 window.addEventListener('DOMContentLoaded', init);
+
+     
 </script>
 </body>
 </html>
