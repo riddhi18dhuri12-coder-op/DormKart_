@@ -687,15 +687,16 @@
         async function handleFormSubmit() {
             const btn = document.getElementById('submitBtn');
             const title = document.getElementById('title').value.trim();
-            const price = document.getElementById('price').value;
-            const category = document.getElementById('category').value;
+const price = document.getElementById('price').value;
+const category = document.getElementById('category').value;
+const branch = document.getElementById('branch').value;
           const swapEnabled = document.getElementById("enableSwap").checked;
 let swapItem = document.getElementById("swapItem").value.trim();
 
 if (!swapEnabled) 
     swapItem = null;
 
-            if (!title || !price || !category) {
+           if (!title || !price || !category || !branch) {
                 showToast('Please fill in all required fields.', true);
                 return;
             }
@@ -745,15 +746,17 @@ if (!swapEnabled)
         }
 
         const productData = {
+  const productData = {
     seller_id: currentSession.user.id,
     title,
     price: parseFloat(price),
+    branch,
     category,
     condition,
     description: document.getElementById('description').value,
     image_url: publicUrls.join(','),
-    status: 'active',
-
+    status: 'active'
+};
     swap_enabled: swapEnabled,
     swap_item: swapItem
 };
