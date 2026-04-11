@@ -10,16 +10,14 @@
 
     <style>
         :root {
-            /* Solid Pastel Palette */
-            --apricot: #ffdfba;
-            --baby-pink: #ffb3ba;
+            /* Your Strict Palette */
             --pale-yellow: #ffffba;
             --mint-green: #baffc9;
             --sky-blue: #bae1ff;
             
             /* UI Essentials */
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-main: #1e293b;
+            --text-muted: #475569;
             --bg-canvas: #ffffff;
             --border: #f1f5f9;
         }
@@ -48,7 +46,7 @@
             top: 0;
             background: white;
             z-index: 1000;
-            border-bottom: 2px solid var(--apricot);
+            border-bottom: 2px solid var(--sky-blue);
         }
 
         .logo-area {
@@ -59,7 +57,7 @@
         }
 
         .logo-icon {
-            background: var(--apricot);
+            background: var(--mint-green);
             color: var(--text-main);
             padding: 8px;
             border-radius: 10px;
@@ -108,7 +106,7 @@
 
         .btn-signup {
             text-decoration: none;
-            background: var(--apricot);
+            background: var(--sky-blue);
             color: var(--text-main);
             padding: 12px 26px;
             border-radius: 12px;
@@ -117,27 +115,27 @@
             transition: 0.2s;
         }
 
-        .btn-signup:hover { transform: translateY(-2px); filter: brightness(0.95); }
+        .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(186, 225, 255, 0.6); }
 
         /* --- HERO SECTION --- */
         .hero {
             padding: 100px 6% 80px;
             text-align: center;
-            background-color: #fffaf5; /* Solid light pastel background */
+            background-color: #fdfdf5; /* Subtle yellow tint */
         }
 
         .badge-student {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: white;
+            background: var(--pale-yellow);
             padding: 10px 20px;
             border-radius: 100px;
             font-size: 13px;
             font-weight: 800;
             color: var(--text-main);
             margin-bottom: 25px;
-            border: 2px solid var(--apricot);
+            border: 1px solid rgba(0,0,0,0.05);
         }
 
         .hero h1 {
@@ -148,7 +146,11 @@
             line-height: 1.1;
         }
 
-        .hero h1 span.highlight { color: #e67e22; }
+        .hero h1 span.accent { 
+            background: var(--mint-green);
+            padding: 0 10px;
+            border-radius: 10px;
+        }
 
         .hero p {
             color: var(--text-muted);
@@ -179,7 +181,7 @@
 
         .btn-outline {
             background: white;
-            border: 2px solid var(--apricot);
+            border: 2px solid var(--sky-blue);
             padding: 18px 36px;
             border-radius: 16px;
             font-weight: 700;
@@ -187,7 +189,7 @@
             transition: 0.3s;
         }
 
-        .btn-outline:hover { background: var(--apricot); }
+        .btn-outline:hover { background: var(--sky-blue); }
 
         /* --- FEATURES --- */
         .features {
@@ -206,15 +208,14 @@
             cursor: pointer;
         }
 
-        /* Assigning solid pastel colors to cards */
-        .f-card.pink { background-color: #fff5f6; }
-        .f-card.mint { background-color: #f6fff9; }
-        .f-card.blue { background-color: #f6faff; }
+        .f-card.yellow { background-color: #fffff2; }
+        .f-card.mint { background-color: #f7fff9; }
+        .f-card.blue { background-color: #f9fcff; }
 
         .f-card:hover { 
             transform: translateY(-10px); 
-            border-color: var(--apricot);
-            box-shadow: 0 15px 30px rgba(255, 223, 186, 0.3); 
+            border-color: var(--mint-green);
+            box-shadow: 0 15px 30px rgba(186, 255, 201, 0.3); 
         }
 
         .f-icon-box {
@@ -222,15 +223,14 @@
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 24px;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: var(--pale-yellow);
         }
 
         /* --- FOOTER --- */
         footer {
             padding: 80px 6% 40px;
             background: #fafafa;
-            border-top: 2px solid var(--apricot);
+            border-top: 3px solid var(--mint-green);
         }
 
         .footer-grid {
@@ -280,10 +280,10 @@
 
     <section class="hero">
         <div class="badge-student">
-            <span class="material-icons-round" style="color:#e67e22; font-size:18px;">school</span>
+            <span class="material-icons-round" style="color:var(--text-muted); font-size:18px;">school</span>
             Built for students, by students
         </div>
-        <h1>Your Campus <span class="highlight">Dorm</span><br>Marketplace</h1>
+        <h1>Your Campus <span class="accent">Dorm</span><br>Marketplace</h1>
         <p>Buy, sell, exchange, and borrow essentials within your college community. Save money and reduce waste with DormKart.</p>
         
         <div class="hero-btns">
@@ -295,20 +295,20 @@
     </section>
 
     <section class="features">
-        <div class="f-card pink" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--baby-pink);">verified_user</span></div>
+        <div class="f-card yellow" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box" style="background: var(--pale-yellow);"><span class="material-icons-round">verified_user</span></div>
             <h3>Verified Students</h3>
             <p>Every user is verified via college email to ensure a safe, trusted community.</p>
         </div>
 
         <div class="f-card mint" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--mint-green);">auto_awesome</span></div>
+            <div class="f-icon-box" style="background: var(--mint-green);"><span class="material-icons-round">auto_awesome</span></div>
             <h3>Smart Discovery</h3>
             <p>Find materials specifically categorized by your branch and semester.</p>
         </div>
 
         <div class="f-card blue" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--sky-blue);">sync</span></div>
+            <div class="f-icon-box" style="background: var(--sky-blue);"><span class="material-icons-round">sync</span></div>
             <h3>Barter & Swap</h3>
             <p>Swap items you no longer need with other students easily.</p>
         </div>
@@ -325,33 +325,33 @@
             </div>
             
             <div class="footer-col">
-                <h4>Platform</h4>
-                <ul>
-                    <li><a onclick="checkAuth('dashboard.html')">Marketplace</a></li>
-                    <li><a onclick="checkAuth('add_product.html')">Sell Item</a></li>
+                <h4 style="margin-bottom: 20px;">Platform</h4>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><a onclick="checkAuth('dashboard.html')" style="cursor:pointer; text-decoration:none; color:var(--text-muted);">Marketplace</a></li>
+                    <li style="margin-bottom: 10px;"><a onclick="checkAuth('add_product.html')" style="cursor:pointer; text-decoration:none; color:var(--text-muted);">Sell Item</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
-                <h4>Company</h4>
-                <ul>
-                    <li><a onclick="checkAuth('profile.html')">About Us</a></li>
-                    <li><a href="#">Contact</a></li>
+                <h4 style="margin-bottom: 20px;">Company</h4>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">About Us</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Contact</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">Privacy</a></li>
-                    <li><a href="#">Terms</a></li>
+                <h4 style="margin-bottom: 20px;">Support</h4>
+                <ul style="list-style: none;">
+                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Privacy</a></li>
+                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Terms</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
             <p>&copy; 2026 DormKart. All rights reserved.</p>
-            <p>Made with <span style="color:var(--baby-pink)">❤</span> for students</p>
+            <p>Made for students</p>
         </div>
     </footer>
 
@@ -368,7 +368,7 @@
                     window.location.href = "login-signup.html";
                 }
             } catch (error) {
-                console.error("Auth error:", error);
+                console.error("Auth check failed:", error);
                 window.location.href = "login-signup.html";
             }
         }
