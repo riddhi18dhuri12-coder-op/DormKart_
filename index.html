@@ -14,13 +14,10 @@
         :root {
             /* Pastel Rainbow Palette */
             --baby-pink: #ffb3ba;
-            --apricot: #ffdfba;
-            --pale-yellow: #ffffba;
             --mint-green: #baffc9;
             --sky-blue: #bae1ff;
-            
-            /* Text Color */
             --text-dark: #1f2937;
+            --glass: rgba(255, 255, 255, 0.7);
         }
 
         body {
@@ -28,40 +25,41 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            /* Gentle gradient for background */
             background: linear-gradient(135deg, #f3f6ff 0%, #e8f0fe 100%);
             color: var(--text-dark);
-            flex-direction: column;
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             overflow: hidden;
         }
 
-        /* Splash Screen Container */
-        .splash-container {
+        /* Unified Splash Container */
+        .main-card {
             text-align: center;
-            animation: fadeInScale 1.2s ease-out forwards;
-            /* Added margin to push it slightly up from the center for better visual balance */
-            margin-top: -60px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 40px 30px;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            width: 85%;
+            max-width: 400px;
+            animation: fadeInScale 1s ease-out forwards;
         }
 
-        /* Icon Container */
+        /* Branding Section */
         .icon-box {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 25px;
-            border-radius: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 28px;
             display: inline-block;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+            margin-bottom: 20px;
             animation: pulseSoft 3s infinite ease-in-out;
-            position: relative;
         }
 
-        /* Material Icon Style */
         .startup-icon {
-            font-size: 80px;
+            font-size: 64px;
             display: block;
             background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
             -webkit-background-clip: text;
@@ -69,148 +67,109 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Animations */
-        @keyframes fadeInScale {
-            0% { opacity: 0; transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes pulseSoft {
-            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); }
-            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
-        }
-
-        /* App Title Style */
         h1 {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 800;
             margin: 0;
             letter-spacing: -1.5px;
             color: #111827;
         }
 
-        /* Subtitle / Loading Text */
-        .loading-text {
-            margin-top: 15px;
-            font-size: 16px;
-            font-weight: 500;
+        /* Integrated Info Section */
+        .info-content {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .why-label {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #3a86ff;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .why-desc {
+            font-size: 15px;
+            line-height: 1.6;
             color: #4b5563;
-            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* Professional Loading Indicator */
+        .loader-wrapper {
+            margin-top: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        /* Subtitle Text Alignment */
-        .subtitle-box {
-            max-width: 320px;
-            margin: 15px auto 0 auto;
-            text-align: center;
-        }
-
-        /* Subtle Loading Dots */
-        .dot-loader {
-            width: 7px;
-            height: 7px;
+        .dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-        .dot-loader:nth-child(1) { animation-delay: -0.32s; background-color: var(--baby-pink); }
-        .dot-loader:nth-child(2) { animation-delay: -0.16s; background-color: var(--mint-green); }
-        .dot-loader:nth-child(3) { background-color: var(--sky-blue); }
+        .dot:nth-child(1) { animation-delay: -0.32s; background-color: var(--baby-pink); }
+        .dot:nth-child(2) { animation-delay: -0.16s; background-color: var(--mint-green); }
+        .dot:nth-child(3) { background-color: var(--sky-blue); }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
 
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
         }
 
-        /* Bottom "Why" Section - Startup Feature Style */
-        .why-section {
+        /* Subtle Footer Brand */
+        .footer-tag {
             position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-            max-width: 380px;
-            background: white;
-            padding: 25px;
-            border-radius: 24px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-            border: 1px solid #f3f4f6;
-            animation: fadeInSlideUp 1.5s ease-out forwards;
-            opacity: 0;
-            /* Center children */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        @keyframes fadeInSlideUp {
-            0% { opacity: 0; transform: translate(-50%, 20px); }
-            100% { opacity: 1; transform: translate(-50%, 0); }
-        }
-
-        /* Title in Why Section */
-        .why-title {
-            font-size: 19px;
-            font-weight: 800;
-            color: #111827;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .why-title i {
-            color: var(--emerald-dark, #059669);
-            font-size: 22px;
-        }
-
-        /* Description in Why Section */
-        .why-desc {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #6b7280;
-            font-weight: 500;
-            max-width: 300px;
+            bottom: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #9ca3af;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="splash-container">
-
+    <div class="main-card">
         <div class="icon-box">
             <i class="material-icons startup-icon">storefront</i>
         </div>
 
         <h1>DormKart</h1>
 
-        <div class="subtitle-box">
-            <div class="loading-text">
-                Connecting your campus
-                <div class="dot-loader"></div>
-                <div class="dot-loader"></div>
-                <div class="dot-loader"></div>
+        <div class="info-content">
+            <span class="why-label">The Campus Standard</span>
+            <div class="why-desc">
+                Everything you need to find, share, and save on campus essentials. Connecting student communities.
             </div>
         </div>
 
+        <div class="loader-wrapper">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
     </div>
 
-    <div class="why-section">
-        <div class="why-title">
-            <i class="material-icons" style="color: #3a86ff;">verified</i>
-            Why DormKart?
-        </div>
-        <div class="why-desc">
-            The smartest way to find, share, and save on campus essentials. Connecting student communities.
-        </div>
-    </div>
+    <div class="footer-tag">Marketplace for Students</div>
 
     <script>
         // Redirect after 5 seconds
