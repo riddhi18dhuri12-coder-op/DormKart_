@@ -465,6 +465,73 @@
                 <input type="text" id="title" placeholder="e.g. Scientific Calculator" required>
             </div>
 
+<div class="field">
+<label>Category</label>
+
+<div id="categoryContainer">
+
+<!-- CSE / IT -->
+<div class="branch-category">
+<strong style="font-size:13px;color:#16a34a;">CSE / IT</strong>
+<select id="categoryCSE" onchange="setCategory(this)">
+<option value="">Select</option>
+<option value="Programming Books">Programming Books</option>
+<option value="DSA Books">DSA Books</option>
+<option value="DBMS Books">DBMS Books</option>
+<option value="Electronics Gadgets">Electronics Gadgets</option>
+</select>
+</div>
+
+<!-- Mechanical -->
+<div class="branch-category" style="margin-top:10px;">
+<strong style="font-size:13px;color:#16a34a;">Mechanical</strong>
+<select id="categoryME" onchange="setCategory(this)">
+<option value="">Select</option>
+<option value="Engineering Drawing">Engineering Drawing</option>
+<option value="Mechanical Tools">Mechanical Tools</option>
+<option value="Workshop Equipment">Workshop Equipment</option>
+</select>
+</div>
+
+<!-- Civil -->
+<div class="branch-category" style="margin-top:10px;">
+<strong style="font-size:13px;color:#16a34a;">Civil</strong>
+<select id="categoryCE" onchange="setCategory(this)">
+<option value="">Select</option>
+<option value="Survey Tools">Survey Tools</option>
+<option value="Civil Drawing Tools">Civil Drawing Tools</option>
+<option value="Civil Books">Civil Books</option>
+</select>
+</div>
+
+<!-- Electrical -->
+<div class="branch-category" style="margin-top:10px;">
+<strong style="font-size:13px;color:#16a34a;">Electrical</strong>
+<select id="categoryEE" onchange="setCategory(this)">
+<option value="">Select</option>
+<option value="Electrical Machines Books">Electrical Machines Books</option>
+<option value="Circuit Tools">Circuit Tools</option>
+<option value="Electrical Instruments">Electrical Instruments</option>
+</select>
+</div>
+
+<div class="field">
+<label>Branch</label>
+<select id="branch" onchange="updateCategories()">
+<option value="">Select Branch</option>
+<option value="cse">CSE / IT</option>
+<option value="mech">Mechanical</option>
+<option value="civil">Civil</option>
+<option value="electrical">Electrical</option>
+<option value="common">Common</option>
+</select>
+</div>
+
+</div>
+
+<input type="hidden" id="category">
+</div>
+            
             <div class="two-col" style="margin-top:16px;">
                 <div class="field">
                     <label>Category</label>
@@ -690,6 +757,53 @@ if (!swapEnabled)
     swap_enabled: swapEnabled,
     swap_item: swapItem
 };
+function updateCategories(){
+
+const branch=document.getElementById("branch").value
+const category=document.getElementById("category")
+
+category.innerHTML='<option value="">Select</option>'
+
+if(branch==="cse"){
+category.innerHTML+=`
+<option value="Programming Books">Programming Books</option>
+<option value="DSA Books">DSA Books</option>
+<option value="DBMS Books">DBMS Books</option>
+<option value="Electronics Gadgets">Electronics Gadgets</option>`
+}
+
+if(branch==="mech"){
+category.innerHTML+=`
+<option value="Engineering Drawing">Engineering Drawing</option>
+<option value="Mechanical Tools">Mechanical Tools</option>
+<option value="Workshop Equipment">Workshop Equipment</option>`
+}
+
+if(branch==="civil"){
+category.innerHTML+=`
+<option value="Survey Tools">Survey Tools</option>
+<option value="Civil Drawing Tools">Civil Drawing Tools</option>
+<option value="Civil Books">Civil Books</option>`
+}
+
+if(branch==="electrical"){
+category.innerHTML+=`
+<option value="Electrical Machines Books">Electrical Machines Books</option>
+<option value="Circuit Tools">Circuit Tools</option>
+<option value="Electrical Instruments">Electrical Instruments</option>`
+}
+
+if(branch==="common"){
+category.innerHTML+=`
+<option value="Calculator">Calculator</option>
+<option value="Stationery">Stationery</option>
+<option value="Electronics">Electronics</option>
+<option value="Hostel Essentials">Hostel Essentials</option>
+<option value="Fashion">Fashion</option>`
+}
+
+}
+        
     </script>
 </body>
 </html>
