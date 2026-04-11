@@ -60,6 +60,7 @@ body {
 .search-wrap input {
   width: 100%; padding: 15px 15px 15px 45px; border-radius: 18px;
   border: 1px solid var(--border); background: white; outline: none;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 .search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 18px; stroke: var(--text-light); fill: none; }
 
@@ -70,12 +71,14 @@ body {
 .filter-item {
   padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--border);
   background: white; font-size: 12px; font-weight: 700; outline: none; white-space: nowrap;
+  transition: 0.2s;
 }
 .filter-item.active-btn { background: var(--primary); color: white; border-color: var(--primary); }
 
 /* Product Grid */
 .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 20px; }
-.product-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; transition: 0.3s; }
+.product-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+.product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
 .p-img-container { aspect-ratio: 1/1; background: var(--surface); position: relative; }
 .p-img-container img { width: 100%; height: 100%; object-fit: cover; }
 .p-info { padding: 12px; }
@@ -83,11 +86,27 @@ body {
 .p-title { font-size: 13px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .p-badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: white; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
 
+/* Stats Footer Section */
+.stats-container {
+  margin: 40px 20px 20px;
+  background: white;
+  padding: 30px 20px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+.stat-box h3 { font-family: 'Syne', sans-serif; font-size: 24px; color: var(--primary); }
+.stat-box p { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-top: 4px; }
+
 /* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
   width: 90%; max-width: 400px; background: var(--nav-bg);
   height: 70px; border-radius: 20px; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 .nav-item { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .nav-item.active { color: var(--primary-bright); }
@@ -95,8 +114,12 @@ body {
 .nav-sell { background: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -35px; border: 4px solid var(--bg); color: white !important; }
 
 /* Modals */
-#productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 3000; align-items: flex-end; }
+#productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 3000; align-items: flex-end; backdrop-filter: blur(4px); }
 .modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; max-height: 85vh; overflow-y: auto; padding-bottom: 30px; }
+
+@media (min-width: 600px) {
+  .stats-container { grid-template-columns: repeat(4, 1fr); }
+}
 </style>
 </head>
 <body>
@@ -126,8 +149,10 @@ body {
   </select>
   <select id="semFilter" class="filter-item" onchange="applyFilters()">
     <option value="">All Sems</option>
-    <option value="1">Sem 1</option><option value="2">Sem 2</option><option value="3">Sem 3</option><option value="4">Sem 4</option>
-    <option value="5">Sem 5</option><option value="6">Sem 6</option><option value="7">Sem 7</option><option value="8">Sem 8</option>
+    <option value="1">Sem 1</option><option value="2">Sem 2</option>
+    <option value="3">Sem 3</option><option value="4">Sem 4</option>
+    <option value="5">Sem 5</option><option value="6">Sem 6</option>
+    <option value="7">Sem 7</option><option value="8">Sem 8</option>
   </select>
   <select id="priceSort" class="filter-item" onchange="applyFilters()">
     <option value="">Price</option>
@@ -137,6 +162,25 @@ body {
 </div>
 
 <main id="productGrid" class="product-grid"></main>
+
+<section class="stats-container">
+    <div class="stat-box">
+        <h3 id="statUsers">0</h3>
+        <p>Active Students</p>
+    </div>
+    <div class="stat-box">
+        <h3 id="statAds">0</h3>
+        <p>Items Listed</p>
+    </div>
+    <div class="stat-box">
+        <h3>4.9/5</h3>
+        <p>Trust Rating</p>
+    </div>
+    <div class="stat-box">
+        <h3>12+</h3>
+        <p>Campuses</p>
+    </div>
+</section>
 
 <div id="productModal"><div class="modal-content" id="modalContent"></div></div>
 
@@ -171,11 +215,21 @@ async function init() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) { location.href = 'login-signup.html'; return; }
 
-  // Get current user's college for "My Campus" filter
   const { data: profile } = await supabaseClient.from('users').select('college').eq('id', session.user.id).single();
   userCollege = profile?.college || "";
 
   fetchProducts();
+  fetchLiveStats();
+}
+
+async function fetchLiveStats() {
+    // Fetch count of users
+    const { count: userCount } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
+    // Fetch count of active products
+    const { count: adCount } = await supabaseClient.from('products').select('*', { count: 'exact', head: true, eq: ('status', 'active') });
+    
+    document.getElementById('statUsers').innerText = (userCount || 0) + "+";
+    document.getElementById('statAds').innerText = (adCount || 0) + "+";
 }
 
 async function fetchProducts() {
@@ -249,10 +303,6 @@ function showDetails(p) {
             <h1 style="font-family:Syne;font-size:30px;">₹${p.price}</h1>
             <p style="font-weight:700;font-size:18px;">${p.title}</p>
             <p style="color:grey;font-size:14px;margin:10px 0;">${p.description}</p>
-            <div style="display:flex;gap:10px;margin-top:15px;">
-                <span style="background:#f1f5f9;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;">${p.branch}</span>
-                <span style="background:#f1f5f9;padding:5px 12px;border-radius:8px;font-size:12px;font-weight:700;">Semester ${p.semester}</span>
-            </div>
         </div>
         <div style="margin-top:25px;padding:15px;background:var(--surface);border-radius:15px;display:flex;align-items:center;gap:12px;">
             <div style="width:40px;height:40px;background:var(--primary);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;">${p.seller?.name?.charAt(0)}</div>
