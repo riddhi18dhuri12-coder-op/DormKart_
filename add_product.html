@@ -12,12 +12,13 @@
 <style>
 :root {
     --primary: #22c55e;
-    --primary-dark: #16a34a;
-    --bg: #f8fafc;
-    --card: #ffffff;
-    --text: #1e293b;
-    --muted: #64748b;
-    --border: #e2e8f0;
+    --primary-bright: #4ade80;
+    --bg: #ffffff;
+    --surface: #f8fafc;
+    --text: #0f172a;
+    --muted: #94a3b8;
+    --border: #f1f5f9;
+    --nav-bg: #1e293b;
 }
 
 * {
@@ -29,167 +30,198 @@
 
 body {
     background-color: var(--bg);
-    color: var(--text);
-    padding: 20px;
-    line-height: 1.6;
+    /* WHATSAPP-STYLE DOODLE BACKGROUND */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%2322c55e' fill-opacity='0.08'%3E%3Cpath d='M13 32a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V32zm3 0v12h12V32H16zm2 2h8v8h-8V34zm11 76a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56-82v28H56V27h24zM59 30v22h18V30H59zm53 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm41 77a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-41 68v14h14V93h-14zm2-2h10v10h-10V91zm115 11v20h20v-20h-20zm18 18h-16v-16h16v16zM61 97a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H64a3 3 0 0 1-3-3V97zm3 0v12h12V97H64zm1 2h10v8H65v-8zm53 38a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-111 26a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56 61a10 10 0 1 1-10 10 10 10 0 0 1 10-10zm0 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm41-68v28H96V97h24zm-21 3v22h18V100H100zM12 127a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3v-12zm3 0v12h12v-12H15zm1 2h10v8H16v-8zm101 22a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm26-51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM13 13h14v14H13V13zm2 2h10v10H15V15zm88 1a1 1 0 1 0 2 0 1 1 0 0 0-2 0zm11 11a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-101 6v14h14V17H13zm2 2h10v10H15V19zm115 11v20h20v-20h-20zm18 18h-16v-16h16v16zM61 97a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H64a3 3 0 0 1-3-3V97zm3 0v12h12V97H64zm1 2h10v8H65v-8zM12 27a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm138 2a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3h-12a3 3 0 0 1-3-3V29zm3 0v12h12V29h-12zm1 2h10v8h-10v-8zm-26 51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm13 41a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H44a3 3 0 0 1-3-3V100zm3 0v12h12v-12H44zm1 2h10v8H45v-8zm11 68a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56-82v28H56V27h24zM59 30v22h18V30H59zm53 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm41 77a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-111 26a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56 61a10 10 0 1 1-10 10 10 10 0 0 1 10-10zm0 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm41-68v28H96V97h24zm-21 3v22h18V100H100zM12 127a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3v-12zm3 0v12h12v-12H15zm1 2h10v8H16v-8zm101 22a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm26-51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-15-52v14h14V13H13zm2 2h10v10H15V15z'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: 180px 180px;
+    padding: 20px 20px 110px 20px;
 }
 
 .container {
-    max-width: 580px;
-    margin: 40px auto;
+    max-width: 500px;
+    margin: auto;
 }
 
-h2 {
-    font-size: 28px;
+.header {
+    margin-bottom: 25px;
+    padding-left: 5px;
+}
+
+.header h2 {
+    font-size: 32px;
     font-weight: 800;
-    margin-bottom: 24px;
-    text-align: center;
     color: var(--text);
+    letter-spacing: -1px;
 }
 
-/* Form Sections */
-.form-card {
-    background: var(--card);
-    padding: 30px;
-    border-radius: 20px;
+.header span {
+    color: var(--primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Info Box */
+.info-box {
+    background: white;
+    padding: 28px;
+    border-radius: 28px;
     border: 1px solid var(--border);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.field-label {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--primary);
-    margin-bottom: 4px;
-    display: block;
-}
-
-.field {
+.field-group {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 label {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--text);
+    margin-left: 2px;
 }
 
-/* Inputs */
 input, select, textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    background: #f9fbff;
+    background: var(--surface);
+    border: 2px solid transparent;
+    padding: 14px 16px;
+    border-radius: 16px;
     font-size: 15px;
-    transition: all 0.2s ease;
+    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--text);
 }
 
 input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--primary);
+    border-color: var(--primary-bright);
     background: white;
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.05);
 }
 
-textarea {
-    resize: none;
-    height: 100px;
-}
+textarea { height: 100px; resize: none; }
 
-/* Grid layout for smaller inputs */
 .row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 12px;
 }
 
-/* Custom Image Upload Area */
-.upload-box {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
+/* Media Upload */
+.upload-area {
+    background: #f0fdf4;
+    border: 2px dashed var(--primary-bright);
     padding: 24px;
+    border-radius: 18px;
     text-align: center;
-    background: #fdfdfd;
     cursor: pointer;
     transition: 0.2s;
 }
 
-.upload-box:hover {
-    border-color: var(--primary);
-    background: #f0fdf4;
+.upload-area:hover { background: #e3faea; }
+
+.upload-icon-svg {
+    width: 32px;
+    height: 32px;
+    stroke: var(--primary);
+    margin-bottom: 8px;
 }
 
 .image-previews {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .preview-thumb {
-    width: 70px;
-    height: 70px;
-    border-radius: 10px;
+    width: 65px;
+    height: 65px;
+    border-radius: 14px;
     object-fit: cover;
     border: 2px solid white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-/* Swap Toggle Section */
-.swap-container {
-    background: #f1f5f9;
-    padding: 16px;
-    border-radius: 12px;
-    margin-top: 10px;
+/* Options Box */
+.options-card {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 18px;
+    border: 1px solid var(--border);
 }
 
-.swap-row {
+.switch-row {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
 }
 
-.swap-row input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--primary);
-    cursor: pointer;
-}
-
-/* Button */
-button {
-    width: 100%;
-    padding: 16px;
-    border: none;
-    border-radius: 12px;
+.submit-btn {
     background: var(--primary);
     color: white;
+    border: none;
+    padding: 18px;
+    border-radius: 18px;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
-    transition: 0.3s ease;
-    margin-top: 10px;
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.25);
+    transition: 0.3s;
 }
 
-button:hover {
-    background: var(--primary-dark);
+.submit-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+    background: var(--primary-dark, #16a34a);
 }
 
-@media (max-width: 500px) {
-    .row { grid-template-columns: 1fr; }
+/* BOTTOM NAVIGATION */
+.bottom-nav {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 92%;
+    max-width: 420px;
+    background: var(--nav-bg);
+    height: 70px;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.nav-item {
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    transition: 0.2s;
+}
+
+.nav-item.active {
+    color: var(--primary-bright);
+}
+
+.nav-svg {
+    width: 22px;
+    height: 22px;
+    stroke: currentColor;
+    stroke-width: 2.5;
+    fill: none;
 }
 </style>
 </head>
@@ -197,17 +229,19 @@ button:hover {
 <body>
 
 <div class="container">
-    <h2>Post Product</h2>
-    
-    <div class="form-card">
-        <div class="field">
-            <span class="field-label">General Info</span>
+    <div class="header">
+        <span>CAMPUS MARKETPLACE</span>
+        <h2>List an Item</h2>
+    </div>
+
+    <div class="info-box">
+        <div class="field-group">
             <label>Product Title</label>
-            <input type="text" id="title" placeholder="What are you selling?">
+            <input type="text" id="title" placeholder="e.g. Scientific Calculator FX-991">
         </div>
 
         <div class="row">
-            <div class="field">
+            <div class="field-group">
                 <label>Branch</label>
                 <select id="branch" onchange="updateCategories()">
                     <option value="">Select Branch</option>
@@ -218,8 +252,7 @@ button:hover {
                     <option value="Common">Common</option>
                 </select>
             </div>
-
-            <div class="field">
+            <div class="field-group">
                 <label>Semester</label>
                 <select id="semester">
                     <option value="">Select</option>
@@ -236,19 +269,24 @@ button:hover {
         </div>
 
         <div class="row">
-            <div class="field">
+            <div class="field-group">
                 <label>Category</label>
                 <select id="category">
                     <option value="">Select Category</option>
                 </select>
             </div>
-            <div class="field">
+            <div class="field-group">
                 <label>Price (₹)</label>
-                <input type="number" id="price" placeholder="0">
+                <input type="number" id="price" placeholder="0.00">
             </div>
         </div>
 
-        <div class="field">
+        <div class="field-group">
+            <label>Detailed Description</label>
+            <textarea id="description" placeholder="Mention usage period, defects, or features..."></textarea>
+        </div>
+
+        <div class="field-group">
             <label>Condition</label>
             <select id="condition">
                 <option>New</option>
@@ -258,41 +296,54 @@ button:hover {
             </select>
         </div>
 
-        <div class="field">
-            <label>Description</label>
-            <textarea id="description" placeholder="Describe the item condition, age, etc."></textarea>
-        </div>
-
-        <div class="field">
-            <span class="field-label">Media</span>
-            <div class="upload-box" onclick="document.getElementById('imageFile').click()">
-                <p style="font-size: 20px;">📸</p>
-                <p style="font-weight: 600; font-size: 14px;">Tap to add photos</p>
-                <p style="color: var(--muted); font-size: 12px;">Up to 5 images</p>
+        <div class="field-group">
+            <label>Product Images</label>
+            <div class="upload-area" onclick="document.getElementById('imageFile').click()">
+                <svg class="upload-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <div style="font-weight: 700; font-size: 14px; color: var(--primary);">Upload Photos</div>
+                <div style="font-size: 11px; color: var(--muted);">Maximum 5 images</div>
             </div>
-            <input type="file" id="imageFile" multiple onchange="previewFiles()" style="display: none;">
+            <input type="file" id="imageFile" multiple onchange="previewFiles()" style="display:none">
             <div class="image-previews" id="previews"></div>
         </div>
 
-        <div class="swap-container">
-            <span class="field-label" style="color: var(--muted)">Options</span>
-            <label class="swap-row">
-                <input type="checkbox" id="enableSwap">
-                <span>Enable Swap / Exchange</span>
+        <div class="options-card">
+            <label class="switch-row">
+                <input type="checkbox" id="enableSwap" style="width: 18px; height: 18px; accent-color: var(--primary);">
+                Enable Barter / Swap
             </label>
-            
-            <div class="field" style="margin-top: 12px;">
-                <label>Swap Item</label>
-                <input type="text" id="swapItem" placeholder="What do you want in return?">
-            </div>
+            <input type="text" id="swapItem" placeholder="What do you want in exchange?" style="margin-top: 12px; padding: 12px; background: white; border: 1px solid var(--border);">
         </div>
 
-        <button onclick="handleFormSubmit()">Post to Marketplace</button>
+        <button class="submit-btn" onclick="handleFormSubmit()">Post Product</button>
     </div>
 </div>
 
+<nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span>Home</span>
+    </a>
+    <a href="search.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <span>Search</span>
+    </a>
+    <a href="sell.html" class="nav-item active">
+        <svg class="nav-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+        <span>Sell</span>
+    </a>
+    <a href="chat.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <span>Chat</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+        <svg class="nav-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        <span>Profile</span>
+    </a>
+</nav>
+
 <script>
-// Logic remains identical to your original code
+// ORIGINAL LOGIC MAINTAINED
 function updateCategories(){
     const branch=document.getElementById("branch").value
     const category=document.getElementById("category")
