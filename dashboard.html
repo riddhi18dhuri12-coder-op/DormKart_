@@ -39,7 +39,6 @@ body {
   padding-bottom: calc(var(--nav-height) + 24px);
 }
 
-/* HEADER */
 .app-header {
   background: var(--card-bg);
   height: 64px;
@@ -74,7 +73,6 @@ body {
 }
 .theme-btn:hover { background: var(--primary-glow); }
 
-/* HERO */
 .hero { padding: 20px 16px 8px; }
 .hero-label {
   font-family: 'Syne', sans-serif;
@@ -96,7 +94,6 @@ body {
 }
 .hero-title em { font-style: normal; color: var(--primary-dark); }
 
-/* SEARCH */
 .search-wrap { position: relative; }
 .search-icon {
   position: absolute;
@@ -124,7 +121,6 @@ body {
 }
 .search-wrap input::placeholder { color: var(--text-light); }
 
-/* FILTER BAR */
 .filter-bar {
   display: flex;
   gap: 8px;
@@ -154,7 +150,6 @@ body {
   background: var(--primary-glow);
 }
 
-/* SECTION LABEL */
 .section-label {
   font-family: 'Syne', sans-serif;
   font-size: 16px;
@@ -173,7 +168,6 @@ body {
   cursor: pointer;
 }
 
-/* PRODUCT GRID */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -250,7 +244,6 @@ body {
 }
 .p-meta { font-size: 11px; color: var(--text-light); }
 
-/* EMPTY STATE */
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -259,7 +252,6 @@ body {
 .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
 .empty-state p { color: var(--text-light); font-size: 15px; line-height: 1.6; }
 
-/* SKELETON */
 @keyframes shimmer {
   0%   { background-position: -200% 0; }
   100% { background-position:  200% 0; }
@@ -280,7 +272,6 @@ body {
 .skeleton-line { height: 14px; margin: 10px 12px 6px; }
 .skeleton-line.short { width: 60%; height: 11px; margin-bottom: 12px; }
 
-/* MODAL */
 #productModal {
   position: fixed;
   inset: 0;
@@ -312,7 +303,6 @@ body {
 }
 .modal-body { padding: 16px 20px 0; }
 
-/* SLIDER */
 .slider-container {
   position: relative;
   width: 100%;
@@ -370,7 +360,6 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 
-/* MODAL BODY */
 .modal-price-row {
   display: flex;
   align-items: center;
@@ -459,7 +448,7 @@ body {
   flex-shrink: 0;
 }
 .seller-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.seller-name { font-weight: 600; font-size: 14px; }
+.seller-name { font-weight: 600; font-size: 14px; display: flex; align-items: center; gap: 6px; }
 .seller-college { font-size: 12px; color: var(--text-light); margin-top: 2px; }
 .seller-arrow { margin-left: auto; color: var(--text-light); font-size: 18px; }
 
@@ -622,7 +611,6 @@ body {
 .upi-hint { font-size: 12px; color: var(--text-light); margin-bottom: 18px; }
 .upi-btns { display: flex; gap: 10px; }
 
-/* BOTTOM NAV */
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
@@ -648,19 +636,28 @@ body {
   transition: color 0.2s;
 }
 .nav-item.active { color: var(--primary-dark); }
+  .nav-item.active::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    width: 24px; height: 3px;
+    background: var(--primary-dark);
+    border-radius: 0 0 4px 4px;
+  }
 .nav-item svg { width: 22px; height: 22px; }
-.nav-sell {
-  background: var(--primary-dark);
-  width: 52px; height: 52px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  margin-top: -30px;
-  border: 4px solid var(--bg);
-  color: white !important;
-  box-shadow: 0 4px 20px rgba(0,200,83,0.4);
-  transition: transform 0.2s;
-}
-.nav-sell:hover { transform: scale(1.08); }
+  .nav-sell {
+    background: var(--primary-dark);
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: -30px;
+    border: 4px solid var(--bg);
+    color: white !important;
+    box-shadow: 0 4px 20px rgba(0,200,83,0.4);
+    transition: transform 0.2s;
+  }
+  .nav-sell:hover { transform: scale(1.08); }
 </style>
 </head>
 <body>
@@ -724,7 +721,7 @@ body {
     </div>
   </div>
 </div>
-    <!-- BOTTOM NAVigation -->
+
 <nav class="bottom-nav">
   <a href="dashboard.html" class="nav-item active">
     <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -759,6 +756,11 @@ async function init() {
   fetchProducts();
 }
 
+async function isTradeEnabled(p) {
+  return p.swap_enabled === true || p.allow_swap === true ||
+         p.swap_enabled === 'true' || p.allow_swap === 'true';
+}
+
 async function fetchProducts() {
   const { data, error } = await supabaseClient
     .from('products')
@@ -781,17 +783,17 @@ function renderGrid(products) {
     const card = document.createElement('div');
     card.className = 'product-card';
     const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
-    const hasSwap = p.swap_enabled;
+    const tradeOn = isTradeEnabled(p);
     card.innerHTML = `
       <div class="p-img-container">
         <img src="${img}" loading="lazy" onerror="this.src='placeholder.jpg'">
         ${p.condition ? `<div class="p-badge">${p.condition}</div>` : ''}
-        ${hasSwap ? `<div class="p-trade-badge">🔄 TRADE</div>` : ''}
+        ${tradeOn ? `<div class="p-trade-badge">🔄 TRADE</div>` : ''}
       </div>
       <div class="p-info">
         <div class="p-price">₹${Math.floor(p.price).toLocaleString('en-IN')}</div>
         <div class="p-title">${p.title}</div>
-        <div class="p-meta">📍 ${p.seller?.college || 'Campus'}${hasSwap ? ' • 🔄 Trade' : ''}</div>
+        <div class="p-meta">📍 ${p.seller?.college || 'Campus'}${tradeOn ? ' • 🔄 Trade' : ''}</div>
       </div>
     `;
     card.onclick = () => showDetails(p);
@@ -806,7 +808,7 @@ function applyFilters() {
   const sort = document.getElementById('priceSort').value;
   if (s) f = f.filter(p => p.title.toLowerCase().includes(s) || (p.description || '').toLowerCase().includes(s));
   if (c) f = f.filter(p => p.category === c);
-  if (tradeOnly) f = f.filter(p => p.swap_enabled);
+  if (tradeOnly) f = f.filter(p => isTradeEnabled(p));
   if (sort === 'low') f.sort((a, b) => a.price - b.price);
   if (sort === 'high') f.sort((a, b) => b.price - a.price);
   renderGrid(f);
@@ -829,9 +831,9 @@ function showDetails(p) {
   const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
   const slidesHTML = images.map(url => `<img src="${url.trim()}" onerror="this.src='placeholder.jpg'">`).join('');
   const dotsHTML = images.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}" id="dot-${i}"></div>`).join('');
-  const hasSwap = p.swap_enabled;
+  const tradeOn = isTradeEnabled(p);
 
-  const tradeSection = hasSwap ? `
+  const tradeSection = tradeOn ? `
     <div class="trade-section">
       <div class="trade-section-title">🔄 Open to Trade</div>
       <p><strong>Seller wants:</strong> ${p.swap_item || 'Open to offers'}</p>
