@@ -10,14 +10,16 @@
 
     <style>
         :root {
-            /* Your Strict Palette */
+            /* Your Specific Pastel Rainbow Palette */
+            --baby-pink: #ffb3ba;
+            --apricot: #ffdfba;
             --pale-yellow: #ffffba;
             --mint-green: #baffc9;
             --sky-blue: #bae1ff;
             
             /* UI Essentials */
-            --text-main: #1e293b;
-            --text-muted: #475569;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
             --bg-canvas: #ffffff;
             --border: #f1f5f9;
         }
@@ -44,9 +46,10 @@
             padding: 0 6%;
             position: sticky;
             top: 0;
-            background: white;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
             z-index: 1000;
-            border-bottom: 2px solid var(--sky-blue);
+            border-bottom: 1px solid var(--border);
         }
 
         .logo-area {
@@ -57,7 +60,7 @@
         }
 
         .logo-icon {
-            background: var(--mint-green);
+            background: var(--sky-blue);
             color: var(--text-main);
             padding: 8px;
             border-radius: 10px;
@@ -112,51 +115,52 @@
             border-radius: 12px;
             font-weight: 800;
             font-size: 15px;
-            transition: 0.2s;
+            transition: 0.3s;
+            box-shadow: 0 4px 14px rgba(186, 225, 255, 0.5);
         }
 
-        .btn-signup:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(186, 225, 255, 0.6); }
+        .btn-signup:hover { background: var(--mint-green); transform: translateY(-2px); }
 
         /* --- HERO SECTION --- */
         .hero {
-            padding: 100px 6% 80px;
+            padding: 120px 6% 80px;
             text-align: center;
-            background-color: #fdfdf5; /* Subtle yellow tint */
+            background: radial-gradient(circle at 10% 20%, var(--pale-yellow) 0%, transparent 30%),
+                        radial-gradient(circle at 90% 80%, var(--baby-pink) 0%, transparent 30%);
         }
 
         .badge-student {
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            background: var(--pale-yellow);
+            background: white;
             padding: 10px 20px;
             border-radius: 100px;
             font-size: 13px;
             font-weight: 800;
             color: var(--text-main);
             margin-bottom: 25px;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
         }
 
         .hero h1 {
-            font-size: 64px;
+            font-size: 68px;
             font-weight: 800;
             letter-spacing: -2px;
             margin-bottom: 24px;
-            line-height: 1.1;
+            line-height: 1;
         }
 
-        .hero h1 span.accent { 
-            background: var(--mint-green);
-            padding: 0 10px;
-            border-radius: 10px;
-        }
+        .hero h1 span.blue { color: #3b82f6; }
+        .hero h1 span.purple { color: #8b5cf6; }
 
         .hero p {
             color: var(--text-muted);
             font-size: 20px;
             max-width: 700px;
             margin: 0 auto 40px;
+            font-weight: 500;
         }
 
         .hero-btns {
@@ -172,6 +176,7 @@
             border-radius: 16px;
             text-decoration: none;
             font-weight: 700;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -179,17 +184,20 @@
             transition: 0.3s;
         }
 
+        .btn-primary:hover { transform: scale(1.03); }
+
         .btn-outline {
             background: white;
-            border: 2px solid var(--sky-blue);
+            border: 2px solid var(--border);
             padding: 18px 36px;
             border-radius: 16px;
             font-weight: 700;
+            font-size: 16px;
             cursor: pointer;
             transition: 0.3s;
         }
 
-        .btn-outline:hover { background: var(--sky-blue); }
+        .btn-outline:hover { background: var(--pale-yellow); }
 
         /* --- FEATURES --- */
         .features {
@@ -208,29 +216,34 @@
             cursor: pointer;
         }
 
-        .f-card.yellow { background-color: #fffff2; }
-        .f-card.mint { background-color: #f7fff9; }
-        .f-card.blue { background-color: #f9fcff; }
+        /* Specific Pastel Colors for Cards */
+        .f-card.pink { background-color: #fff5f6; }
+        .f-card.apricot { background-color: #fffaf5; }
+        .f-card.mint { background-color: #f6fff9; }
+        .f-card.blue { background-color: #f6faff; }
 
-        .f-card:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--mint-green);
-            box-shadow: 0 15px 30px rgba(186, 255, 201, 0.3); 
-        }
+        .f-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.04); }
 
         .f-icon-box {
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             margin-bottom: 24px;
-            background: var(--pale-yellow);
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
+
+        .f-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+        .f-card p { font-size: 15px; color: var(--text-muted); font-weight: 500; }
 
         /* --- FOOTER --- */
         footer {
             padding: 80px 6% 40px;
             background: #fafafa;
-            border-top: 3px solid var(--mint-green);
+            border-top: 1px solid var(--border);
         }
 
         .footer-grid {
@@ -239,6 +252,12 @@
             gap: 40px;
             margin-bottom: 60px;
         }
+
+        .footer-col h4 { font-weight: 800; margin-bottom: 24px; font-size: 15px; text-transform: uppercase; letter-spacing: 1px; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 12px; }
+        .footer-col ul li a { text-decoration: none; color: var(--text-muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .footer-col ul li a:hover { color: var(--text-main); }
 
         .footer-bottom {
             display: flex;
@@ -252,7 +271,7 @@
         }
 
         @media (max-width: 900px) {
-            .hero h1 { font-size: 42px; }
+            .hero h1 { font-size: 46px; }
             .nav-links { display: none; }
             .footer-grid { grid-template-columns: 1fr 1fr; }
         }
@@ -268,7 +287,8 @@
 
         <div class="nav-links">
             <a onclick="checkAuth('dashboard.html')">Marketplace</a>
-            <a onclick="checkAuth('dashboard.html')">Browse</a>
+            <a onclick="checkAuth('dashboard.html')">Dashboard</a>
+            <a onclick="checkAuth('chats.html')">Messages</a>
             <a href="#">How it Works</a>
         </div>
 
@@ -280,37 +300,43 @@
 
     <section class="hero">
         <div class="badge-student">
-            <span class="material-icons-round" style="color:var(--text-muted); font-size:18px;">school</span>
+            <span class="material-icons-round" style="color:var(--sky-blue); font-size:18px;">school</span>
             Built for students, by students
         </div>
-        <h1>Your Campus <span class="accent">Dorm</span><br>Marketplace</h1>
-        <p>Buy, sell, exchange, and borrow essentials within your college community. Save money and reduce waste with DormKart.</p>
+        <h1>Your Campus <span class="blue">Book</span><br><span class="purple">Marketplace</span></h1>
+        <p>Buy, sell, exchange, and borrow study materials within your college. Save money, reduce waste, and ace your exams with DormKart.</p>
         
         <div class="hero-btns">
             <div onclick="checkAuth('dashboard.html')" class="btn-primary">
                 Start Browsing <span class="material-icons-round">arrow_forward</span>
             </div>
-            <div onclick="checkAuth('add_product.html')" class="btn-outline">List an Item</div>
+            <div onclick="checkAuth('add_product.html')" class="btn-outline">List a Book</div>
         </div>
     </section>
 
     <section class="features">
-        <div class="f-card yellow" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box" style="background: var(--pale-yellow);"><span class="material-icons-round">verified_user</span></div>
+        <div class="f-card pink" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box"><span class="material-icons-round" style="color:#f87171;">verified_user</span></div>
             <h3>Verified Students</h3>
-            <p>Every user is verified via college email to ensure a safe, trusted community.</p>
+            <p>College email verification ensures a trusted community of real students.</p>
         </div>
 
         <div class="f-card mint" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box" style="background: var(--mint-green);"><span class="material-icons-round">auto_awesome</span></div>
-            <h3>Smart Discovery</h3>
-            <p>Find materials specifically categorized by your branch and semester.</p>
+            <div class="f-icon-box"><span class="material-icons-round" style="color:#34d399;">auto_awesome</span></div>
+            <h3>AI Smart Assistant</h3>
+            <p>Get personalized book recommendations based on your branch and semester.</p>
         </div>
 
         <div class="f-card blue" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box" style="background: var(--sky-blue);"><span class="material-icons-round">sync</span></div>
-            <h3>Barter & Swap</h3>
-            <p>Swap items you no longer need with other students easily.</p>
+            <div class="f-icon-box"><span class="material-icons-round" style="color:#60a5fa;">sync</span></div>
+            <h3>Exchange & Borrow</h3>
+            <p>Don't just buy — swap books or borrow them for the semester.</p>
+        </div>
+
+        <div class="f-card apricot" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box"><span class="material-icons-round" style="color:#fb923c;">bolt</span></div>
+            <h3>Fair Price Engine</h3>
+            <p>AI-powered pricing ensures fair deals based on condition and demand.</p>
         </div>
     </section>
 
@@ -321,50 +347,55 @@
                     <div class="logo-icon"><span class="material-icons-round">storefront</span></div>
                     <span class="logo-text">DormKart</span>
                 </div>
-                <p style="margin-top: 15px;">The smarter way to manage your campus essentials.</p>
+                <p style="margin-top: 15px;">The smart marketplace for students to buy, sell, exchange and borrow study materials.</p>
             </div>
             
             <div class="footer-col">
-                <h4 style="margin-bottom: 20px;">Platform</h4>
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 10px;"><a onclick="checkAuth('dashboard.html')" style="cursor:pointer; text-decoration:none; color:var(--text-muted);">Marketplace</a></li>
-                    <li style="margin-bottom: 10px;"><a onclick="checkAuth('add_product.html')" style="cursor:pointer; text-decoration:none; color:var(--text-muted);">Sell Item</a></li>
+                <h4>Platform</h4>
+                <ul>
+                    <li><a onclick="checkAuth('dashboard.html')">Browse Items</a></li>
+                    <li><a onclick="checkAuth('add_product.html')">Sell a Book</a></li>
+                    <li><a onclick="checkAuth('dashboard.html')">Exchange</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
-                <h4 style="margin-bottom: 20px;">Company</h4>
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">About Us</a></li>
-                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Contact</a></li>
+                <h4>Company</h4>
+                <ul>
+                    <li><a onclick="checkAuth('profile.html')">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Contact</a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
-                <h4 style="margin-bottom: 20px;">Support</h4>
-                <ul style="list-style: none;">
-                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Privacy</a></li>
-                    <li style="margin-bottom: 10px;"><a href="#" style="text-decoration:none; color:var(--text-muted);">Terms</a></li>
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Safety</a></li>
+                    <li><a href="#">Privacy</a></li>
                 </ul>
             </div>
         </div>
 
         <div class="footer-bottom">
             <p>&copy; 2026 DormKart. All rights reserved.</p>
-            <p>Made for students</p>
+            <p>Made with <span style="color:var(--baby-pink)">❤</span> for students</p>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script>
+        // Auth Guard Script
         async function checkAuth(targetUrl) {
             try {
                 const { data: { session } } = await supabaseClient.auth.getSession();
+
                 if (session) {
                     window.location.href = targetUrl;
                 } else {
-                    alert("Authentication required. Please Login or Sign Up to access DormKart features.");
+                    alert("Authentication required. Please Login or Sign Up to access campus features.");
                     window.location.href = "login-signup.html";
                 }
             } catch (error) {
