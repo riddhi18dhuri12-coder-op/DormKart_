@@ -306,12 +306,25 @@
         }
 
         async function handleReset() {
-            const email = document.getElementById('resetEmail').value;
-            if(!email) {
-                showMessage("Please enter your email address.", "error");
-                return;
-            }
+    const email = document.getElementById('resetEmail').value;
+    if(!email) {
+        showMessage("Please enter your email address.", "error");
+        return;
+    }
 
+    // This URL must match your local server port exactly
+    const resetUrl = window.location.origin + '/reset-password.html';
+
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+        redirectTo: resetUrl,
+    });
+
+    if (error) {
+        showMessage(error.message, "error");
+    } else {
+        showMessage("Reset link sent! Please check your inbox.", "success");
+    }
+}
             const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
                 redirectTo: window.location.origin + '/reset-password.html',
             });
