@@ -1,349 +1,2224 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <title>DormKart • Profile</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        /* ============================================
+           DORMKART PROFILE — PASTEL RAINBOW THEME
+           Baby Pink #ffb3ba | Apricot #ffdfba
+           Pale Yellow #ffffba | Mint Green #baffc9
+           Sky Blue #bae1ff
+           ============================================ */
         :root {
-            --sky-blue: #bae1ff;
-            --mint-green: #baffc9;
+            --baby-pink: #ffb3ba;
+            --apricot: #ffdfba;
             --pale-yellow: #ffffba;
-            --text-dark: #0f172a;
-            --text-muted: #64748b;
-            --bg: #f8fafc;
+            --mint-green: #baffc9;
+            --sky-blue: #bae1ff;
+
+            --text-dark: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --bg: #fefcfa;
             --card: #ffffff;
-            --border: #f1f5f9;
+            --border: #f0ebe5;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.08);
+            --radius-sm: 14px;
+            --radius-md: 22px;
+            --radius-lg: 30px;
+            --radius-xl: 40px;
+            --nav-height: 72px;
+            --header-height: 64px;
         }
+
+        [data-theme="dark"] {
+            --text-dark: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --border: #334155;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.2);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
+            --shadow-lg: 0 16px 48px rgba(0,0,0,0.4);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
+            background: var(--bg);
             color: var(--text-dark);
-            margin: 0;
-            padding-bottom: 100px;
+            min-height: 100vh;
+            padding-bottom: calc(var(--nav-height) + 40px);
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- STARTUP HEADER --- */
-        .profile-hero {
-            background: linear-gradient(135deg, var(--sky-blue) 0%, var(--mint-green) 100%);
-            height: 180px;
-            position: relative;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
+        /* Subtle pattern */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 8% 15%, var(--baby-pink) 0.6px, transparent 0.6px),
+                radial-gradient(circle at 82% 10%, var(--sky-blue) 0.6px, transparent 0.6px),
+                radial-gradient(circle at 65% 55%, var(--mint-green) 0.6px, transparent 0.6px),
+                radial-gradient(circle at 20% 78%, var(--pale-yellow) 0.6px, transparent 0.6px),
+                radial-gradient(circle at 88% 82%, var(--apricot) 0.6px, transparent 0.6px),
+                radial-gradient(circle at 45% 35%, var(--baby-pink) 0.5px, transparent 0.5px),
+                radial-gradient(circle at 12% 50%, var(--sky-blue) 0.5px, transparent 0.5px),
+                radial-gradient(circle at 55% 88%, var(--mint-green) 0.5px, transparent 0.5px);
+            background-size: 180px 180px, 200px 200px, 220px 220px, 160px 160px, 240px 240px, 190px 190px, 210px 210px, 170px 170px;
+            opacity: 0.18;
+            z-index: -1;
+            pointer-events: none;
         }
 
-        .hero-nav {
+        [data-theme="dark"] body::before { opacity: 0.06; }
+
+        img { display: block; max-width: 100%; }
+        button { font-family: inherit; }
+        a { text-decoration: none; color: inherit; }
+
+        /* ============================================
+           STICKY HEADER
+           ============================================ */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            height: var(--header-height);
             display: flex;
-            justify-content: space-between;
-            padding: 20px;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: rgba(254,252,250,0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s;
         }
 
-        .icon-circle {
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
+        [data-theme="dark"] .sticky-header {
+            background: rgba(15,23,42,0.85);
+        }
+
+        .sticky-header-left { display: flex; align-items: center; gap: 12px; }
+        .sticky-header-title { font-weight: 800; font-size: 16px; }
+
+        .header-actions { display: flex; gap: 8px; }
+
+        .icon-btn {
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: var(--card);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             color: var(--text-dark);
+            font-size: 16px;
+            transition: 0.2s;
         }
 
-        /* --- AVATAR & IDENTITY --- */
-        .profile-main {
-            text-align: center;
-            margin-top: -60px;
-            padding: 0 20px;
-        }
+        .icon-btn:active { transform: scale(0.92); }
 
-        .avatar-wrap {
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .profile-hero {
+            background: linear-gradient(145deg, var(--baby-pink) 0%, var(--apricot) 25%, var(--pale-yellow) 50%, var(--mint-green) 75%, var(--sky-blue) 100%);
+            padding: 30px 20px 60px;
             position: relative;
-            width: 110px;
-            height: 110px;
-            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+
+        .profile-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 25%, rgba(255,179,186,0.6) 0%, transparent 45%),
+                radial-gradient(circle at 85% 55%, rgba(186,225,255,0.6) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(186,255,201,0.5) 0%, transparent 45%);
+            animation: heroPulse 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes heroPulse {
+            0% { opacity: 0.5; transform: scale(1) rotate(0deg); }
+            100% { opacity: 1; transform: scale(1.08) rotate(1deg); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .avatar-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .avatar-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 32px;
+            background: linear-gradient(135deg, var(--baby-pink), var(--apricot), var(--pale-yellow), var(--mint-green), var(--sky-blue));
+            background-size: 300% 300%;
+            animation: ringShift 5s ease infinite;
+            padding: 4px;
+        }
+
+        @keyframes ringShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .avatar-img {
             width: 100%;
             height: 100%;
-            border-radius: 35px; /* Startup squircle style */
-            background: white;
-            padding: 5px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 28px;
             object-fit: cover;
+            background: var(--card);
+            display: block;
         }
 
-        .verify-badge {
+        .online-dot {
             position: absolute;
-            bottom: -5px;
-            right: -5px;
-            background: #3b82f6;
-            color: white;
-            width: 30px;
-            height: 30px;
+            bottom: 2px;
+            right: 2px;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
+            background: #22c55e;
+            border: 3px solid var(--card);
+            z-index: 3;
+        }
+
+        .hero-info { flex: 1; min-width: 0; }
+
+        .hero-name-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border: 3px solid white;
-            font-size: 12px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
-        .user-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
-        .user-college { font-size: 14px; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .hero-name {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.2;
+        }
 
-        /* --- WALLET FEATURE (Startup Value) --- */
-        .wallet-card {
-            background: var(--text-dark);
-            color: white;
-            margin: 25px 20px;
-            padding: 20px;
-            border-radius: 24px;
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-verified {
+            background: linear-gradient(135deg, var(--mint-green), var(--sky-blue));
+            color: #065f46;
+        }
+
+        [data-theme="dark"] .badge-verified { color: #a7f3d0; }
+
+        .badge-premium {
+            background: linear-gradient(135deg, var(--pale-yellow), var(--apricot));
+            color: #92400e;
+        }
+
+        [data-theme="dark"] .badge-premium { color: #fde68a; }
+
+        .badge-seller {
+            background: linear-gradient(135deg, var(--baby-pink), #ffc8d0);
+            color: #9f1239;
+        }
+
+        [data-theme="dark"] .badge-seller { color: #fda4af; }
+
+        .hero-meta {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hero-bio {
+            margin-top: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .hero-last-seen {
+            margin-top: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* ============================================
+           PROFILE COMPLETION BAR
+           ============================================ */
+        .completion-bar-wrap {
+            margin: -30px 20px 0;
+            position: relative;
+            z-index: 5;
+            background: var(--card);
+            border-radius: var(--radius-md);
+            padding: 16px 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            transition: background 0.3s, border 0.3s;
+        }
+
+        .completion-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7z' fill='%23ffffff' fill-opacity='0.05'/%3E%3C/svg%3E");
+            margin-bottom: 8px;
         }
 
-        .balance-label { font-size: 12px; opacity: 0.7; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-        .balance-amt { font-size: 28px; font-weight: 800; margin-top: 4px; }
-        .withdraw-btn {
-            background: var(--mint-green);
+        .completion-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); }
+        .completion-pct { font-size: 13px; font-weight: 800; color: #059669; }
+
+        .completion-track {
+            height: 8px;
+            background: var(--border);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+
+        .completion-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--mint-green), var(--sky-blue));
+            transition: width 1s ease;
+        }
+
+        .completion-tips {
+            margin-top: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        /* ============================================
+           ACTION BUTTONS ROW
+           ============================================ */
+        .actions-row {
+            display: flex;
+            gap: 10px;
+            padding: 18px 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .actions-row::-webkit-scrollbar { display: none; }
+
+        .act-btn {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 11px 18px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
             color: var(--text-dark);
-            padding: 10px 18px;
-            border-radius: 12px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .act-btn:active { transform: scale(0.95); }
+
+        .act-btn-primary {
+            background: var(--text-dark);
+            color: white;
+            border-color: var(--text-dark);
+        }
+
+        [data-theme="dark"] .act-btn-primary {
+            background: var(--sky-blue);
+            color: #0f172a;
+            border-color: var(--sky-blue);
+        }
+
+        .act-btn-pink { border-color: var(--baby-pink); color: #be123c; }
+        .act-btn-pink:active { background: var(--baby-pink); }
+
+        .act-btn-green { border-color: var(--mint-green); color: #047857; }
+        .act-btn-green:active { background: var(--mint-green); }
+
+        .act-btn-blue { border-color: var(--sky-blue); color: #1d4ed8; }
+        .act-btn-blue:active { background: var(--sky-blue); }
+
+        [data-theme="dark"] .act-btn-pink { color: #fda4af; }
+        [data-theme="dark"] .act-btn-green { color: #6ee7b7; }
+        [data-theme="dark"] .act-btn-blue { color: #93c5fd; }
+
+        /* ============================================
+           WALLET CARD
+           ============================================ */
+        .wallet-card {
+            margin: 0 20px;
+            padding: 22px;
+            border-radius: var(--radius-lg);
+            background: var(--text-dark);
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .wallet-card {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border: 1px solid var(--border);
+        }
+
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: -40px;
+            right: -30px;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--baby-pink), var(--apricot));
+            opacity: 0.12;
+        }
+
+        .wallet-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 30%;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--mint-green), var(--sky-blue));
+            opacity: 0.1;
+        }
+
+        .wallet-left { position: relative; z-index: 1; }
+        .wallet-label { font-size: 10px; opacity: 0.55; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+        .wallet-amount { font-size: 30px; font-weight: 800; margin-top: 4px; }
+        .wallet-sub { font-size: 11px; opacity: 0.5; margin-top: 2px; }
+
+        .wallet-btn {
+            position: relative;
+            z-index: 1;
+            background: linear-gradient(135deg, var(--mint-green), var(--sky-blue));
+            color: #0f172a;
+            padding: 12px 22px;
+            border-radius: var(--radius-sm);
             font-weight: 800;
             font-size: 13px;
             border: none;
             cursor: pointer;
-        }
-
-        /* --- STATS GRID --- */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            padding: 0 20px;
-        }
-
-        .stat-item {
-            background: white;
-            padding: 15px;
-            border-radius: 20px;
-            text-align: center;
-            border: 1.5px solid var(--border);
-        }
-
-        .stat-val { display: block; font-size: 18px; font-weight: 800; color: var(--text-dark); }
-        .stat-lab { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-
-        /* --- LISTINGS & ACTIONS --- */
-        .section-box { margin: 30px 20px 0; }
-        .section-title { font-size: 18px; font-weight: 800; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-text { color: #3b82f6; font-size: 13px; font-weight: 700; cursor: pointer; }
-
-        .action-list {
-            background: white;
-            border-radius: 24px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-        }
-
-        .action-item {
-            display: flex;
-            align-items: center;
-            padding: 16px 20px;
-            gap: 15px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
+            box-shadow: 0 4px 16px rgba(186,255,201,0.25);
             transition: 0.2s;
         }
 
-        .action-item:last-child { border-bottom: none; }
-        .action-item:active { background: var(--bg); }
-        .action-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
+        .wallet-btn:active { transform: scale(0.95); }
+
+        /* ============================================
+           STATS ROW
+           ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 18px 20px;
+        }
+
+        .stat-card {
+            background: var(--card);
+            border-radius: var(--radius-md);
+            padding: 14px 10px;
+            text-align: center;
+            border: 1.5px solid var(--border);
+            transition: 0.3s;
+        }
+
+        .stat-card:nth-child(1) { border-top: 3px solid var(--baby-pink); }
+        .stat-card:nth-child(2) { border-top: 3px solid var(--apricot); }
+        .stat-card:nth-child(3) { border-top: 3px solid var(--mint-green); }
+        .stat-card:nth-child(4) { border-top: 3px solid var(--sky-blue); }
+
+        .stat-val { font-size: 20px; font-weight: 800; display: block; }
+        .stat-lbl { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+        /* ============================================
+           TABS
+           ============================================ */
+        .tabs-wrap {
+            padding: 0 20px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: sticky;
+            top: var(--header-height);
+            z-index: 50;
+            background: var(--bg);
+            transition: background 0.3s;
+        }
+
+        .tabs-wrap::-webkit-scrollbar { display: none; }
+
+        .tabs-inner {
+            display: flex;
+            gap: 6px;
+            padding: 10px 0;
+        }
+
+        .tab-btn {
+            flex-shrink: 0;
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: 0.25s;
+            white-space: nowrap;
+        }
+
+        .tab-btn.active {
+            background: var(--text-dark);
+            color: #fff;
+            border-color: var(--text-dark);
+        }
+
+        [data-theme="dark"] .tab-btn.active {
+            background: var(--sky-blue);
+            color: #0f172a;
+            border-color: var(--sky-blue);
+        }
+
+        .tab-btn:active { transform: scale(0.95); }
+
+        /* ============================================
+           TAB PANELS
+           ============================================ */
+        .tab-panel { display: none; padding: 16px 20px; }
+        .tab-panel.active { display: block; animation: fadeUp 0.35s ease; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================
+           SECTION CARD
+           ============================================ */
+        .section-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--border);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: 0.3s;
+        }
+
+        .section-heading {
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-heading i { font-size: 14px; color: var(--text-muted); }
+
+        .section-link {
+            margin-left: auto;
+            font-size: 12px;
+            font-weight: 700;
+            color: #3b82f6;
+            cursor: pointer;
+        }
+
+        /* ============================================
+           ABOUT SECTION
+           ============================================ */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .info-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
+            font-size: 14px;
+            flex-shrink: 0;
         }
 
-        .action-label { flex: 1; font-weight: 700; font-size: 15px; }
-        .action-item i.fa-chevron-right { font-size: 12px; color: var(--text-muted); }
+        .info-label { font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-value { font-size: 13px; font-weight: 700; color: var(--text-dark); margin-top: 1px; }
 
-        /* --- BOTTOM NAV --- */
+        .bio-full {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .trust-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .trust-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .trust-tag i { font-size: 12px; }
+
+        /* ============================================
+           LISTINGS GRID
+           ============================================ */
+        .listings-toolbar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .listings-toolbar::-webkit-scrollbar { display: none; }
+
+        .filter-chip {
+            flex-shrink: 0;
+            padding: 7px 14px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--sky-blue), var(--mint-green));
+            border-color: transparent;
+            color: #065f46;
+        }
+
+        [data-theme="dark"] .filter-chip.active { color: #0f172a; }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .listing-card {
+            background: var(--card);
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            transition: 0.25s;
+            cursor: pointer;
+        }
+
+        .listing-card:active { transform: scale(0.97); }
+
+        .listing-img-wrap {
+            position: relative;
+            height: 140px;
+            background: var(--bg);
+            overflow: hidden;
+        }
+
+        .listing-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.4s;
+        }
+
+        .listing-card:hover .listing-img-wrap img { transform: scale(1.05); }
+
+        .listing-tag {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .tag-condition { background: var(--pale-yellow); color: #92400e; }
+        .tag-campus { background: var(--mint-green); color: #065f46; }
+        .tag-rental { background: var(--sky-blue); color: #1e40af; }
+        .tag-urgent { background: var(--baby-pink); color: #9f1239; }
+
+        [data-theme="dark"] .tag-condition { color: #fde68a; }
+        [data-theme="dark"] .tag-campus { color: #6ee7b7; }
+        [data-theme="dark"] .tag-rental { color: #93c5fd; }
+        [data-theme="dark"] .tag-urgent { color: #fda4af; }
+
+        .listing-fav {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            transition: 0.2s;
+        }
+
+        .listing-fav.liked { color: #ef4444; }
+
+        .listing-body { padding: 12px; }
+
+        .listing-title {
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .listing-cat {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .listing-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        .listing-price { font-size: 16px; font-weight: 800; color: #059669; }
+        .listing-price small { font-size: 11px; font-weight: 600; color: var(--text-muted); text-decoration: line-through; margin-left: 4px; }
+
+        .listing-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .listing-action-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .listing-action-btn:active { background: var(--border); }
+
+        /* ============================================
+           REVIEWS
+           ============================================ */
+        .rating-overview {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 18px;
+        }
+
+        .rating-big {
+            font-size: 42px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .rating-stars { color: #f59e0b; font-size: 16px; margin-top: 2px; }
+
+        .rating-bars { flex: 1; }
+
+        .rating-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .rating-bar-label { font-size: 11px; font-weight: 600; color: var(--text-muted); width: 12px; }
+        .rating-bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+        .rating-bar-fill { height: 100%; border-radius: 100px; background: #f59e0b; transition: width 0.8s ease; }
+        .rating-bar-count { font-size: 11px; color: var(--text-muted); width: 20px; text-align: right; }
+
+        .review-card {
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .review-card:last-child { border-bottom: none; }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .review-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .review-name { font-size: 13px; font-weight: 700; }
+        .review-date { font-size: 10px; color: var(--text-muted); }
+        .review-stars { color: #f59e0b; font-size: 11px; }
+        .review-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+
+        /* ============================================
+           BADGES SECTION
+           ============================================ */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .badge-card {
+            text-align: center;
+            padding: 16px 8px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            transition: 0.3s;
+        }
+
+        .badge-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 8px;
+        }
+
+        .badge-name { font-size: 11px; font-weight: 800; }
+        .badge-desc { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ============================================
+           ACTIVITY FEED
+           ============================================ */
+        .activity-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .activity-item:last-child { border-bottom: none; }
+
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .activity-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+        .activity-text strong { color: var(--text-dark); font-weight: 700; }
+        .activity-time { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+        /* ============================================
+           SETTINGS LIST
+           ============================================ */
+        .settings-group-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            margin-top: 4px;
+        }
+
+        .settings-list {
+            background: var(--card);
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 18px;
+            gap: 14px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+            transition: 0.15s;
+        }
+
+        .settings-item:last-child { border-bottom: none; }
+        .settings-item:active { background: var(--bg); }
+
+        .settings-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .settings-label { flex: 1; font-weight: 700; font-size: 14px; }
+        .settings-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+        .settings-item i.fa-chevron-right { font-size: 11px; color: var(--text-muted); }
+
+        /* Toggle Switch */
+        .toggle {
+            width: 44px;
+            height: 24px;
+            border-radius: 100px;
+            background: var(--border);
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+            flex-shrink: 0;
+        }
+
+        .toggle.on { background: linear-gradient(135deg, var(--mint-green), var(--sky-blue)); }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            transition: 0.3s;
+        }
+
+        .toggle.on::after { left: 22px; }
+
+        /* ============================================
+           QR PLACEHOLDER
+           ============================================ */
+        .qr-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .qr-box {
+            width: 100px;
+            height: 100px;
+            border-radius: var(--radius-sm);
+            background: var(--bg);
+            border: 2px dashed var(--border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .qr-box span { font-size: 9px; font-weight: 700; margin-top: 4px; }
+        .qr-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+        .qr-text strong { color: var(--text-dark); }
+
+        /* ============================================
+           EMPTY STATE
+           ============================================ */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--text-muted);
+            margin: 0 auto 14px;
+            border: 1.5px solid var(--border);
+        }
+
+        .empty-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+        .empty-desc { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+        /* ============================================
+           EDIT PROFILE MODAL
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 2000;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-sheet {
+            background: var(--card);
+            width: 100%;
+            max-width: 500px;
+            max-height: 88vh;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            overflow-y: auto;
+            animation: slideUp 0.35s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            border-radius: 100px;
+            background: var(--border);
+            margin: 12px auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 24px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-title { font-size: 18px; font-weight: 800; }
+        .modal-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .modal-body { padding: 20px 24px 40px; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-input:focus { border-color: var(--sky-blue); box-shadow: 0 0 0 3px rgba(186,225,255,0.4); }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 40px;
+        }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        .avatar-edit-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .avatar-edit-img {
+            width: 70px;
+            height: 70px;
+            border-radius: 22px;
+            object-fit: cover;
+            border: 2px solid var(--border);
+        }
+
+        .avatar-edit-btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1.5px solid var(--border);
+            background: var(--bg);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: 0.2s;
+        }
+
+        .avatar-edit-btn:active { background: var(--border); }
+
+        .save-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--text-dark);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s;
+        }
+
+        [data-theme="dark"] .save-btn {
+            background: var(--sky-blue);
+            color: #0f172a;
+        }
+
+        .save-btn:active { transform: scale(0.97); }
+
+        .save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* ============================================
+           TOAST
+           ============================================ */
+        #toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--text-dark);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s, transform 0.3s;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(186,255,201,0.2);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+
+        /* ============================================
+           BOTTOM NAV
+           ============================================ */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 420px; background: var(--text-dark);
-            height: 70px; border-radius: 25px; display: flex;
-            justify-content: space-around; align-items: center; z-index: 1000;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 440px;
+            height: var(--nav-height);
+            background: var(--text-dark);
+            border-radius: var(--radius-lg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.04);
         }
 
-        .nav-link { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        [data-theme="dark"] .bottom-nav {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border: 1px solid var(--border);
+        }
+
+        .nav-link {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
         .nav-link.active { color: var(--mint-green); }
         .nav-link i { font-size: 20px; }
 
-        /* --- UTILITY --- */
-        .hidden { display: none; }
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: var(--text-dark); color: white; padding: 12px 25px;
-            border-radius: 100px; font-size: 14px; font-weight: 600;
-            z-index: 9999; display: none;
+        /* ============================================
+           LOGOUT BUTTON
+           ============================================ */
+        .logout-section { padding: 10px 20px 30px; }
+
+        .logout-btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1.5px solid var(--baby-pink);
+            background: linear-gradient(135deg, rgba(255,179,186,0.15), rgba(255,223,186,0.1));
+            color: #be123c;
+            font-weight: 800;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: 0.2s;
         }
+
+        .logout-btn:active { transform: scale(0.97); background: linear-gradient(135deg, rgba(255,179,186,0.3), rgba(255,223,186,0.2)); }
+
+        [data-theme="dark"] .logout-btn { color: #fda4af; border-color: rgba(255,179,186,0.3); }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (min-width: 500px) {
+            .listings-grid { grid-template-columns: repeat(3, 1fr); }
+            .badges-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+
+        @media (min-width: 768px) {
+            .stats-grid { grid-template-columns: repeat(4, 1fr); max-width: 500px; margin-left: auto; margin-right: auto; }
+            .listings-grid { grid-template-columns: repeat(3, 1fr); }
+            .info-grid { grid-template-columns: repeat(3, 1fr); }
+            .wallet-card, .completion-bar-wrap, .section-card { max-width: 600px; margin-left: auto; margin-right: auto; }
+            .actions-row { justify-content: center; flex-wrap: wrap; }
+            .qr-section { max-width: 400px; margin: 0 auto; }
+        }
+
+        @media (min-width: 1024px) {
+            .page-container { max-width: 800px; margin: 0 auto; }
+            .listings-grid { grid-template-columns: repeat(4, 1fr); }
+            .badges-grid { grid-template-columns: repeat(6, 1fr); }
+        }
+
+        /* ============================================
+           UTILITY
+           ============================================ */
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
     </style>
 </head>
 <body>
 
-<div id="toast">Message here</div>
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite">Message</div>
 
-<header class="profile-hero">
-    <div class="hero-nav">
-        <div class="icon-circle" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></div>
-        <div style="font-weight: 800; font-size: 16px;">My Account</div>
-        <div class="icon-circle" onclick="toggleEditMode()"><i class="fa-solid fa-gear"></i></div>
+<!-- Sticky Header -->
+<header class="sticky-header" role="banner">
+    <div class="sticky-header-left">
+        <button class="icon-btn" onclick="history.back()" aria-label="Go back"><i class="fa-solid fa-arrow-left"></i></button>
+        <span class="sticky-header-title">My Account</span>
+    </div>
+    <div class="header-actions">
+        <button class="icon-btn" onclick="toggleTheme()" aria-label="Toggle dark mode" id="themeBtn"><i class="fa-solid fa-moon"></i></button>
+        <button class="icon-btn" onclick="openEditModal()" aria-label="Edit profile"><i class="fa-solid fa-pen"></i></button>
     </div>
 </header>
 
-<main class="profile-main">
-    <div class="avatar-wrap">
-        <img id="profileImg" src="https://ui-avatars.com/api/?name=User&background=bae1ff&color=0f172a" class="avatar-img">
-        <div class="verify-badge" title="Verified Student"><i class="fa-solid fa-check"></i></div>
-    </div>
-    <h1 class="user-name" id="userName">Student Name</h1>
-    <p class="user-college" id="userCollege"><i class="fa-solid fa-building-columns"></i> College Not Set</p>
-</main>
+<div class="page-container">
 
-<section class="wallet-card">
-    <div>
-        <span class="balance-label">DormKart Balance</span>
-        <div class="balance-amt" id="walletBalance">₹0</div>
-    </div>
-    <button class="withdraw-btn" onclick="showToast('Withdrawals open on Friday!')">Withdraw</button>
-</section>
-
-<section class="stats-row">
-    <div class="stat-item">
-        <span class="stat-val" id="statItems">0</span>
-        <span class="stat-lab">Listings</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-val" id="statSold">0</span>
-        <span class="stat-lab">Sold</span>
-    </div>
-    <div class="stat-item">
-        <span class="stat-val">4.9</span>
-        <span class="stat-lab">Rating</span>
-    </div>
-</section>
-
-<section class="section-box">
-    <div class="section-title">Account Actions</div>
-    <div class="action-list">
-        <div class="action-item" onclick="location.href='my-ads.html'">
-            <div class="action-icon" style="background: var(--sky-blue);"><i class="fa-solid fa-box"></i></div>
-            <span class="action-label">Manage My Ads</span>
-            <i class="fa-solid fa-chevron-right"></i>
+    <!-- Hero -->
+    <section class="profile-hero" aria-label="Profile header">
+        <div class="hero-content">
+            <div class="avatar-container">
+                <div class="avatar-ring">
+                    <img id="profileImg" src="https://ui-avatars.com/api/?name=Arjun+Mehta&background=bae1ff&color=0f172a&size=200" alt="Profile photo" class="avatar-img">
+                </div>
+                <div class="online-dot" title="Online now"></div>
+            </div>
+            <div class="hero-info">
+                <div class="hero-name-row">
+                    <h1 class="hero-name" id="userName">Arjun Mehta</h1>
+                    <span class="badge badge-verified"><i class="fa-solid fa-shield-check"></i> Verified</span>
+                    <span class="badge badge-seller"><i class="fa-solid fa-fire"></i> Seller</span>
+                </div>
+                <p class="hero-meta"><i class="fa-solid fa-building-columns"></i> <span id="userCollege">IIT Delhi</span> • CSE '26</p>
+                <p class="hero-bio" id="userBio">Tech enthusiast & part-time seller. Love finding great deals for hostel essentials!</p>
+                <p class="hero-last-seen" id="lastSeen"><i class="fa-solid fa-clock"></i> Active now • Joined Sep 2024</p>
+            </div>
         </div>
-        <div class="action-item" onclick="location.href='wishlist.html'">
-            <div class="action-icon" style="background: #fff1f2; color: #f43f5e;"><i class="fa-solid fa-heart"></i></div>
-            <span class="action-label">My Wishlist</span>
-            <i class="fa-solid fa-chevron-right"></i>
+    </section>
+
+    <!-- Profile Completion -->
+    <div class="completion-bar-wrap" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="Profile completion">
+        <div class="completion-header">
+            <span class="completion-label">Profile Completion</span>
+            <span class="completion-pct" id="completionPct">75%</span>
         </div>
-        <div class="action-item" onclick="location.href='chats.html'">
-            <div class="action-icon" style="background: var(--mint-green);"><i class="fa-solid fa-message"></i></div>
-            <span class="action-label">Messages</span>
-            <i class="fa-solid fa-chevron-right"></i>
+        <div class="completion-track">
+            <div class="completion-fill" id="completionFill" style="width: 0%"></div>
         </div>
-        <div class="action-item" onclick="shareProfile()">
-            <div class="action-icon" style="background: var(--pale-yellow);"><i class="fa-solid fa-share-nodes"></i></div>
-            <span class="action-label">Share Profile</span>
-            <i class="fa-solid fa-chevron-right"></i>
+        <p class="completion-tips">Add a phone number & profile photo to reach 100%</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions-row" role="toolbar" aria-label="Profile actions">
+        <button class="act-btn act-btn-primary" onclick="openEditModal()"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>
+        <button class="act-btn act-btn-green" onclick="location.href='add_product.html'"><i class="fa-solid fa-plus"></i> Post Item</button>
+        <button class="act-btn act-btn-blue" onclick="shareProfile()"><i class="fa-solid fa-share-nodes"></i> Share</button>
+        <button class="act-btn act-btn-pink" onclick="location.href='chats.html'"><i class="fa-solid fa-message"></i> Messages</button>
+        <button class="act-btn" onclick="showToast('Saved to contacts!')"><i class="fa-solid fa-user-plus"></i> Save</button>
+    </div>
+
+    <!-- Wallet -->
+    <section class="wallet-card" aria-label="Wallet balance">
+        <div class="wallet-left">
+            <div class="wallet-label">DormKart Balance</div>
+            <div class="wallet-amount" id="walletBalance">₹0</div>
+            <div class="wallet-sub">Available for withdrawal</div>
+        </div>
+        <button class="wallet-btn" onclick="showToast('Withdrawals open on Friday!')">Withdraw</button>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-grid" aria-label="Profile statistics">
+        <div class="stat-card">
+            <span class="stat-val" id="statListings">12</span>
+            <span class="stat-lbl">Listed</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val" id="statSold">8</span>
+            <span class="stat-lbl">Sold</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val" id="statRating">4.9</span>
+            <span class="stat-lbl">Rating</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-val" id="statDeals">23</span>
+            <span class="stat-lbl">Deals</span>
+        </div>
+    </section>
+
+    <!-- Tabs -->
+    <nav class="tabs-wrap" role="tablist" aria-label="Profile sections">
+        <div class="tabs-inner">
+            <button class="tab-btn active" role="tab" aria-selected="true" data-tab="about">About</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="listings">Listings</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="saved">Saved</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="reviews">Reviews</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="activity">Activity</button>
+            <button class="tab-btn" role="tab" aria-selected="false" data-tab="settings">Settings</button>
+        </div>
+    </nav>
+
+    <!-- ==================== ABOUT TAB ==================== -->
+    <div class="tab-panel active" id="panel-about" role="tabpanel">
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-user"></i> Personal Info</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--baby-pink), rgba(255,179,186,0.3)); color: #be123c;"><i class="fa-solid fa-graduation-cap"></i></div>
+                    <div><div class="info-label">Department</div><div class="info-value">Computer Science</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--apricot), rgba(255,223,186,0.3)); color: #d97706;"><i class="fa-solid fa-calendar"></i></div>
+                    <div><div class="info-label">Year</div><div class="info-value">2nd Year</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--pale-yellow), rgba(255,255,186,0.4)); color: #a16207;"><i class="fa-solid fa-bed"></i></div>
+                    <div><div class="info-label">Stay Type</div><div class="info-value">Hosteller</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--mint-green), rgba(186,255,201,0.3)); color: #047857;"><i class="fa-solid fa-location-dot"></i></div>
+                    <div><div class="info-label">Location</div><div class="info-value">Hostel Block B, Room 214</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--sky-blue), rgba(186,225,255,0.3)); color: #1d4ed8;"><i class="fa-solid fa-clock"></i></div>
+                    <div><div class="info-label">Response Time</div><div class="info-value">~15 mins</div></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon" style="background: linear-gradient(135deg, var(--baby-pink), var(--apricot)); color: #9f1239;"><i class="fa-solid fa-handshake"></i></div>
+                    <div><div class="info-label">Response Rate</div><div class="info-value">96%</div></div>
+                </div>
+            </div>
+
+            <div class="bio-full">
+                Tech enthusiast & part-time seller on DormKart. I mostly deal in electronics, books, and hostel essentials. Always open for exchanges and bulk deals. Feel free to message me anytime!
+            </div>
+
+            <div class="trust-features">
+                <span class="trust-tag"><i class="fa-solid fa-shield-check" style="color: #059669;"></i> Campus ID Verified</span>
+                <span class="trust-tag"><i class="fa-solid fa-phone" style="color: #3b82f6;"></i> Phone Verified</span>
+                <span class="trust-tag"><i class="fa-solid fa-envelope" style="color: #f59e0b;"></i> Email Verified</span>
+                <span class="trust-tag"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Top Seller</span>
+                <span class="trust-tag"><i class="fa-solid fa-bolt" style="color: #8b5cf6;"></i> Fast Responder</span>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-trophy"></i> Badges & Achievements</h2>
+            <div class="badges-grid">
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: linear-gradient(135deg, var(--pale-yellow), var(--apricot)); color: #d97706;"><i class="fa-solid fa-crown"></i></div>
+                    <div class="badge-name">Top Seller</div>
+                    <div class="badge-desc">10+ items sold</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: linear-gradient(135deg, var(--mint-green), var(--sky-blue)); color: #047857;"><i class="fa-solid fa-bolt"></i></div>
+                    <div class="badge-name">Fast Reply</div>
+                    <div class="badge-desc">Under 15 mins</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: linear-gradient(135deg, var(--baby-pink), #ffc8d0); color: #be123c;"><i class="fa-solid fa-heart"></i></div>
+                    <div class="badge-name">Trusted</div>
+                    <div class="badge-desc">5 star reviews</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: linear-gradient(135deg, var(--sky-blue), #a5d8ff); color: #1d4ed8;"><i class="fa-solid fa-shield-check"></i></div>
+                    <div class="badge-name">Verified</div>
+                    <div class="badge-desc">ID confirmed</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: linear-gradient(135deg, var(--apricot), var(--pale-yellow)); color: #92400e;"><i class="fa-solid fa-repeat"></i></div>
+                    <div class="badge-name">Exchanger</div>
+                    <div class="badge-desc">5+ exchanges</div>
+                </div>
+                <div class="badge-card">
+                    <div class="badge-icon" style="background: var(--bg); color: var(--text-muted); border: 1.5px dashed var(--border);"><i class="fa-solid fa-lock"></i></div>
+                    <div class="badge-name" style="color: var(--text-muted);">Locked</div>
+                    <div class="badge-desc">Keep going!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-qrcode"></i> Quick Share</h2>
+            <div class="qr-section">
+                <div class="qr-box"><i class="fa-solid fa-qrcode"></i><span>QR Code</span></div>
+                <div class="qr-text">
+                    <strong>Scan to view profile</strong><br>
+                    Others can scan this QR code to instantly open your DormKart profile on their device.
+                </div>
+            </div>
+        </div>
+
+        <!-- Safe Trade Tips -->
+        <div class="section-card" style="border-color: var(--mint-green); background: linear-gradient(135deg, rgba(186,255,201,0.08), rgba(186,225,255,0.06));">
+            <h2 class="section-heading" style="color: #047857;"><i class="fa-solid fa-shield-halved"></i> Safe Trade Tips</h2>
+            <ul style="font-size: 13px; color: var(--text-secondary); line-height: 2; padding-left: 18px;">
+                <li>Always meet in a public campus spot</li>
+                <li>Check the item thoroughly before paying</li>
+                <li>Prefer UPI payments for a digital trail</li>
+                <li>Never share your bank password or OTP</li>
+                <li>Report suspicious users immediately</li>
+            </ul>
         </div>
     </div>
-</section>
 
-<section class="section-box" style="margin-top: 20px;">
-    <button onclick="logout()" style="width: 100%; padding: 18px; border-radius: 20px; border: 1.5px solid #fee2e2; background: #fff1f2; color: #e11d48; font-weight: 800; cursor: pointer;">
-        Sign Out
-    </button>
-</section>
+    <!-- ==================== LISTINGS TAB ==================== -->
+    <div class="tab-panel" id="panel-listings" role="tabpanel">
+        <!-- Filter Chips -->
+        <div class="listings-toolbar" role="toolbar" aria-label="Filter listings">
+            <button class="filter-chip active" data-filter="all">All</button>
+            <button class="filter-chip" data-filter="books">Books</button>
+            <button class="filter-chip" data-filter="gadgets">Gadgets</button>
+            <button class="filter-chip" data-filter="essentials">Essentials</button>
+            <button class="filter-chip" data-filter="services">Services</button>
+        </div>
 
-<nav class="bottom-nav">
+        <div class="listings-grid" id="listingsGrid">
+            <!-- Cards injected by JS -->
+        </div>
+    </div>
+
+    <!-- ==================== SAVED TAB ==================== -->
+    <div class="tab-panel" id="panel-saved" role="tabpanel">
+        <div class="listings-grid" id="savedGrid">
+            <!-- Cards injected by JS -->
+        </div>
+    </div>
+
+    <!-- ==================== REVIEWS TAB ==================== -->
+    <div class="tab-panel" id="panel-reviews" role="tabpanel">
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-star"></i> Rating Overview</h2>
+            <div class="rating-overview">
+                <div>
+                    <div class="rating-big">4.9</div>
+                    <div class="rating-stars">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Based on 23 reviews</div>
+                </div>
+                <div class="rating-bars">
+                    <div class="rating-bar-row"><span class="rating-bar-label">5</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:82%"></div></div><span class="rating-bar-count">19</span></div>
+                    <div class="rating-bar-row"><span class="rating-bar-label">4</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:13%"></div></div><span class="rating-bar-count">3</span></div>
+                    <div class="rating-bar-row"><span class="rating-bar-label">3</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:4%"></div></div><span class="rating-bar-count">1</span></div>
+                    <div class="rating-bar-row"><span class="rating-bar-label">2</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><span class="rating-bar-count">0</span></div>
+                    <div class="rating-bar-row"><span class="rating-bar-label">1</span><div class="rating-bar-track"><div class="rating-bar-fill" style="width:0%"></div></div><span class="rating-bar-count">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-comments"></i> Recent Reviews <span class="section-link" onclick="showToast('All reviews page coming soon!')">View All</span></h2>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <img src="https://ui-avatars.com/api/?name=Priya+S&background=ffb3ba&color=0f172a&size=80" alt="Priya S" class="review-avatar">
+                    <div>
+                        <div class="review-name">Priya Sharma</div>
+                        <div class="review-date">2 days ago</div>
+                    </div>
+                    <div class="review-stars" style="margin-left:auto;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-text">Bought a calculator from Arjun. Item was in perfect condition as described. Very friendly and punctual for the handover. Highly recommended seller!</p>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <img src="https://ui-avatars.com/api/?name=Rahul+K&background=baffc9&color=0f172a&size=80" alt="Rahul K" class="review-avatar">
+                    <div>
+                        <div class="review-name">Rahul Kumar</div>
+                        <div class="review-date">5 days ago</div>
+                    </div>
+                    <div class="review-stars" style="margin-left:auto;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-text">Got DS notes — super neat handwriting and well organized. Helped me a lot before midsems. Fast responder too, replied within 10 minutes!</p>
+            </div>
+
+            <div class="review-card">
+                <div class="review-header">
+                    <img src="https://ui-avatars.com/api/?name=Ananya+G&background=bae1ff&color=0f172a&size=80" alt="Ananya G" class="review-avatar">
+                    <div>
+                        <div class="review-name">Ananya Gupta</div>
+                        <div class="review-date">1 week ago</div>
+                    </div>
+                    <div class="review-stars" style="margin-left:auto;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+                    </div>
+                </div>
+                <p class="review-text">Purchased a desk lamp. Works great, minor scratch on the base but was already mentioned in the description. Fair deal overall.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ACTIVITY TAB ==================== -->
+    <div class="tab-panel" id="panel-activity" role="tabpanel">
+        <div class="section-card">
+            <h2 class="section-heading"><i class="fa-solid fa-timeline"></i> Recent Activity</h2>
+
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--mint-green);"></div>
+                <div>
+                    <div class="activity-text"><strong>Sold</strong> Casio FX-991EX Calculator to Priya S. for ₹450</div>
+                    <div class="activity-time">2 days ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--sky-blue);"></div>
+                <div>
+                    <div class="activity-text"><strong>Listed</strong> Applied Physics Notes — Semester 3</div>
+                    <div class="activity-time">3 days ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--apricot);"></div>
+                <div>
+                    <div class="activity-text"><strong>Exchanged</strong> Bluetooth Speaker for a Mechanical Keyboard with Rahul K.</div>
+                    <div class="activity-time">5 days ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--baby-pink);"></div>
+                <div>
+                    <div class="activity-text"><strong>Received review</strong> — 5 stars from Ananya Gupta</div>
+                    <div class="activity-time">1 week ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--pale-yellow);"></div>
+                <div>
+                    <div class="activity-text"><strong>Earned badge</strong> — Top Seller (10+ items sold)</div>
+                    <div class="activity-time">1 week ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--mint-green);"></div>
+                <div>
+                    <div class="activity-text"><strong>Sold</strong> Data Structures Handwritten Notes to 3 buyers</div>
+                    <div class="activity-time">2 weeks ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--sky-blue);"></div>
+                <div>
+                    <div class="activity-text"><strong>Updated profile</strong> — Added phone number & hostel details</div>
+                    <div class="activity-time">2 weeks ago</div>
+                </div>
+            </div>
+            <div class="activity-item">
+                <div class="activity-dot" style="background: var(--baby-pink);"></div>
+                <div>
+                    <div class="activity-text"><strong>Joined DormKart</strong> — Welcome aboard!</div>
+                    <div class="activity-time">Sep 2024</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SETTINGS TAB ==================== -->
+    <div class="tab-panel" id="panel-settings" role="tabpanel">
+        <div class="settings-group-title">Account</div>
+        <div class="settings-list">
+            <div class="settings-item" onclick="openEditModal()">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--sky-blue), rgba(186,225,255,0.3)); color: #1d4ed8;"><i class="fa-solid fa-user-pen"></i></div>
+                <div style="flex:1;"><div class="settings-label">Edit Profile</div><div class="settings-sub">Name, bio, college, department</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="settings-item" onclick="showToast('Camera opening for ID verification...')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--mint-green), rgba(186,255,201,0.3)); color: #047857;"><i class="fa-solid fa-id-card"></i></div>
+                <div style="flex:1;"><div class="settings-label">Verify Account</div><div class="settings-sub">Upload campus ID for verification</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="settings-item" onclick="showToast('Security settings coming soon!')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--apricot), rgba(255,223,186,0.3)); color: #d97706;"><i class="fa-solid fa-lock"></i></div>
+                <div style="flex:1;"><div class="settings-label">Security</div><div class="settings-sub">Password, 2FA, login activity</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="settings-group-title">Preferences</div>
+        <div class="settings-list">
+            <div class="settings-item">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--pale-yellow), rgba(255,255,186,0.4)); color: #a16207;"><i class="fa-solid fa-bell"></i></div>
+                <div style="flex:1;"><div class="settings-label">Push Notifications</div></div>
+                <div class="toggle on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--baby-pink), rgba(255,179,186,0.3)); color: #be123c;"><i class="fa-solid fa-message"></i></div>
+                <div style="flex:1;"><div class="settings-label">Message Alerts</div></div>
+                <div class="toggle on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--sky-blue), rgba(186,225,255,0.3)); color: #1d4ed8;"><i class="fa-solid fa-moon"></i></div>
+                <div style="flex:1;"><div class="settings-label">Dark Mode</div></div>
+                <div class="toggle" id="darkToggle" onclick="toggleTheme()" role="switch" aria-checked="false" tabindex="0"></div>
+            </div>
+            <div class="settings-item" onclick="showToast('Language selector coming soon!')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--mint-green), rgba(186,255,201,0.3)); color: #047857;"><i class="fa-solid fa-globe"></i></div>
+                <div style="flex:1;"><div class="settings-label">Language</div><div class="settings-sub">English</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="settings-group-title">Privacy</div>
+        <div class="settings-list">
+            <div class="settings-item">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--baby-pink), rgba(255,179,186,0.3)); color: #be123c;"><i class="fa-solid fa-eye-slash"></i></div>
+                <div style="flex:1;"><div class="settings-label">Hide Phone Number</div></div>
+                <div class="toggle" onclick="this.classList.toggle('on')" role="switch" aria-checked="false" tabindex="0"></div>
+            </div>
+            <div class="settings-item">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--apricot), rgba(255,223,186,0.3)); color: #d97706;"><i class="fa-solid fa-clock"></i></div>
+                <div style="flex:1;"><div class="settings-label">Show Last Active</div></div>
+                <div class="toggle on" onclick="this.classList.toggle('on')" role="switch" aria-checked="true" tabindex="0"></div>
+            </div>
+            <div class="settings-item" onclick="showToast('Privacy policy page coming soon!')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--sky-blue), rgba(186,225,255,0.3)); color: #1d4ed8;"><i class="fa-solid fa-file-shield"></i></div>
+                <div style="flex:1;"><div class="settings-label">Privacy Policy</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="settings-group-title">Other</div>
+        <div class="settings-list">
+            <div class="settings-item" onclick="showToast('Help center coming soon!')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--mint-green), rgba(186,255,201,0.3)); color: #047857;"><i class="fa-solid fa-circle-question"></i></div>
+                <div style="flex:1;"><div class="settings-label">Help & Support</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="settings-item" onclick="showToast('Report submitted! We\'ll review it soon.')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--baby-pink), rgba(255,179,186,0.3)); color: #be123c;"><i class="fa-solid fa-flag"></i></div>
+                <div style="flex:1;"><div class="settings-label">Report a Problem</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+            <div class="settings-item" onclick="showToast('DormKart v1.0.0 — Built with love for students')">
+                <div class="settings-icon" style="background: linear-gradient(135deg, var(--pale-yellow), rgba(255,255,186,0.4)); color: #a16207;"><i class="fa-solid fa-info-circle"></i></div>
+                <div style="flex:1;"><div class="settings-label">About DormKart</div><div class="settings-sub">Version 1.0.0</div></div>
+                <i class="fa-solid fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="logout-section">
+            <button class="logout-btn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</button>
+        </div>
+    </div>
+
+</div><!-- /page-container -->
+
+<!-- ============================================
+     EDIT PROFILE MODAL
+     ============================================ -->
+<div class="modal-overlay" id="editModal" role="dialog" aria-modal="true" aria-label="Edit profile">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-header">
+            <span class="modal-title">Edit Profile</span>
+            <button class="modal-close" onclick="closeEditModal()" aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="modal-body">
+            <!-- Avatar Edit -->
+            <div class="avatar-edit-row">
+                <img id="editAvatar" src="https://ui-avatars.com/api/?name=Arjun+Mehta&background=bae1ff&color=0f172a&size=200" alt="Current avatar" class="avatar-edit-img">
+                <div>
+                    <button class="avatar-edit-btn" onclick="showToast('Photo picker opening...')"><i class="fa-solid fa-camera"></i> Change Photo</button>
+                    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;">JPG or PNG, max 2MB</div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="editName">Full Name</label>
+                    <input class="form-input" type="text" id="editName" placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editPhone">Phone</label>
+                    <input class="form-input" type="tel" id="editPhone" placeholder="+91 XXXXX XXXXX">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editBio">Bio</label>
+                <textarea class="form-input form-textarea" id="editBio" placeholder="Tell others about yourself..." maxlength="200"></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="editCollege">College</label>
+                    <input class="form-input" type="text" id="editCollege" placeholder="College name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editDept">Department</label>
+                    <input class="form-input" type="text" id="editDept" placeholder="e.g. CSE, ECE">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label" for="editYear">Year</label>
+                    <select class="form-input form-select" id="editYear">
+                        <option value="">Select year</option>
+                        <option value="1">1st Year</option>
+                        <option value="2">2nd Year</option>
+                        <option value="3">3rd Year</option>
+                        <option value="4">4th Year</option>
+                        <option value="5">5th Year</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="editStay">Stay Type</label>
+                    <select class="form-input form-select" id="editStay">
+                        <option value="">Select type</option>
+                        <option value="hosteller">Hosteller</option>
+                        <option value="day-scholar">Day Scholar</option>
+                        <option value="pg">PG</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editLocation">Location / Hostel Info</label>
+                <input class="form-input" type="text" id="editLocation" placeholder="e.g. Hostel Block B, Room 214">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="editCategories">Preferred Categories</label>
+                <input class="form-input" type="text" id="editCategories" placeholder="Books, Gadgets, Notes...">
+            </div>
+
+            <button class="save-btn" id="saveProfileBtn" onclick="saveProfile()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav" role="navigation" aria-label="Main navigation">
     <a href="dashboard.html" class="nav-link"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="chats.html" class="nav-link"><i class="fa-solid fa-comment"></i><span>Chats</span></a>
-    <a href="add_product.html" class="nav-link" style="color: var(--mint-green);"><i class="fa-solid fa-circle-plus" style="font-size: 30px;"></i></a>
+    <a href="add_product.html" class="nav-link" style="color: var(--mint-green);"><i class="fa-solid fa-circle-plus" style="font-size:30px;"></i></a>
     <a href="my-ads.html" class="nav-link"><i class="fa-solid fa-layer-group"></i><span>My Ads</span></a>
     <a href="profile.html" class="nav-link active"><i class="fa-solid fa-user"></i><span>Profile</span></a>
 </nav>
 
 <script>
-let currentUser = null;
+/* ============================================
+   SAMPLE DATA — Replace with Supabase later
+   ============================================ */
+const sampleListings = [
+    { id:1, title:"Casio FX-991EX Scientific Calculator", cat:"gadgets", price:450, orig:1200, cond:"Like New", tag:"campus", img:"https://picsum.photos/seed/calc991/400/400", liked:false, status:"active" },
+    { id:2, title:"Data Structures Handwritten Notes — Sem 3", cat:"books", price:150, orig:0, cond:"Good", tag:"campus", img:"https://picsum.photos/seed/dsnotes/400/400", liked:true, status:"active" },
+    { id:3, title:"LED Desk Lamp with USB Charging Port", cat:"essentials", price:350, orig:800, cond:"Good", tag:"campus", img:"https://picsum.photos/seed/desklamp/400/400", liked:false, status:"active" },
+    { id:4, title:"Applied Physics Textbook (HC Verma Vol 1&2)", cat:"books", price:200, orig:450, cond:"Fair", tag:"condition", img:"https://picsum.photos/seed/hcverma/400/400", liked:false, status:"active" },
+    { id:5, title:"Bluetooth Speaker — JBL Go 3", cat:"gadgets", price:1200, orig:2500, cond:"Like New", tag:"campus", img:"https://picsum.photos/seed/jblgo3/400/400", liked:true, status:"active" },
+    { id:6, title:"Complete Stationery Kit — New Semester", cat:"essentials", price:180, orig:350, cond:"New", tag:"campus", img:"https://picsum.photos/seed/stationery/400/400", liked:false, status:"active" },
+    { id:7, title:"Laptop Stand — Aluminum Foldable", cat:"gadgets", price:400, orig:900, cond:"Like New", tag:"rental", img:"https://picsum.photos/seed/lapstand/400/400", liked:false, status:"active" },
+    { id:8, title:"Operating Systems Notes — Handwritten", cat:"books", price:120, orig:0, cond:"Good", tag:"campus", img:"https://picsum.photos/seed/osnotes/400/400", liked:false, status:"active" },
+    { id:9, title:"Mechanical Keyboard — Red Switches", cat:"gadgets", price:1500, orig:3000, cond:"Good", tag:"urgent", img:"https://picsum.photos/seed/mechkey/400/400", liked:true, status:"active" },
+    { id:10, title:"Buckley's Chemistry Notes — Sem 2", cat:"books", price:100, orig:0, cond:"Good", tag:"campus", img:"https://picsum.photos/seed/chemnotes/400/400", liked:false, status:"active" },
+    { id:11, title:"Water Bottle — 1L Insulated Steel", cat:"essentials", price:250, orig:600, cond:"Like New", tag:"campus", img:"https://picsum.photos/seed/waterbtl/400/400", liked:false, status:"active" },
+    { id:12, title:"Resume Building & Portfolio Service", cat:"services", price:299, orig:0, cond:"New", tag:"campus", img:"https://picsum.photos/seed/resumesvc/400/400", liked:false, status:"active" },
+];
 
+const sampleSaved = [
+    { id:101, title:"Wireless Mouse — Logitech M331", cat:"gadgets", price:350, orig:800, cond:"Like New", tag:"campus", img:"https://picsum.photos/seed/logimouse/400/400", liked:true },
+    { id:102, title:"Organic Chemistry Notes — NPTEL Based", cat:"books", price:80, orig:0, cond:"Good", tag:"campus", img:"https://picsum.photos/seed/orgchem/400/400", liked:true },
+    { id:103, title:"Mathematics-3 Solved Previous Year Papers", cat:"books", price:100, orig:0, cond:"New", tag:"campus", img:"https://picsum.photos/seed/math3pyq/400/400", liked:true },
+    { id:104, title:"Portable Charger 10000mAh", cat:"gadgets", price:500, orig:1200, cond:"Good", tag:"rental", img:"https://picsum.photos/seed/powerbank/400/400", liked:true },
+];
+
+/* ============================================
+   STATE
+   ============================================ */
+let currentUser = null;
+let activeTab = 'about';
+let activeFilter = 'all';
+
+/* ============================================
+   INIT
+   ============================================ */
 async function init() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) return location.href = "login-signup.html";
-    currentUser = session.user;
-    
-    loadProfileData();
+    /* Try to get Supabase session */
+    try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) return location.href = "login-signup.html";
+        currentUser = session.user;
+        loadProfileData();
+    } catch(e) {
+        /* If Supabase not available, use sample data (for preview) */
+        console.log("Supabase not available — using sample data");
+    }
+
+    /* Render UI */
+    renderListings('listingsGrid', sampleListings);
+    renderListings('savedGrid', sampleSaved);
+    setupTabs();
+    setupFilters();
+
+    /* Animate completion bar */
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            document.getElementById('completionFill').style.width = '75%';
+        }, 300);
+    });
 }
 
+/* ============================================
+   LOAD PROFILE FROM SUPABASE
+   ============================================ */
 async function loadProfileData() {
-    // Load User info
-    const { data: profile } = await supabaseClient.from("users").select("*").eq("id", currentUser.id).single();
+    if (!currentUser) return;
+
+    const { data: profile } = await supabaseClient
+        .from("users").select("*").eq("id", currentUser.id).single();
+
     if (profile) {
         document.getElementById('userName').innerText = profile.name || "DormKart User";
-        document.getElementById('userCollege').innerHTML = `<i class="fa-solid fa-building-columns"></i> ${profile.college || "College not set"}`;
-        if(profile.avatar_url) document.getElementById('profileImg').src = profile.avatar_url;
+        document.getElementById('userCollege').innerText = profile.college || "College not set";
+        if (profile.bio) document.getElementById('userBio').innerText = profile.bio;
+        if (profile.avatar_url) {
+            document.getElementById('profileImg').src = profile.avatar_url;
+            document.getElementById('editAvatar').src = profile.avatar_url;
+        }
+        /* Populate edit form */
+        document.getElementById('editName').value = profile.name || '';
+        document.getElementById('editBio').value = profile.bio || '';
+        document.getElementById('editCollege').value = profile.college || '';
+        document.getElementById('editPhone').value = profile.phone || '';
+        document.getElementById('editDept').value = profile.department || '';
+        document.getElementById('editYear').value = profile.year || '';
+        document.getElementById('editStay').value = profile.stay_type || '';
+        document.getElementById('editLocation').value = profile.location || '';
     }
 
-    // Load Stats
-    const { count: totalAds } = await supabaseClient.from("products").select('*', { count: 'exact', head: true }).eq('seller_id', currentUser.id);
-    const { count: soldAds } = await supabaseClient.from("products").select('*', { count: 'exact', head: true }).eq('seller_id', currentUser.id).eq('status', 'sold');
-    
-    document.getElementById('statItems').innerText = totalAds || 0;
+    /* Load stats */
+    const { count: totalAds } = await supabaseClient.from("products")
+        .select('*', { count:'exact', head:true }).eq('seller_id', currentUser.id);
+    const { count: soldAds } = await supabaseClient.from("products")
+        .select('*', { count:'exact', head:true }).eq('seller_id', currentUser.id).eq('status','sold');
+
+    document.getElementById('statListings').innerText = totalAds || 0;
     document.getElementById('statSold').innerText = soldAds || 0;
 
-    // Load Earnings (Startup wallet feel)
-    const { data: sales } = await supabaseClient.from("orders").select("amount").eq("seller_id", currentUser.id).eq("payment_status", "completed");
-    const totalEarnings = (sales || []).reduce((acc, curr) => acc + (curr.amount || 0), 0);
-    document.getElementById('walletBalance').innerText = `₹${totalEarnings.toLocaleString('en-IN')}`;
+    /* Load wallet */
+    const { data: sales } = await supabaseClient.from("orders")
+        .select("amount").eq("seller_id", currentUser.id).eq("payment_status","completed");
+    const total = (sales || []).reduce((a,c) => a + (c.amount||0), 0);
+    document.getElementById('walletBalance').innerText = `₹${total.toLocaleString('en-IN')}`;
 }
 
-function shareProfile() {
-    const url = window.location.origin + "/profile.html?uid=" + currentUser.id;
-    if (navigator.share) {
-        navigator.share({ title: 'My DormKart Shop', url: url });
+/* ============================================
+   TABS
+   ============================================ */
+function setupTabs() {
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.dataset.tab;
+            activeTab = tab;
+
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('active');
+                b.setAttribute('aria-selected', 'false');
+            });
+            btn.classList.add('active');
+            btn.setAttribute('aria-selected', 'true');
+
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+            const panel = document.getElementById('panel-' + tab);
+            if (panel) panel.classList.add('active');
+        });
+    });
+}
+
+/* ============================================
+   FILTERS (Listings tab)
+   ============================================ */
+function setupFilters() {
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+            activeFilter = chip.dataset.filter;
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            renderListings('listingsGrid', sampleListings);
+        });
+    });
+}
+
+/* ============================================
+   RENDER LISTING CARDS
+   ============================================ */
+function renderListings(containerId, data) {
+    const grid = document.getElementById(containerId);
+    if (!grid) return;
+
+    let filtered = data;
+    if (containerId === 'listingsGrid' && activeFilter !== 'all') {
+        filtered = data.filter(item => item.cat === activeFilter);
+    }
+
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1;">
+                <div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>
+                <div class="empty-title">No items found</div>
+                <div class="empty-desc">${activeFilter !== 'all' ? 'Try a different category filter' : 'Nothing here yet — post your first item!'}</div>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = filtered.map(item => `
+        <article class="listing-card" aria-label="${item.title}">
+            <div class="listing-img-wrap">
+                <img src="${item.img}" alt="${item.title}" loading="lazy">
+                <span class="listing-tag tag-${item.tag}">${item.tag === 'campus' ? 'Campus Only' : item.tag === 'rental' ? 'For Rent' : item.tag === 'urgent' ? 'Urgent' : item.cond}</span>
+                <button class="listing-fav ${item.liked ? 'liked' : ''}" onclick="event.stopPropagation(); toggleLike(this)" aria-label="${item.liked ? 'Remove from wishlist' : 'Add to wishlist'}">
+                    <i class="fa-${item.liked ? 'solid' : 'regular'} fa-heart"></i>
+                </button>
+            </div>
+            <div class="listing-body">
+                <div class="listing-cat">${item.cat}</div>
+                <div class="listing-title">${item.title}</div>
+                <div class="listing-bottom">
+                    <div class="listing-price">₹${item.price}${item.orig ? `<small>₹${item.orig}</small>` : ''}</div>
+                    <div class="listing-actions">
+                        <button class="listing-action-btn" onclick="event.stopPropagation(); showToast('Shared!')" aria-label="Share listing"><i class="fa-solid fa-share"></i></button>
+                        <button class="listing-action-btn" onclick="event.stopPropagation(); showToast('Edit mode')" aria-label="Edit listing"><i class="fa-solid fa-pen"></i></button>
+                    </div>
+                </div>
+            </div>
+        </article>
+    `).join('');
+}
+
+/* ============================================
+   TOGGLE LIKE
+   ============================================ */
+function toggleLike(btn) {
+    btn.classList.toggle('liked');
+    const icon = btn.querySelector('i');
+    icon.className = btn.classList.contains('liked') ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
+    showToast(btn.classList.contains('liked') ? 'Added to wishlist!' : 'Removed from wishlist');
+}
+
+/* ============================================
+   EDIT PROFILE MODAL
+   ============================================ */
+function openEditModal() {
+    document.getElementById('editModal').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').classList.remove('show');
+    document.body.style.overflow = '';
+}
+
+/* Close modal on overlay click */
+document.getElementById('editModal').addEventListener('click', function(e) {
+    if (e.target === this) closeEditModal();
+});
+
+/* Close modal on Escape key */
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeEditModal();
+});
+
+/* ============================================
+   SAVE PROFILE
+   ============================================ */
+async function saveProfile() {
+    const btn = document.getElementById('saveProfileBtn');
+    btn.disabled = true;
+    btn.innerText = 'Saving...';
+
+    const updates = {
+        name: document.getElementById('editName').value.trim(),
+        bio: document.getElementById('editBio').value.trim(),
+        college: document.getElementById('editCollege').value.trim(),
+        phone: document.getElementById('editPhone').value.trim(),
+        department: document.getElementById('editDept').value.trim(),
+        year: document.getElementById('editYear').value,
+        stay_type: document.getElementById('editStay').value,
+        location: document.getElementById('editLocation').value.trim(),
+    };
+
+    if (currentUser) {
+        try {
+            const { error } = await supabaseClient
+                .from("users")
+                .update(updates)
+                .eq("id", currentUser.id);
+
+            if (error) throw error;
+
+            /* Update UI */
+            document.getElementById('userName').innerText = updates.name || "DormKart User";
+            document.getElementById('userCollege').innerText = updates.college || "College not set";
+            if (updates.bio) document.getElementById('userBio').innerText = updates.bio;
+
+            showToast('Profile updated successfully!');
+            closeEditModal();
+        } catch(err) {
+            showToast('Error saving profile: ' + err.message);
+        }
     } else {
-        navigator.clipboard.writeText(url);
-        showToast("Profile link copied!");
+        /* Preview mode — just update UI */
+        document.getElementById('userName').innerText = updates.name || "DormKart User";
+        document.getElementById('userCollege').innerText = updates.college || "College not set";
+        if (updates.bio) document.getElementById('userBio').innerText = updates.bio;
+        showToast('Profile updated (preview mode)!');
+        closeEditModal();
+    }
+
+    btn.disabled = false;
+    btn.innerText = 'Save Changes';
+}
+
+/* ============================================
+   DARK MODE
+   ============================================ */
+function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+
+    const toggle = document.getElementById('darkToggle');
+    if (toggle) {
+        toggle.classList.toggle('on', !isDark);
+        toggle.setAttribute('aria-checked', !isDark);
+    }
+
+    const icon = document.getElementById('themeBtn').querySelector('i');
+    icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+
+    localStorage.setItem('dormkart-theme', isDark ? 'light' : 'dark');
+}
+
+/* Restore saved theme */
+(function() {
+    const saved = localStorage.getItem('dormkart-theme');
+    if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        const toggle = document.getElementById('darkToggle');
+        if (toggle) { toggle.classList.add('on'); toggle.setAttribute('aria-checked','true'); }
+        const icon = document.getElementById('themeBtn').querySelector('i');
+        if (icon) icon.className = 'fa-solid fa-sun';
+    }
+})();
+
+/* ============================================
+   SHARE PROFILE
+   ============================================ */
+function shareProfile() {
+    const url = currentUser
+        ? window.location.origin + "/profile.html?uid=" + currentUser.id
+        : window.location.href;
+
+    if (navigator.share) {
+        navigator.share({ title: 'My DormKart Shop', url });
+    } else {
+        navigator.clipboard.writeText(url).then(() => showToast('Profile link copied!'));
     }
 }
 
+/* ============================================
+   TOAST
+   ============================================ */
 function showToast(msg) {
     const t = document.getElementById('toast');
     t.innerText = msg;
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 3000);
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+/* ============================================
+   LOGOUT
+   ============================================ */
 async function logout() {
-    await supabaseClient.auth.signOut();
+    try { await supabaseClient.auth.signOut(); } catch(e) {}
     location.href = "login-signup.html";
 }
 
+/* ============================================
+   BOOT
+   ============================================ */
 window.onload = init;
 </script>
 </body>
