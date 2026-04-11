@@ -16,6 +16,8 @@
 
 <style>
 
+/* ---------- ROOT ---------- */
+
 :root{
 --sky-blue:#bae1ff;
 --mint-green:#baffc9;
@@ -38,10 +40,10 @@ font-family:'Plus Jakarta Sans',sans-serif;
 body{
 background:var(--bg-light);
 color:var(--text-dark);
-padding-bottom:120px;
+padding-bottom:140px;
 }
 
-/* HEADER */
+/* ---------- HEADER ---------- */
 
 .app-header{
 position:sticky;
@@ -53,6 +55,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 border-bottom:1px solid #eee;
+z-index:100;
 }
 
 .brand{
@@ -70,7 +73,7 @@ font-size:22px;
 color:var(--text-muted);
 }
 
-/* METRICS */
+/* ---------- METRICS ---------- */
 
 .metrics-grid{
 display:grid;
@@ -98,11 +101,9 @@ text-transform:uppercase;
 color:var(--text-muted);
 }
 
-/* SEARCH */
+/* ---------- SEARCH ---------- */
 
-.search-area{
-padding:0 20px 14px;
-}
+.search-area{padding:0 20px 14px}
 
 .search-bar{
 background:white;
@@ -121,11 +122,9 @@ flex:1;
 font-weight:600;
 }
 
-/* BANNERS */
+/* ---------- BANNERS ---------- */
 
-.banner-section{
-padding:10px 20px;
-}
+.banner-section{padding:10px 20px}
 
 .banner-slider{
 display:flex;
@@ -135,8 +134,8 @@ gap:12px;
 
 .banner{
 min-width:85%;
-height:130px;
-border-radius:20px;
+height:140px;
+border-radius:22px;
 overflow:hidden;
 position:relative;
 }
@@ -153,10 +152,47 @@ bottom:10px;
 left:15px;
 color:white;
 font-weight:700;
-text-shadow:0 2px 8px rgba(0,0,0,.4);
+text-shadow:0 2px 8px rgba(0,0,0,.5);
 }
 
-/* CATEGORY */
+/* ---------- QUICK ICON GRID ---------- */
+
+.quick-icons{padding:15px 20px}
+
+.icon-grid{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:12px;
+}
+
+.icon-item{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:6px;
+cursor:pointer;
+}
+
+.icon-item i{
+background:white;
+border-radius:14px;
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+border:1px solid #eee;
+color:#0f172a;
+}
+
+.icon-item span{
+font-size:11px;
+font-weight:600;
+text-align:center;
+}
+
+/* ---------- CATEGORY ---------- */
 
 .category-scroll{
 display:flex;
@@ -180,7 +216,7 @@ cursor:pointer;
 background:var(--mint-green);
 }
 
-/* FILTER BAR */
+/* ---------- FILTERS ---------- */
 
 .filter-bar{
 display:flex;
@@ -195,14 +231,14 @@ border-radius:10px;
 border:1px solid #ddd;
 }
 
-/* SECTION TITLE */
+/* ---------- SECTION TITLE ---------- */
 
 .section-title{
 font-weight:800;
 padding:10px 20px;
 }
 
-/* PRODUCT GRID */
+/* ---------- PRODUCT GRID ---------- */
 
 .product-grid{
 display:grid;
@@ -216,8 +252,8 @@ background:white;
 border-radius:22px;
 padding:10px;
 border:1px solid #eee;
-position:relative;
 cursor:pointer;
+position:relative;
 }
 
 .p-img-wrap{
@@ -233,14 +269,9 @@ height:100%;
 object-fit:cover;
 }
 
-.p-info{
-padding:10px 4px;
-}
+.p-info{padding:10px 4px}
 
-.p-title{
-font-size:14px;
-font-weight:700;
-}
+.p-title{font-size:14px;font-weight:700}
 
 .p-price{
 font-size:18px;
@@ -267,10 +298,9 @@ border-radius:50%;
 display:flex;
 align-items:center;
 justify-content:center;
-box-shadow:0 2px 6px rgba(0,0,0,.1);
 }
 
-/* MODAL */
+/* ---------- MODAL ---------- */
 
 #productModal{
 position:fixed;
@@ -278,6 +308,7 @@ inset:0;
 background:rgba(0,0,0,.45);
 display:none;
 align-items:flex-end;
+z-index:2000;
 }
 
 .modal-content{
@@ -301,33 +332,54 @@ flex:1;
 .btn-chat{background:var(--mint-green)}
 .btn-swap{background:var(--text-dark);color:white}
 
-/* NAV */
+/* ---------- NAVBAR ---------- */
 
 .bottom-nav{
 position:fixed;
-bottom:20px;
+bottom:24px;
 left:50%;
 transform:translateX(-50%);
-background:var(--text-dark);
 width:90%;
 max-width:420px;
-height:70px;
-border-radius:24px;
+height:78px;
+background:linear-gradient(145deg,#0f172a,#1e293b);
+border-radius:40px;
 display:flex;
-justify-content:space-around;
 align-items:center;
+justify-content:space-around;
+box-shadow:0 20px 40px rgba(0,0,0,.35);
 }
 
 .nav-item{
 color:#94a3b8;
 text-decoration:none;
 font-size:11px;
+font-weight:600;
 display:flex;
 flex-direction:column;
 align-items:center;
+gap:5px;
 }
 
-.nav-item.active{color:var(--mint-green)}
+.nav-item.active{color:#a7f3d0}
+
+.nav-item i{font-size:22px}
+
+.sell-btn{
+background:#a7f3d0;
+width:50px;
+height:50px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+transform:translateY(-18px);
+}
+
+.sell-btn i{
+color:#0f172a;
+font-size:22px;
+}
 
 </style>
 </head>
@@ -343,39 +395,23 @@ align-items:center;
 </header>
 
 <section class="metrics-grid">
-
-<div class="metric-card">
-<strong id="statStudents">...</strong>
-<span>Students</span>
-</div>
-
-<div class="metric-card">
-<strong id="statItems">...</strong>
-<span>Active Ads</span>
-</div>
-
-<div class="metric-card">
-<strong>Campus</strong>
-<span>Verified</span>
-</div>
-
+<div class="metric-card"><strong id="statStudents">...</strong><span>Students</span></div>
+<div class="metric-card"><strong id="statItems">...</strong><span>Active Ads</span></div>
+<div class="metric-card"><strong>Campus</strong><span>Verified</span></div>
 </section>
 
 <div class="search-area">
-
 <div class="search-bar">
 <i class="fa-solid fa-search"></i>
 <input id="searchInput" placeholder="Search products...">
 </div>
-
 </div>
 
 <section class="banner-section">
-
 <div class="banner-slider">
 
 <div class="banner">
-<img src="images/banner-books.jpg">
+<img src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f">
 <div class="banner-text">
 <h3>📚 Book Deals</h3>
 <p>Up to 60% cheaper</p>
@@ -383,7 +419,7 @@ align-items:center;
 </div>
 
 <div class="banner">
-<img src="images/banner-laptop.jpg">
+<img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8">
 <div class="banner-text">
 <h3>💻 Laptop Deals</h3>
 <p>From ₹15K</p>
@@ -391,7 +427,7 @@ align-items:center;
 </div>
 
 <div class="banner">
-<img src="images/banner-trade.jpg">
+<img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c">
 <div class="banner-text">
 <h3>🔁 Trade Festival</h3>
 <p>Swap gadgets</p>
@@ -399,7 +435,42 @@ align-items:center;
 </div>
 
 </div>
+</section>
 
+<section class="quick-icons">
+<div class="icon-grid">
+
+<div class="icon-item" onclick="filterCategory('Books')">
+<i class="fa-solid fa-book"></i>
+<span>Books</span>
+</div>
+
+<div class="icon-item" onclick="filterCategory('Electronics')">
+<i class="fa-solid fa-laptop"></i>
+<span>Electronics</span>
+</div>
+
+<div class="icon-item" onclick="filterCategory('Hostel')">
+<i class="fa-solid fa-bed"></i>
+<span>Hostel</span>
+</div>
+
+<div class="icon-item">
+<i class="fa-solid fa-rotate"></i>
+<span>Trade</span>
+</div>
+
+<div class="icon-item" onclick="filterCategory('Notes')">
+<i class="fa-solid fa-note-sticky"></i>
+<span>Notes</span>
+</div>
+
+<div class="icon-item" onclick="filterCategory('Furniture')">
+<i class="fa-solid fa-chair"></i>
+<span>Furniture</span>
+</div>
+
+</div>
 </section>
 
 <div class="category-scroll" id="categoryScroll"></div>
@@ -430,11 +501,9 @@ align-items:center;
 </div>
 
 <h3 class="section-title">🔥 Trending in Campus</h3>
-
 <div id="trendingGrid" class="product-grid"></div>
 
 <h3 class="section-title">🆕 Recently Listed</h3>
-
 <main id="productGrid" class="product-grid"></main>
 
 <div id="productModal">
@@ -444,23 +513,27 @@ align-items:center;
 <nav class="bottom-nav">
 
 <a href="dashboard.html" class="nav-item active">
-<i class="fa-solid fa-house"></i>Home
+<i class="fa-solid fa-house"></i>
+<span>Home</span>
 </a>
 
 <a href="chats.html" class="nav-item">
-<i class="fa-solid fa-message"></i>Chats
+<i class="fa-solid fa-comment"></i>
+<span>Chats</span>
 </a>
 
-<a href="add_product.html" class="nav-item">
-<i class="fa-solid fa-circle-plus"></i>
+<a href="add_product.html" class="sell-btn">
+<i class="fa-solid fa-plus"></i>
 </a>
 
-<a href="wishlist.html" class="nav-item">
-<i class="fa-solid fa-heart"></i>Saved
+<a href="my_ads.html" class="nav-item">
+<i class="fa-solid fa-layer-group"></i>
+<span>My Ads</span>
 </a>
 
 <a href="profile.html" class="nav-item">
-<i class="fa-solid fa-user"></i>Me
+<i class="fa-solid fa-user"></i>
+<span>Profile</span>
 </a>
 
 </nav>
@@ -468,7 +541,6 @@ align-items:center;
 <script>
 
 let products=[]
-let wishlist=[]
 
 const categories=["All","Books","Electronics","Hostel","Notes","Furniture"]
 
@@ -490,11 +562,11 @@ initCategories()
 
 async function fetchCounts(){
 
-const {count:uCount}=await supabaseClient.from("users")
-.select("*",{count:"exact",head:true})
+const {count:uCount}=await supabaseClient.from("users").select("*",{count:"exact",head:true})
 
 const {count:pCount}=await supabaseClient.from("products")
-.select("*",{count:"exact",head:true}).eq("status","active")
+.select("*",{count:"exact",head:true})
+.eq("status","active")
 
 statStudents.innerText=(uCount||0)+"+"
 statItems.innerText=pCount||0
@@ -523,6 +595,7 @@ productGrid.innerHTML=data.map(p=>{
 const img=p.image_url?p.image_url.split(",")[0]:"placeholder.jpg"
 
 return`
+
 <div class="p-card" onclick="showModal('${p.id}')">
 
 <div class="wishlist-btn">
@@ -544,6 +617,7 @@ ${p.seller?.college||"Campus"}
 
 </div>
 `
+
 }).join("")
 
 }
@@ -555,14 +629,18 @@ trendingGrid.innerHTML=data.map(p=>{
 const img=p.image_url?p.image_url.split(",")[0]:"placeholder.jpg"
 
 return`
+
 <div class="p-card" onclick="showModal('${p.id}')">
+
 <div class="p-img-wrap">
 <img src="${img}" class="p-img">
 </div>
+
 <div class="p-info">
 <div class="p-title">${p.title}</div>
 <div class="p-price">₹${p.price}</div>
 </div>
+
 </div>
 `
 
@@ -594,7 +672,7 @@ modalData.innerHTML=`
 <hr style="margin:16px 0">
 
 <b>Seller</b><br>
-${p.seller?.name||"Student"}
+${p.seller?.name || "Student"} ✔ Verified
 
 <div style="display:flex;gap:10px;margin-top:20px">
 
