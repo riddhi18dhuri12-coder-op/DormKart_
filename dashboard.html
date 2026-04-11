@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
   <title>DormKart • Campus Trade & Marketplace</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -60,25 +61,30 @@
       border: 1px solid var(--border); background: var(--bg);
       font-size: 18px; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s;
     }
+    .icon-btn:active { transform: scale(0.92); }
     .notif-wrap { position: relative; }
     .badge-dot {
       position: absolute; top: 6px; right: 6px;
       width: 10px; height: 10px;
       background: #ef4444; border-radius: 50%;
       border: 2px solid var(--card-bg);
+      display: none;
     }
+    .badge-dot.visible { display: block; }
     .hero { padding: 20px 16px 8px; }
     .hero-label { font-family: 'Syne',sans-serif; font-size: 12px; font-weight: 700; color: var(--primary-dark); letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-title { font-family: 'Syne',sans-serif; font-size: 28px; font-weight: 800; line-height: 1.15; margin-bottom: 8px; }
     .hero-title em { color: var(--primary-dark); font-style: normal; }
-    .stats-row { display: flex; gap: 16px; margin: 10px 0 6px; flex-wrap: wrap; }
+    .stats-row { display: flex; gap: 12px; margin: 10px 0 6px; flex-wrap: wrap; }
     .stat-chip {
       background: var(--card-bg); border: 1px solid var(--border);
       border-radius: 40px; padding: 8px 16px;
       display: flex; align-items: center; gap: 8px;
       font-size: 13px; font-weight: 500;
     }
+    .stat-chip strong { color: var(--primary-dark); }
     .search-wrap { position: relative; margin-top: 8px; }
     .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; stroke: var(--text-light); fill: none; }
     .search-wrap input {
@@ -119,7 +125,9 @@
       background: var(--trade-light); margin: 8px 16px 16px; padding: 16px 18px;
       border-radius: 24px; border: 1px solid rgba(124,58,237,0.4);
       display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+      transition: transform 0.15s;
     }
+    .trade-spotlight:active { transform: scale(0.98); }
     .ts-title { font-weight: 700; color: var(--trade); font-family: 'Syne',sans-serif; font-size: 16px; }
     .ts-sub { color: var(--text-light); font-size: 13px; margin-top: 2px; }
     .ts-arrow { font-size: 24px; color: var(--trade); }
@@ -134,8 +142,10 @@
       transition: transform 0.18s, box-shadow 0.18s; position: relative;
     }
     .product-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(0,0,0,0.08); }
+    .product-card:active { transform: scale(0.97); }
     .p-img-wrap { aspect-ratio: 1/1; background: var(--bg); overflow: hidden; position: relative; }
-    .p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .p-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+    .product-card:hover .p-img-wrap img { transform: scale(1.04); }
     .trade-badge {
       position: absolute; top: 8px; right: 8px; background: var(--trade);
       color: white; font-size: 10px; font-weight: 800; padding: 4px 10px;
@@ -158,8 +168,8 @@
     .skel-img { aspect-ratio: 1/1; }
     @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
     .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-light); }
-    .empty-state .e-icon { font-size: 48px; margin-bottom: 12px; }
-    /* MODAL */
+    .empty-state .e-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+    .empty-state h3 { font-family:'Syne',sans-serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
     .modal-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.6);
       display: none; z-index: 3000; align-items: flex-end; justify-content: center;
@@ -180,7 +190,9 @@
       background: rgba(0,0,0,0.45); border: none; color: white;
       width: 34px; height: 34px; border-radius: 50%; font-size: 18px;
       cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
     }
+    .slide-btn:active { background: rgba(0,0,0,0.7); }
     .slide-btn.prev { left: 10px; }
     .slide-btn.next { right: 10px; }
     .close-btn {
@@ -189,7 +201,9 @@
       width: 36px; height: 36px; border-radius: 50%;
       color: white; font-size: 18px; cursor: pointer; z-index: 20;
       display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s;
     }
+    .close-btn:active { background: rgba(0,0,0,0.8); }
     .slide-dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: background 0.2s; }
     .dot.active { background: white; }
@@ -197,6 +211,7 @@
     .price-row { display: flex; align-items: center; justify-content: space-between; margin: 10px 0 4px; }
     .modal-price { font-family: 'Syne',sans-serif; font-size: 28px; font-weight: 800; }
     .verified-badge { background: #dcfce7; color: #166534; padding: 5px 12px; border-radius: 30px; font-size: 11px; font-weight: 600; }
+    body.dark .verified-badge { background: rgba(5,150,105,0.2); }
     .modal-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
     .cond-tag { display: inline-block; background: var(--bg); padding: 4px 12px; border-radius: 30px; font-size: 12px; margin-bottom: 6px; }
     .trade-box {
@@ -220,15 +235,18 @@
     .seller-row {
       display: flex; align-items: center; gap: 12px;
       padding: 14px; background: var(--bg); border-radius: 20px;
-      margin: 16px 0; cursor: pointer;
+      margin: 16px 0; cursor: pointer; transition: background 0.15s;
     }
+    .seller-row:active { background: var(--border); }
     .seller-av {
       width: 46px; height: 46px; border-radius: 50%;
-      background: var(--primary-dark); display: flex; align-items: center;
-      justify-content: center; color: white; font-weight: 700;
-      font-size: 18px; flex-shrink: 0;
+      background: linear-gradient(135deg, #10b981, #059669);
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 700; font-size: 18px; flex-shrink: 0;
+      overflow: hidden;
     }
-    .seller-name { font-weight: 600; font-size: 15px; }
+    .seller-av img { width: 100%; height: 100%; object-fit: cover; }
+    .seller-name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 6px; }
     .seller-col { font-size: 12px; color: var(--text-light); margin-top: 2px; }
     .btn-row {
       display: flex; flex-direction: column; gap: 10px;
@@ -248,7 +266,6 @@
     .btn-trade { background: var(--trade); color: white; width: 100%; margin-top: 4px; }
     .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); flex: 1; }
     .btn-msg { background: transparent; border: 1.5px solid var(--border); color: var(--text); width: 100%; }
-    /* UPI */
     .upi-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.7);
       display: none; z-index: 4000;
@@ -263,7 +280,6 @@
     .upi-amt { font-family: 'Syne',sans-serif; font-size: 30px; font-weight: 800; color: var(--primary-dark); margin: 12px 0; }
     .upi-hint { font-size: 13px; color: var(--text-light); margin: 8px 0 16px; }
     .upi-btns { display: flex; gap: 10px; }
-    /* BOTTOM NAV */
     .bottom-nav {
       position: fixed; bottom: 0; left: 0; right: 0;
       height: var(--nav-height); background: var(--card-bg);
@@ -285,7 +301,6 @@
       border: 4px solid var(--bg);
     }
     .nav-sell svg { stroke: white; }
-    /* TOAST */
     .toast {
       position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%;
       transform: translateX(-50%) translateY(20px);
@@ -294,6 +309,7 @@
       z-index: 5000; opacity: 0; transition: opacity 0.3s, transform 0.3s;
       white-space: nowrap; pointer-events: none;
     }
+    body.dark .toast { background: #e8f0e8; color: #0a0f0a; }
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
@@ -303,8 +319,8 @@
   <div class="logo">DormKart</div>
   <div class="header-actions">
     <div class="notif-wrap">
-      <button class="icon-btn" onclick="showToast('You are all caught up!')">🔔</button>
-      <span class="badge-dot"></span>
+      <button class="icon-btn" onclick="location.href='profile.html'">🔔</button>
+      <span class="badge-dot" id="notifDot"></span>
     </div>
     <button id="themeBtn" class="icon-btn" onclick="toggleDarkMode()">🌙</button>
   </div>
@@ -313,9 +329,9 @@
 <div class="hero">
   <div class="hero-label">⚡ Campus Marketplace</div>
   <div class="hero-title">Swap, buy &amp; <em>trade smarter</em></div>
-  <div class="stats-row">
-    <div class="stat-chip"><span>🔄</span> 1.2k active trades</div>
-    <div class="stat-chip"><span>📍</span> 8 campuses</div>
+  <div class="stats-row" id="statsRow">
+    <div class="stat-chip"><span>📦</span> <strong id="statProducts">0</strong> listings</div>
+    <div class="stat-chip"><span>🔄</span> <strong id="statTrades">0</strong> trades</div>
   </div>
   <div class="search-wrap">
     <svg class="search-icon" viewBox="0 0 24 24" stroke-width="2">
@@ -332,16 +348,26 @@
     <option value="Books">Books</option>
     <option value="Dorm Essentials">Dorm Essentials</option>
     <option value="Fashion">Fashion</option>
+    <option value="Stationery">Stationery</option>
+    <option value="Gaming">Gaming</option>
+    <option value="Hostel Essentials">Hostel Essentials</option>
+  </select>
+  <select id="conditionFilter" class="filter-select">
+    <option value="">Any Condition</option>
+    <option value="Like New">Like New</option>
+    <option value="Good">Good</option>
+    <option value="Fair">Fair</option>
   </select>
   <select id="priceSort" class="filter-select">
     <option value="">Sort by</option>
-    <option value="low">Price: Low to High</option>
-    <option value="high">Price: High to Low</option>
+    <option value="low">Price: Low → High</option>
+    <option value="high">Price: High → Low</option>
+    <option value="recent">Most Recent</option>
   </select>
   <button class="filter-btn" id="tradeFilterBtn" onclick="toggleTradeFilter()">🔄 Trades only</button>
 </div>
 
-<div class="trade-spotlight" onclick="showToast('Trade Center coming soon!')">
+<div class="trade-spotlight" onclick="filterTradesOnly()">
   <div>
     <div class="ts-title">🔄 Trade Center</div>
     <div class="ts-sub">Swap items, no cash needed</div>
@@ -351,15 +377,15 @@
 
 <div class="section-header">
   <h3>✨ For you</h3>
-  <span class="section-link" onclick="applyFilters()">See all →</span>
+  <span class="section-link" id="resultCount"></span>
 </div>
 
 <main>
   <div class="product-grid" id="productGrid">
-    <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton" style="height:14px;margin:10px;"></div></div>
-    <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton" style="height:14px;margin:10px;"></div></div>
-    <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton" style="height:14px;margin:10px;"></div></div>
-    <div class="skel-card"><div class="skeleton skel-img"></div><div class="skeleton" style="height:14px;margin:10px;"></div></div>
+    <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px 12px;"><div class="skeleton" style="height:16px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>
+    <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px 12px;"><div class="skeleton" style="height:16px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>
+    <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px 12px;"><div class="skeleton" style="height:16px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>
+    <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px 12px;"><div class="skeleton" style="height:16px;margin-bottom:6px;"></div><div class="skeleton" style="height:12px;width:60%;"></div></div></div>
   </div>
 </main>
 
@@ -374,7 +400,7 @@
     <div class="upi-title">Pay via UPI</div>
     <div class="upi-amt" id="upiAmt"></div>
     <img id="upiQR" src="" alt="UPI QR" style="width:200px;height:200px;margin:10px auto;display:block;border-radius:16px;">
-    <p class="upi-hint">Scan with any UPI app</p>
+    <p class="upi-hint" id="upiHint"></p>
     <div class="upi-btns">
       <a id="upiLink" href="#" class="btn btn-primary" style="text-decoration:none;flex:1;">Open UPI App</a>
       <button onclick="closeUPI()" class="btn btn-outline" style="flex:1;">Close</button>
@@ -401,104 +427,136 @@
     My Ads
   </a>
   <a href="profile.html" class="nav-item">
-    <svg viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
     Profile
   </a>
 </nav>
 
 <script>
-// ── CONFIG ── Replace with values from config.js or your Supabase project ──
-const SUPABASE_URL  = (typeof window.SUPABASE_URL  !== 'undefined') ? window.SUPABASE_URL  : 'YOUR_SUPABASE_URL';
-const SUPABASE_KEY  = (typeof window.SUPABASE_ANON_KEY !== 'undefined') ? window.SUPABASE_ANON_KEY : 'YOUR_SUPABASE_ANON_KEY';
-
-// Safe client creation — falls back to demo mode if credentials are placeholders
-let supabaseClient = null;
-const DEMO_MODE = !SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL';
-if (!DEMO_MODE) {
-  try { supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
-  catch(e) { console.warn('Supabase init failed:', e); }
-}
-
-// ── STATE ──
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
 let allProducts    = [];
+let filteredProducts = [];
 let currentImgs    = [];
 let currentImgIdx  = 0;
 let tradeOnly      = false;
 let session        = null;
+let currentUser   = null;
 
-// ── DEMO DATA — shown when no Supabase credentials are configured ──
-const DEMO_PRODUCTS = [
-  { id:'d1', title:'MacBook Pro 2022', price:55000, category:'Electronics', condition:'Like New', status:'active', swap_enabled:true, swap_item:'iPad or tablet', description:'Perfect condition, barely used. Comes with original charger.', image_url:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80', seller_id:'s1', seller:{id:'s1',name:'Arjun Mehta',college:'IIT Bombay',is_verified:true,upi_id:'arjun@upi'} },
-  { id:'d2', title:'Engineering Maths Textbook', price:350, category:'Books', condition:'Good', status:'active', swap_enabled:false, description:'3rd year maths. Notes inside.', image_url:'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&q=80', seller_id:'s2', seller:{id:'s2',name:'Priya Shah',college:'BITS Pilani',is_verified:false,upi_id:'priya@upi'} },
-  { id:'d3', title:'Study Lamp (IKEA)', price:800, category:'Dorm Essentials', condition:'Good', status:'active', swap_enabled:true, swap_item:'USB hub or keyboard', description:'White IKEA lamp, works perfectly.', image_url:'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400&q=80', seller_id:'s3', seller:{id:'s3',name:'Rahul Verma',college:'NIT Trichy',is_verified:true,upi_id:'rahul@upi'} },
-  { id:'d4', title:'Sony WH-1000XM4 Headphones', price:12000, category:'Electronics', condition:'Like New', status:'active', swap_enabled:false, description:'Noise cancelling, great battery. Box included.', image_url:'https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&q=80', seller_id:'s4', seller:{id:'s4',name:'Sneha Rao',college:'VIT Vellore',is_verified:true,upi_id:'sneha@upi'} },
-  { id:'d5', title:'Denim Jacket (M)', price:600, category:'Fashion', condition:'Good', status:'active', swap_enabled:true, swap_item:'Hoodie or cargo pants', description:'Blue denim, fits M/L. No tears or fading.', image_url:'https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=400&q=80', seller_id:'s5', seller:{id:'s5',name:'Amit Joshi',college:'DU North Campus',is_verified:false,upi_id:''} },
-  { id:'d6', title:'Data Structures Book', price:280, category:'Books', condition:'Fair', status:'active', swap_enabled:false, description:'Cormen CLRS, highlighted but complete.', image_url:'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=400&q=80', seller_id:'s6', seller:{id:'s6',name:'Kavya Nair',college:'IIT Madras',is_verified:true,upi_id:'kavya@upi'} },
-];
-
-// ── INIT ──
+/* ═══════════════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════════════ */
 async function init() {
   applySavedTheme();
   setupEventListeners();
 
-  if (DEMO_MODE || !supabaseClient) {
-    console.info('Running in demo mode — configure SUPABASE_URL & SUPABASE_ANON_KEY for live data.');
-    allProducts = DEMO_PRODUCTS;
-    applyFilters();
-    return;
-  }
-
   try {
-    const { data, error } = await supabaseClient.auth.getSession();
-    if (!error && data.session) {
-      session = data.session;
-    } else {
-      // Not logged in — show products without redirect so dashboard is still visible
-      console.info('No active session — browsing as guest.');
-    }
+    const { data: { session: s }, error } = await supabaseClient.auth.getSession();
+    if (error || !s) return location.href = 'login-signup.html';
+    session = s;
+    currentUser = s.user;
   } catch (e) {
-    console.warn('Auth check failed — running as guest:', e);
+    return location.href = 'login-signup.html';
   }
 
   await fetchProducts();
+  fetchUnreadNotifCount();
+  subscribeToProducts();
 }
 
-// ── FETCH ──
+/* ═══════════════════════════════════════════════════════
+   FETCH PRODUCTS
+   ═══════════════════════════════════════════════════════ */
 async function fetchProducts() {
-  if (!supabaseClient) { allProducts = DEMO_PRODUCTS; applyFilters(); return; }
+  const grid = document.getElementById('productGrid');
   try {
     const { data, error } = await supabaseClient
       .from('products')
       .select('*, seller:users(id, name, college, is_verified, avatar_url, upi_id)')
       .eq('status', 'active')
       .order('created_at', { ascending: false });
+
     if (error) throw error;
-    allProducts = data && data.length ? data : DEMO_PRODUCTS;
+    allProducts = data || [];
+
+    // Update hero stats
+    document.getElementById('statProducts').textContent = allProducts.length;
+    const tradeCount = allProducts.filter(p => p.swap_enabled).length;
+    document.getElementById('statTrades').textContent = tradeCount;
+
+    applyFilters();
   } catch (e) {
     console.error('Fetch error:', e);
-    allProducts = DEMO_PRODUCTS;
-    showToast('Could not load live products — showing demo items');
+    grid.innerHTML = `<div class="empty-state"><div class="e-icon">⚠️</div><h3>Could not load products</h3><p>Please check your connection and try again.</p></div>`;
   }
-  applyFilters();
 }
 
-// ── RENDER ──
+/* ═══════════════════════════════════════════════════════
+   REALTIME — new products appear live
+   ═══════════════════════════════════════════════════════ */
+function subscribeToProducts() {
+  supabaseClient.channel('dashboard-products')
+    .on('postgres_changes', {
+      event: 'INSERT', schema: 'public', table: 'products',
+      filter: `status.eq.active`
+    }, async (payload) => {
+      // Fetch the full product with seller join
+      const { data } = await supabaseClient
+        .from('products')
+        .select('*, seller:users(id, name, college, is_verified, avatar_url, upi_id)')
+        .eq('id', payload.new.id)
+        .single();
+      if (data) {
+        allProducts.unshift(data);
+        applyFilters();
+        document.getElementById('statProducts').textContent = allProducts.length;
+        if (data.swap_enabled) {
+          const tc = parseInt(document.getElementById('statTrades').textContent) + 1;
+          document.getElementById('statTrades').textContent = tc;
+        }
+      }
+    })
+    .subscribe();
+}
+
+/* ═══════════════════════════════════════════════════════
+   UNREAD NOTIF COUNT
+   ═══════════════════════════════════════════════════════ */
+async function fetchUnreadNotifCount() {
+  try {
+    const { count } = await supabaseClient
+      .from('notifications')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', currentUser.id)
+      .eq('is_read', false);
+    document.getElementById('notifDot').classList.toggle('visible', (count || 0) > 0);
+  } catch (e) {}
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER GRID
+   ═══════════════════════════════════════════════════════ */
 function renderGrid(products) {
   const grid = document.getElementById('productGrid');
   grid.innerHTML = '';
+  document.getElementById('resultCount').textContent = products.length > 0 ? `${products.length} items` : '';
+
   if (!products.length) {
-    grid.innerHTML = '<div class="empty-state"><div class="e-icon">🛍️</div><p>No items found</p></div>';
+    grid.innerHTML = `<div class="empty-state"><div class="e-icon">🔍</div><h3>No items found</h3><p>Try adjusting your filters or search terms.</p></div>`;
     return;
   }
+
   products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
-    const img  = (p.image_url ? p.image_url.split(',')[0].trim() : '') || 'placeholder.jpg';
+    const img = (p.image_url ? p.image_url.split(',')[0].trim() : '') || 'placeholder.png';
     const swap = Boolean(p.swap_enabled);
     const price = Math.floor(p.price || 0).toLocaleString('en-IN');
+
     card.innerHTML = `
       <div class="p-img-wrap">
-        <img src="${img}" loading="lazy" alt="${eh(p.title)}" onerror="this.src='placeholder.jpg'">
+        <img src="${img}" loading="lazy" alt="${eh(p.title)}" onerror="this.src='placeholder.png'">
         ${swap ? '<div class="trade-badge">🔄 TRADE</div>' : ''}
         ${p.condition ? `<div class="cond-badge">${eh(p.condition)}</div>` : ''}
       </div>
@@ -515,17 +573,29 @@ function renderGrid(products) {
   });
 }
 
-// ── FILTERS ──
+/* ═══════════════════════════════════════════════════════
+   FILTERS
+   ═══════════════════════════════════════════════════════ */
 function applyFilters() {
   let f = [...allProducts];
-  const q  = document.getElementById('searchInput').value.toLowerCase().trim();
-  const cat = document.getElementById('categoryFilter').value;
-  const srt = document.getElementById('priceSort').value;
-  if (q)    f = f.filter(p => (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q));
+  const q     = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cat   = document.getElementById('categoryFilter').value;
+  const cond  = document.getElementById('conditionFilter').value;
+  const srt   = document.getElementById('priceSort').value;
+
+  if (q)    f = f.filter(p => (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
   if (cat)  f = f.filter(p => p.category === cat);
+  if (cond) f = f.filter(p => p.condition === cond);
   if (tradeOnly) f = f.filter(p => Boolean(p.swap_enabled));
-  if (srt === 'low')  f.sort((a,b) => (a.price||0) - (b.price||0));
-  if (srt === 'high') f.sort((a,b) => (b.price||0) - (a.price||0));
+
+  switch (srt) {
+    case 'low':    f.sort((a,b) => (a.price||0) - (b.price||0)); break;
+    case 'high':   f.sort((a,b) => (b.price||0) - (a.price||0)); break;
+    case 'recent': f.sort((a,b) => new Date(b.created_at) - new Date(a.created_at)); break;
+    default:      f.sort((a,b) => new Date(b.created_at) - new Date(a.created_at));
+  }
+
+  filteredProducts = f;
   renderGrid(f);
 }
 
@@ -535,26 +605,70 @@ function toggleTradeFilter() {
   applyFilters();
 }
 
-// ── EVENT LISTENERS (called from init after DOM is ready) ──
+function filterTradesOnly() {
+  tradeOnly = true;
+  document.getElementById('tradeFilterBtn').classList.add('active');
+  applyFilters();
+}
+
+/* ═══════════════════════════════════════════════════════
+   EVENT LISTENERS
+   ═══════════════════════════════════════════════════════ */
 function setupEventListeners() {
   document.getElementById('searchInput').addEventListener('input', applyFilters);
   document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+  document.getElementById('conditionFilter').addEventListener('change', applyFilters);
   document.getElementById('priceSort').addEventListener('change', applyFilters);
+
+  // Keyboard escape to close modals
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeModal(); closeUPI(); }
+  });
 }
 
-// ── DETAIL MODAL ──
+/* ═══════════════════════════════════════════════════════
+   DETAIL MODAL
+   ═══════════════════════════════════════════════════════ */
 function openDetail(p) {
   currentImgIdx = 0;
   currentImgs = (p.image_url ? p.image_url.split(',').map(s => s.trim()) : []).filter(Boolean);
-  if (!currentImgs.length) currentImgs = ['placeholder.jpg'];
+  if (!currentImgs.length) currentImgs = ['placeholder.png'];
 
-  const swap     = Boolean(p.swap_enabled);
-  const price    = Math.floor(p.price || 0).toLocaleString('en-IN');
-  const initial  = (p.seller?.name || 'S').charAt(0).toUpperCase();
-  const multi    = currentImgs.length > 1;
+  const swap    = Boolean(p.swap_enabled);
+  const price   = Math.floor(p.price || 0).toLocaleString('en-IN');
+  const seller  = p.seller || {};
+  const initial = (seller.name || 'S').charAt(0).toUpperCase();
+  const multi   = currentImgs.length > 1;
+  const isOwn   = currentUser && p.seller_id === currentUser.id;
 
-  const slides = currentImgs.map(u => `<img src="${u}" alt="product" onerror="this.src='placeholder.jpg'">`).join('');
+  const slides = currentImgs.map(u => `<img src="${u}" alt="product" onerror="this.src='placeholder.png'">`).join('');
   const dots   = multi ? currentImgs.map((_,i) => `<div class="dot ${i===0?'active':''}" onclick="goSlide(${i})"></div>`).join('') : '';
+
+  const avatarHtml = seller.avatar_url
+    ? `<img src="${seller.avatar_url}" onerror="this.parentElement.textContent='${initial}'">`
+    : initial;
+
+  const verifiedHtml = seller.is_verified ? '<span class="verified-badge">✓ Verified</span>' : '';
+
+  const tradeSection = swap ? `
+    <div class="trade-box">
+      <div class="trade-box-hd"><span style="font-size:20px;">🔄</span><strong>Trade option available</strong></div>
+      <p><strong>Seller wants:</strong> ${eh(p.swap_item || 'Open to offers')}</p>
+      <input type="text" class="trade-input" id="tradeInput" placeholder="What do you offer in exchange?">
+      <button class="btn btn-trade" onclick="handleTradeClick('${p.id}','${p.seller_id}')">💬 Propose Trade</button>
+      <p style="font-size:12px;color:var(--text-light);margin-top:10px;">You can also negotiate in chat.</p>
+    </div>` : `<div class="no-trade">🔁 Seller has not enabled trade for this item.</div>`;
+
+  const actionButtons = isOwn ? `
+    <button class="btn btn-outline" style="width:100%;" onclick="showToast('Edit from My Ads page')">✏️ Edit Listing</button>
+  ` : `
+    <button class="btn btn-primary" onclick="handleBuyNow('${p.price||0}','${es(seller.upi_id||'')}','${p.id}','${p.seller_id}')">⚡ Buy Now</button>
+    <div class="btn-inline">
+      <button class="btn btn-outline" onclick="handleWishlist('${p.id}')">♡</button>
+      <button class="btn btn-outline" onclick="handleOffer('${p.id}','${p.seller_id}')">💰 Offer</button>
+    </div>
+    <button class="btn btn-msg" onclick="handleMessage('${p.seller_id}','${p.id}')">✉️ Message Seller</button>
+  `;
 
   document.getElementById('modalBox').innerHTML = `
     <div class="modal-drag"></div>
@@ -567,57 +681,42 @@ function openDetail(p) {
     <div class="modal-body">
       <div class="price-row">
         <div class="modal-price">₹${price}</div>
-        ${p.seller?.is_verified ? '<span class="verified-badge">✓ Verified</span>' : ''}
+        ${verifiedHtml}
       </div>
       <div class="modal-title">${eh(p.title)}</div>
+      ${p.category ? `<span class="cond-tag">${eh(p.category)}</span>` : ''}
       ${p.condition ? `<span class="cond-tag">${eh(p.condition)}</span>` : ''}
-      ${swap ? `
-      <div class="trade-box">
-        <div class="trade-box-hd"><span style="font-size:20px;">🔄</span><strong>Trade option available</strong></div>
-        <p><strong>Seller wants:</strong> ${eh(p.swap_item || 'Open to offers')}</p>
-        <input type="text" class="trade-input" id="tradeInput" placeholder="What do you offer in exchange?">
-        <button class="btn btn-trade" id="tradeSendBtn">💬 Propose Trade</button>
-        <p style="font-size:12px;color:var(--text-light);margin-top:10px;">You can also negotiate in chat.</p>
-      </div>` : `<div class="no-trade">🔁 Seller has not enabled trade for this item.</div>`}
+      ${tradeSection}
       <div class="desc-sec">
         <h4>Description</h4>
         <p>${eh(p.description || 'No description provided.')}</p>
       </div>
-      <div class="seller-row" onclick="window.location.href='profile.html?id=${p.seller_id}'">
-        <div class="seller-av">${initial}</div>
+      <div class="seller-row" onclick="closeModal();location.href='profile.html?uid=${p.seller_id}'">
+        <div class="seller-av">${avatarHtml}</div>
         <div>
-          <div class="seller-name">${eh(p.seller?.name || 'Seller')}</div>
-          <div class="seller-col">${eh(p.seller?.college || '')}</div>
+          <div class="seller-name">${eh(seller.name || 'Seller')} ${verifiedHtml}</div>
+          <div class="seller-col">${eh(seller.college || '')}</div>
         </div>
       </div>
     </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="openUPI(${p.price||0},'${ea(p.seller?.upi_id||'')}')">⚡ Buy Now</button>
-      <div class="btn-inline">
-        <button class="btn btn-outline" onclick="addToCart('${p.id}')">🛒 Cart</button>
-        <button class="btn btn-outline" onclick="makeOffer('${p.id}','${p.seller_id}')">💰 Offer</button>
-        <button class="btn btn-outline" onclick="addToWishlist('${p.id}')">♡ Save</button>
-      </div>
-      <button class="btn btn-msg" onclick="window.location.href='chats.html?id=${p.seller_id}'">✉️ Message Seller</button>
-    </div>`;
+    <div class="btn-row">${actionButtons}</div>`;
 
   document.getElementById('productModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
 
-  if (swap) {
-    const btn = document.getElementById('tradeSendBtn');
-    if (btn) btn.addEventListener('click', async () => {
-      const inp = document.getElementById('tradeInput');
-      const txt = inp ? inp.value.trim() : '';
-      if (!txt) { showToast('Please describe what you offer'); return; }
-      await sendTrade(p.id, p.seller_id, txt);
-    });
-  }
+  // Increment views
+  incrementViews(p.id);
 }
 
-function closeModal() { document.getElementById('productModal').classList.remove('open'); }
+function closeModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
 function onModalBgClick(e) { if (e.target.id === 'productModal') closeModal(); }
 
-// ── SLIDER ──
+/* ═══════════════════════════════════════════════════════
+   SLIDER
+   ═══════════════════════════════════════════════════════ */
 function moveSlide(dir) {
   currentImgIdx = (currentImgIdx + dir + currentImgs.length) % currentImgs.length;
   refreshSlider();
@@ -629,19 +728,66 @@ function refreshSlider() {
   document.querySelectorAll('#modalBox .dot').forEach((d,i) => d.classList.toggle('active', i === currentImgIdx));
 }
 
-// ── TRADE PROPOSAL ──
-async function sendTrade(productId, sellerId, offerText) {
-  if (!session) { showToast('Please log in first'); return; }
-  if (!supabaseClient) { showToast('Trade sent! (demo mode)'); closeModal(); return; }
+// Touch swipe support for slider
+(function() {
+  let startX = 0;
+  document.addEventListener('touchstart', (e) => {
+    const sw = document.querySelector('.slider-wrap');
+    if (!sw || !sw.offsetParent) return;
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', (e) => {
+    const sw = document.querySelector('.slider-wrap');
+    if (!sw || !sw.offsetParent || !startX) return;
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) moveSlide(diff > 0 ? 1 : -1);
+    startX = 0;
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════
+   INCREMENT VIEWS
+   ═══════════════════════════════════════════════════════ */
+async function incrementViews(productId) {
   try {
-    const { error: e1 } = await supabaseClient.from('chats').insert({
-      sender_id: session.user.id, receiver_id: sellerId,
-      product_id: productId, message: `🔄 TRADE OFFER: ${offerText}`
+    // Use rpc if you have an increment function, otherwise direct update
+    const { data: product } = await supabaseClient
+      .from('products')
+      .select('views')
+      .eq('id', productId)
+      .single();
+    if (product) {
+      await supabaseClient.from('products')
+        .update({ views: (product.views || 0) + 1 })
+        .eq('id', productId);
+    }
+  } catch (e) { /* silent fail */ }
+}
+
+/* ═══════════════════════════════════════════════════════
+   ACTION HANDLERS
+   ═══════════════════════════════════════════════════════ */
+function handleTradeClick(productId, sellerId) {
+  const inp = document.getElementById('tradeInput');
+  const txt = inp ? inp.value.trim() : '';
+  if (!txt) { showToast('Please describe what you offer'); return; }
+  sendTrade(productId, sellerId, txt);
+}
+
+async function sendTrade(productId, sellerId, offerText) {
+  try {
+    const { error } = await supabaseClient.from('chats').insert({
+      sender_id: currentUser.id,
+      receiver_id: sellerId,
+      product_id: productId,
+      message: `🔄 TRADE OFFER: ${offerText}`
     });
-    if (e1) throw e1;
+    if (error) throw error;
     await supabaseClient.from('notifications').insert({
-      user_id: sellerId, title: 'New trade offer',
-      message: `Someone wants to trade: ${offerText}`, type: 'trade'
+      user_id: sellerId,
+      title: 'New trade offer',
+      message: `Someone wants to trade for your item: ${offerText.substring(0, 60)}`,
+      type: 'trade'
     });
     showToast('Trade proposal sent! Check chats.');
     closeModal();
@@ -651,55 +797,105 @@ async function sendTrade(productId, sellerId, offerText) {
   }
 }
 
-// ── UPI ──
-function openUPI(price, upiId) {
-  if (!upiId) { showToast('Seller has no UPI ID'); return; }
+function handleBuyNow(price, upiId, productId, sellerId) {
+  if (!upiId) { showToast('Seller has not set up UPI payments'); return; }
+  openUPI(price, upiId, sellerId);
+}
+
+function handleWishlist(productId) {
+  addToWishlist(productId);
+}
+
+function handleOffer(productId, sellerId) {
+  const amt = prompt('Your offer price (₹):');
+  if (!amt || isNaN(Number(amt)) || Number(amt) <= 0) { if (amt !== null) showToast('Enter a valid amount'); return; }
+  sendOffer(productId, sellerId, Number(amt));
+}
+
+function handleMessage(sellerId, productId) {
+  window.location.href = `chats.html?user=${sellerId}&product=${productId}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   UPI PAYMENT
+   ═══════════════════════════════════════════════════════ */
+function openUPI(price, upiId, sellerId) {
   const amt = Math.floor(price);
-  const link = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=DormKart&am=${amt}&cu=INR`;
-  document.getElementById('upiAmt').textContent  = '₹' + amt.toLocaleString('en-IN');
-  document.getElementById('upiQR').src           = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(link)}`;
-  document.getElementById('upiLink').href        = link;
+  const upiString = upiId.trim();
+  const link = `upi://pay?pa=${encodeURIComponent(upiString)}&pn=DormKart&am=${amt}&cu=INR`;
+  document.getElementById('upiAmt').textContent = '₹' + amt.toLocaleString('en-IN');
+  document.getElementById('upiHint').textContent = `Pay to: ${upiString}`;
+  document.getElementById('upiQR').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(link)}`;
+  document.getElementById('upiLink').href = link;
   document.getElementById('upiModal').classList.add('open');
 }
 function closeUPI() { document.getElementById('upiModal').classList.remove('open'); }
 function onUpiBgClick(e) { if (e.target.id === 'upiModal') closeUPI(); }
 
-// ── WISHLIST / CART / OFFER ──
+/* ═══════════════════════════════════════════════════════
+   WISHLIST
+   ═══════════════════════════════════════════════════════ */
 async function addToWishlist(pid) {
-  if (!session) { showToast('Please log in first'); return; }
-  if (!supabaseClient) { showToast('Saved to wishlist ♡ (demo mode)'); return; }
-  const { error } = await supabaseClient.from('wishlist').insert({ user_id: session.user.id, product_id: pid });
-  showToast(error ? 'Already saved or an error occurred' : 'Added to wishlist ♡');
-}
-
-async function addToCart(pid) {
-  if (!session) { showToast('Please log in first'); return; }
-  if (!supabaseClient) { showToast('Added to cart 🛒 (demo mode)'); return; }
   try {
-    const { data: p, error: pe } = await supabaseClient.from('products').select('seller_id,price').eq('id', pid).single();
-    if (pe) throw pe;
-    const { error } = await supabaseClient.from('orders').insert({
-      buyer_id: session.user.id, product_id: pid,
-      seller_id: p.seller_id, amount: p.price, payment_status: 'in_cart'
+    // Check if already wishlisted
+    const { data: existing } = await supabaseClient
+      .from('wishlist')
+      .select('id')
+      .eq('user_id', currentUser.id)
+      .eq('product_id', pid)
+      .maybeSingle();
+
+    if (existing) {
+      showToast('Already in your wishlist ♡');
+      return;
+    }
+
+    const { error } = await supabaseClient.from('wishlist').insert({
+      user_id: currentUser.id,
+      product_id: pid
     });
-    showToast(error ? 'Could not add to cart' : 'Added to cart 🛒');
-  } catch (e) { showToast('Something went wrong'); }
+
+    if (error) throw error;
+    showToast('Added to wishlist ♡');
+  } catch (e) {
+    console.error(e);
+    showToast('Could not add to wishlist');
+  }
 }
 
-async function makeOffer(pid, sellerId) {
-  if (!session) { showToast('Please log in first'); return; }
-  const amt = prompt('Your offer price (₹):');
-  if (!amt || isNaN(Number(amt))) return;
-  if (!supabaseClient) { showToast('Offer sent! (demo mode)'); return; }
-  const { error } = await supabaseClient.from('chats').insert({
-    sender_id: session.user.id, receiver_id: sellerId,
-    product_id: pid, message: `💰 Offer: ₹${amt}`
-  });
-  if (!error) window.location.href = `chats.html?id=${sellerId}`;
-  else showToast('Failed to send offer');
+/* ═══════════════════════════════════════════════════════
+   OFFER (sends offer via chat)
+   ═══════════════════════════════════════════════════════ */
+async function sendOffer(pid, sellerId, amount) {
+  try {
+    const { error } = await supabaseClient.from('chats').insert({
+      sender_id: currentUser.id,
+      receiver_id: sellerId,
+      product_id: pid,
+      message: `💰 Offer: ₹${amount.toLocaleString('en-IN')}`
+    });
+    if (error) throw error;
+
+    await supabaseClient.from('notifications').insert({
+      user_id: sellerId,
+      title: 'New offer received',
+      message: `₹${amount.toLocaleString('en-IN')} offer on your product`,
+      type: 'offer'
+    });
+
+    showToast('Offer sent! Opening chat...');
+    setTimeout(() => {
+      window.location.href = `chats.html?user=${sellerId}&product=${pid}`;
+    }, 800);
+  } catch (e) {
+    console.error(e);
+    showToast('Failed to send offer');
+  }
 }
 
-// ── THEME ──
+/* ═══════════════════════════════════════════════════════
+   THEME
+   ═══════════════════════════════════════════════════════ */
 function applySavedTheme() {
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark');
@@ -712,23 +908,32 @@ function toggleDarkMode() {
   document.getElementById('themeBtn').textContent = dark ? '☀️' : '🌙';
 }
 
-// ── TOAST ──
+/* ═══════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════ */
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
+  t.textContent = msg;
+  t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// ── UTILS ──
+/* ═══════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════ */
 function eh(s) {
   if (!s) return '';
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
-function ea(s) { return String(s||'').replace(/'/g,"\\'"); }
+function es(s) {
+  return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
 
-// ── START ──
+/* ═══════════════════════════════════════════════════════
+   START
+   ═══════════════════════════════════════════════════════ */
 window.addEventListener('DOMContentLoaded', init);
 </script>
 </body>
