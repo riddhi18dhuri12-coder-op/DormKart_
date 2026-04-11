@@ -8,7 +8,6 @@
     <script src="config.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
     <style>
         :root {
             --primary: #4ade80;
@@ -36,9 +35,7 @@
             --primary-glow: rgba(0, 230, 118, 0.10);
             --trade-light: #2e1a4a;
         }
-
         * { box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg);
@@ -46,17 +43,13 @@
             padding-bottom: calc(var(--nav-height) + 40px);
             transition: background 0.3s, color 0.3s;
         }
-
         .container { max-width: 600px; margin: auto; padding: 20px; }
-
         .card {
             background: var(--card-bg); border-radius: 20px; padding: 20px;
             margin-bottom: 20px; border: 1px solid var(--border);
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
             transition: background 0.3s, border 0.3s;
         }
-
-        /* ── PROFILE COVER BANNER ── */
         .profile-banner {
             height: 120px; border-radius: 20px 20px 0 0; margin-bottom: -50px;
             background: linear-gradient(135deg, #059669, #10b981, #34d399);
@@ -78,8 +71,6 @@
             transition: background 0.2s;
         }
         .banner-btn:hover { background: rgba(255,255,255,0.35); }
-
-        /* Profile Header */
         .profile-header { text-align: center; position: relative; padding-top: 10px; }
         .avatar {
             width: 96px; height: 96px; border-radius: 50%;
@@ -104,11 +95,9 @@
             width: 14px; height: 14px; border-radius: 50%;
             background: #22c55e; border: 3px solid var(--card-bg);
         }
-
         .info-display p { margin: 5px 0; color: var(--text); font-weight: 500; }
         .info-display label { display: block; font-size: 11px; color: var(--text-light); font-weight: 700; text-transform: uppercase; margin-top: 12px; }
         .edit-form { display: none; }
-
         input, textarea, select {
             width: 100%; padding: 12px; border-radius: 12px;
             border: 1px solid var(--border); background: var(--bg);
@@ -120,7 +109,6 @@
             box-shadow: 0 0 0 3px rgba(5,150,105,0.12);
         }
         textarea { resize: vertical; }
-
         .btn-primary {
             width: 100%; padding: 14px; border: none; border-radius: 12px;
             cursor: pointer; background: var(--primary-dark); color: white;
@@ -136,22 +124,16 @@
             transition: all 0.2s;
         }
         .btn-outline:hover { background: var(--primary-dark); color: white; }
-        .btn-sm {
-            padding: 6px 14px; border-radius: 8px; border: none;
-            font-weight: 600; font-size: 12px; cursor: pointer;
-        }
-
+        .btn-sm { padding: 6px 14px; border-radius: 8px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; }
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .section-header h3 { margin: 0; font-size: 16px; display: flex; align-items: center; gap: 8px; }
         .section-header h3 i { font-size: 16px; color: var(--primary-dark); }
         .see-all-btn { color: var(--primary-dark); font-size: 13px; font-weight: 700; cursor: pointer; border: none; background: none; display: flex; align-items: center; gap: 4px; }
         .see-all-btn i { font-size: 11px; }
-
         .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px; }
         .product-item { background: var(--card-bg); border-radius: 12px; padding: 8px; border: 1px solid var(--border); position: relative; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
         .product-item:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.06); }
         .product-item img { width: 100%; aspect-ratio: 1/1; border-radius: 8px; object-fit: cover; }
-
         .heart-btn {
             position: absolute; top: 8px; right: 8px; background: white;
             border-radius: 50%; width: 28px; height: 28px; display: flex;
@@ -161,8 +143,6 @@
         }
         .heart-btn:hover { transform: scale(1.15); }
         .heart-btn i { font-size: 13px; color: #ef4444; }
-
-        /* ── COLLEGE DROPDOWN ── */
         .college-dropdown-wrap { position: relative; margin-top: 5px; }
         .college-dropdown-wrap input { margin-top: 0; }
         .college-suggestions {
@@ -178,10 +158,9 @@
         }
         .college-suggestion-item:last-child { border-bottom: none; }
         .college-suggestion-item:hover { background: #f0fdf4; color: var(--primary-dark); }
-
-        /* ── FOLLOW STATS ── */
+        body.dark .college-suggestion-item:hover { background: rgba(5,150,105,0.15); }
         .follow-stats { display: flex; gap: 24px; justify-content: center; margin: 12px 0 0; }
-        .follow-stat { text-align: center; cursor: pointer; transition: transform 0.15px; }
+        .follow-stat { text-align: center; cursor: pointer; transition: transform 0.15s; }
         .follow-stat:hover { transform: scale(1.05); }
         .follow-stat strong { display: block; font-size: 18px; font-weight: 800; }
         .follow-stat span { font-size: 11px; color: var(--text-light); font-weight: 600; }
@@ -192,8 +171,6 @@
         }
         .follow-btn.following { background: #f1f5f9; color: var(--text-light); }
         .follow-btn.not-following { background: var(--primary-dark); color: white; box-shadow: 0 3px 12px rgba(5,150,105,0.3); }
-
-        /* ── REPUTATION BADGE ── */
         .rep-badge {
             display: inline-flex; align-items: center; gap: 6px;
             padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
@@ -204,8 +181,6 @@
         .rep-badge.rising { background: linear-gradient(135deg,#e0e7ff,#c7d2fe); color: #3730a3; }
         .rep-badge.newbie { background: #f1f5f9; color: var(--text-light); }
         .rep-score { font-size: 11px; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; justify-content: center; gap: 4px; }
-
-        /* ── PROFILE COMPLETION ── */
         .completion-bar-wrap { margin-top: 14px; }
         .completion-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
         .completion-header span { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; }
@@ -219,17 +194,14 @@
             display: flex; align-items: center; gap: 3px;
         }
         .completion-hint.done { color: var(--primary-dark); background: #dcfce7; }
+        body.dark .completion-hint.done { background: rgba(5,150,105,0.2); }
         .completion-hint.done i { display: inline; }
         .completion-hint i { display: none; font-size: 9px; }
-
-        /* ── MEMBER SINCE ── */
         .member-since {
             font-size: 12px; color: var(--text-light); margin-top: 6px;
             display: flex; align-items: center; justify-content: center; gap: 5px;
         }
         .member-since i { font-size: 11px; }
-
-        /* ── QUICK ACTIONS ── */
         .quick-actions {
             display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;
         }
@@ -245,8 +217,6 @@
             align-items: center; justify-content: center; font-size: 15px; color: white;
         }
         .quick-action span { font-size: 10px; font-weight: 700; text-align: center; line-height: 1.2; }
-
-        /* ── SELLER STATS ── */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .stat-box {
             border-radius: 14px; padding: 16px; text-align: center;
@@ -258,21 +228,17 @@
         .stat-box.amber { background: linear-gradient(135deg,#fffbeb,#fef3c7); border-color: #fde68a; }
         .stat-box.rose { background: linear-gradient(135deg,#fff1f2,#ffe4e6); border-color: #fecdd3; }
         .stat-box.purple { background: linear-gradient(135deg,#f5f3ff,#ede9fe); border-color: #ddd6fe; }
+        body.dark .stat-box.green { background: linear-gradient(135deg,rgba(5,150,105,0.12),rgba(16,185,129,0.08)); border-color: rgba(5,150,105,0.25); }
+        body.dark .stat-box.blue { background: linear-gradient(135deg,rgba(37,99,235,0.12),rgba(96,165,250,0.08)); border-color: rgba(37,99,235,0.25); }
+        body.dark .stat-box.amber { background: linear-gradient(135deg,rgba(217,119,6,0.12),rgba(251,191,36,0.08)); border-color: rgba(217,119,6,0.25); }
+        body.dark .stat-box.rose { background: linear-gradient(135deg,rgba(239,68,68,0.12),rgba(248,113,113,0.08)); border-color: rgba(239,68,68,0.25); }
+        body.dark .stat-box.purple { background: linear-gradient(135deg,rgba(124,58,237,0.12),rgba(167,139,250,0.08)); border-color: rgba(124,58,237,0.25); }
         .stat-box .stat-icon { font-size: 20px; margin-bottom: 6px; }
         .stat-box strong { display: block; font-size: 22px; font-weight: 800; color: var(--text); }
         .stat-box span { font-size: 11px; color: var(--text-light); font-weight: 600; text-transform: uppercase; }
-
-        /* ── INVENTORY ── */
-        .inventory-search {
-            position: relative; margin-bottom: 10px;
-        }
-        .inventory-search i {
-            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-            font-size: 14px; color: var(--text-light);
-        }
-        .inventory-search input {
-            padding-left: 36px; margin-top: 0;
-        }
+        .inventory-search { position: relative; margin-bottom: 10px; }
+        .inventory-search i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 14px; color: var(--text-light); }
+        .inventory-search input { padding-left: 36px; margin-top: 0; }
         .inventory-tabs {
             display: flex; gap: 4px; margin-bottom: 12px; background: var(--bg);
             border-radius: 12px; padding: 3px;
@@ -284,14 +250,11 @@
             font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 4px;
         }
         .inventory-tab.active { background: var(--card-bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-        .inventory-tab .tab-count {
-            background: var(--border); padding: 1px 6px; border-radius: 20px; font-size: 10px;
-        }
+        .inventory-tab .tab-count { background: var(--border); padding: 1px 6px; border-radius: 20px; font-size: 10px; }
         .inventory-tab.active .tab-count { background: var(--primary-dark); color: white; }
         .inventory-item {
             display: flex; gap: 12px; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid var(--border);
-            transition: background 0.15px;
+            padding: 10px 0; border-bottom: 1px solid var(--border); transition: background 0.15s;
         }
         .inventory-item:last-child { border-bottom: none; }
         .inventory-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; flex-shrink: 0; }
@@ -310,8 +273,6 @@
         .status-dot.active { background: #22c55e; }
         .status-dot.sold { background: #ef4444; }
         .status-dot.pending { background: #f59e0b; }
-
-        /* ── COLLECTION TAGS ── */
         .collection-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
         .collection-tag {
             padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
@@ -321,12 +282,9 @@
         }
         .collection-tag i { font-size: 12px; }
         .collection-tag.active { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
-
-        /* ── LEADERBOARD ── */
         .leader-item {
             display: flex; align-items: center; gap: 12px;
-            padding: 10px 0; border-bottom: 1px solid var(--border);
-            transition: background 0.15px;
+            padding: 10px 0; border-bottom: 1px solid var(--border); transition: background 0.15s;
         }
         .leader-item:last-child { border-bottom: none; }
         .leader-rank { font-size: 16px; font-weight: 800; width: 28px; text-align: center; flex-shrink: 0; }
@@ -347,8 +305,6 @@
         .leader-meta strong { display: block; font-size: 13px; }
         .leader-meta span { font-size: 11px; color: var(--text-light); }
         .star-rating { color: var(--gold); font-size: 12px; }
-
-        /* ── TRENDING TRADERS ── */
         .trend-scroll { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
         .trend-scroll::-webkit-scrollbar { display: none; }
         .trader-card {
@@ -367,11 +323,7 @@
         .trader-card strong { display: block; font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .trader-card span { font-size: 10px; color: var(--text-light); }
         .fire-badge { font-size: 16px; }
-
-        /* ── REVIEWS SECTION ── */
-        .review-item {
-            padding: 14px 0; border-bottom: 1px solid var(--border);
-        }
+        .review-item { padding: 14px 0; border-bottom: 1px solid var(--border); }
         .review-item:last-child { border-bottom: none; }
         .review-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
         .review-avatar {
@@ -385,20 +337,14 @@
         .review-date { font-size: 11px; color: var(--text-light); }
         .review-stars { color: var(--gold); font-size: 12px; margin-bottom: 4px; }
         .review-text { font-size: 13px; color: var(--text-light); line-height: 1.5; }
-
-        /* ── ACTIVITY TIMELINE ── */
-        .timeline-item {
-            display: flex; gap: 12px; padding: 10px 0; position: relative;
-        }
+        .timeline-item { display: flex; gap: 12px; padding: 10px 0; position: relative; }
         .timeline-item:not(:last-child)::before {
-            content: '';
-            position: absolute; left: 17px; top: 38px; bottom: -2px;
+            content: ''; position: absolute; left: 17px; top: 38px; bottom: -2px;
             width: 2px; background: var(--border);
         }
         .timeline-icon {
             width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 14px;
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
         }
         .timeline-icon.sold { background: #dcfce7; color: #16a34a; }
         .timeline-icon.listed { background: #dbeafe; color: #2563eb; }
@@ -407,13 +353,8 @@
         .timeline-content { flex: 1; }
         .timeline-content strong { font-size: 13px; display: block; }
         .timeline-content span { font-size: 11px; color: var(--text-light); }
-
-        /* ── ACHIEVEMENTS ── */
         .achievements-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-        .achievement {
-            width: 60px; text-align: center; cursor: default;
-            transition: transform 0.2s;
-        }
+        .achievement { width: 60px; text-align: center; cursor: default; transition: transform 0.2s; }
         .achievement:hover { transform: scale(1.1); }
         .achievement.locked { opacity: 0.35; }
         .achievement .ach-icon {
@@ -422,9 +363,8 @@
             font-size: 22px; background: var(--bg); border: 1px solid var(--border);
         }
         .achievement:not(.locked) .ach-icon { border-color: #bbf7d0; background: #f0fdf4; }
+        body.dark .achievement:not(.locked) .ach-icon { border-color: rgba(5,150,105,0.3); background: rgba(5,150,105,0.12); }
         .achievement span { font-size: 9px; font-weight: 700; color: var(--text-light); line-height: 1.2; }
-
-        /* ── MODAL ── */
         .modal-overlay {
             display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
             z-index: 9999; align-items: flex-end; justify-content: center;
@@ -440,21 +380,18 @@
         .modal-handle { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
         .modal-close { float: right; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-light); transition: color 0.2s; }
         .modal-close:hover { color: var(--text); }
-
-        /* ── TOAST ── */
         .toast {
             position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%; transform: translateX(-50%) translateY(20px);
             background: #0f172a; color: white; padding: 10px 20px; border-radius: 20px;
             font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s; z-index: 9998;
             white-space: nowrap; display: flex; align-items: center; gap: 8px; max-width: 90vw;
         }
+        body.dark .toast { background: #e8f0e8; color: #0a0f0a; }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         .toast i { font-size: 15px; }
         .toast.success i { color: #4ade80; }
         .toast.error i { color: #f87171; }
         .toast.info i { color: #60a5fa; }
-
-        /* ── SCROLL TO TOP ── */
         .scroll-top-btn {
             position: fixed; bottom: calc(var(--nav-height) + 16px); right: 16px;
             width: 44px; height: 44px; border-radius: 50%;
@@ -465,8 +402,6 @@
         }
         .scroll-top-btn.visible { display: flex; }
         .scroll-top-btn:hover { transform: translateY(-2px); }
-
-        /* ── BOTTOM NAV ── */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             height: var(--nav-height); background: var(--card-bg);
@@ -483,8 +418,7 @@
         }
         .nav-item.active { color: var(--primary-dark); }
         .nav-item.active::before {
-            content: '';
-            position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+            content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
             width: 24px; height: 3px; background: var(--primary-dark); border-radius: 0 0 4px 4px;
         }
         .nav-item svg { width: 22px; height: 22px; }
@@ -495,8 +429,6 @@
             box-shadow: 0 4px 20px rgba(5,150,105,0.4); transition: transform 0.2s;
         }
         .nav-sell:hover { transform: scale(1.08); }
-
-        /* Followers modal list */
         .follow-list-item {
             display: flex; align-items: center; gap: 12px; padding: 10px 0;
             border-bottom: 1px solid var(--border);
@@ -508,22 +440,15 @@
             display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; flex-shrink: 0;
         }
         .follow-list-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
         .empty-state { text-align: center; padding: 24px 0; color: var(--text-light); font-size: 14px; }
         .empty-state div { font-size: 32px; margin-bottom: 8px; }
         .empty-state i { font-size: 36px; margin-bottom: 8px; display: block; opacity: 0.5; }
-
-        /* ── THEME TOGGLE (HEADER) ── */
-        .profile-top-bar {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 0;
-        }
+        .profile-top-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
         .profile-top-bar .back-btn {
             width: 38px; height: 38px; border-radius: 50%;
             border: 1px solid var(--border); background: var(--card-bg);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 16px; color: var(--text);
-            transition: all 0.2s;
+            cursor: pointer; font-size: 16px; color: var(--text); transition: all 0.2s;
         }
         .profile-top-bar .back-btn:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
         .profile-top-bar .top-actions { display: flex; gap: 8px; }
@@ -531,336 +456,227 @@
             width: 38px; height: 38px; border-radius: 50%;
             border: 1px solid var(--border); background: var(--card-bg);
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 15px; color: var(--text);
-            transition: all 0.2s;
+            cursor: pointer; font-size: 15px; color: var(--text); transition: all 0.2s;
+            position: relative;
         }
         .icon-btn-sm:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
-
-        /* ── EARNINGS CARD ── */
+        .notif-dot {
+            position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+            border-radius: 50%; background: var(--danger); border: 2px solid var(--card-bg);
+            display: none;
+        }
+        .notif-dot.active { display: block; }
         .earnings-card {
             background: linear-gradient(135deg, #059669, #10b981);
             border-radius: 16px; padding: 18px; color: white;
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
         }
         .earnings-card .earn-label { font-size: 12px; opacity: 0.85; font-weight: 600; display: flex; align-items: center; gap: 4px; }
         .earnings-card .earn-amount { font-size: 26px; font-weight: 800; margin-top: 2px; }
         .earnings-card .earn-icon { font-size: 36px; opacity: 0.3; }
+        /* Trade offer cards */
+        .trade-offer-card {
+            padding: 14px; border-radius: 14px; background: var(--bg);
+            border: 1px solid var(--border); margin-bottom: 10px; transition: border-color 0.2s;
+        }
+        .trade-offer-card:hover { border-color: var(--trade); }
+        .trade-offer-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 6px; }
+        .trade-offer-partner { font-weight: 700; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .trade-offer-partner i { color: var(--trade); font-size: 12px; }
+        .trade-offer-status {
+            padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700;
+        }
+        .trade-status-accepted { background: #dcfce7; color: #065f46; }
+        .trade-status-rejected { background: #fee2e2; color: #991b1b; }
+        .trade-status-pending { background: #fef3c7; color: #92400e; }
+        body.dark .trade-status-accepted { background: rgba(5,150,105,0.2); }
+        body.dark .trade-status-rejected { background: rgba(239,68,68,0.2); }
+        body.dark .trade-status-pending { background: rgba(217,119,6,0.2); }
+        .trade-items-row { display: flex; align-items: center; gap: 10px; }
+        .trade-mini-card { flex: 1; padding: 8px; border-radius: 10px; background: var(--card-bg); border: 1px solid var(--border); min-width: 0; }
+        .trade-mini-label { font-size: 9px; color: var(--text-light); font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+        .trade-mini-title { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trade-arrow-icon { color: var(--trade); font-size: 14px; flex-shrink: 0; }
+        .trade-offer-time { font-size: 10px; color: var(--text-light); margin-top: 8px; display: flex; align-items: center; gap: 4px; }
+        .trade-offer-actions { display: flex; gap: 8px; margin-top: 10px; justify-content: flex-end; }
+        .trade-offer-actions button { font-family: inherit; }
+        /* Notification items */
+        .notif-item {
+            padding: 12px 0; border-bottom: 1px solid var(--border);
+        }
+        .notif-item:last-child { border-bottom: none; }
+        .notif-item.unread { background: rgba(5,150,105,0.04); margin: 0 -8px; padding: 12px 8px; border-radius: 10px; }
+        .notif-item-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+        .notif-item-msg { font-size: 12px; color: var(--text-light); line-height: 1.4; }
+        .notif-item-time { font-size: 10px; color: var(--text-light); margin-top: 4px; }
+        /* Confirm dialog */
+        .confirm-body { text-align: center; padding: 10px 0; }
+        .confirm-icon { font-size: 40px; margin-bottom: 12px; }
+        .confirm-title { font-weight: 700; font-size: 15px; color: var(--text); }
+        .confirm-sub { font-size: 13px; color: var(--text-light); margin-top: 4px; }
+        .confirm-actions { display: flex; gap: 10px; margin-top: 20px; }
+        .confirm-actions button { font-family: inherit; flex: 1; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 14px; cursor: pointer; border: none; transition: opacity 0.2s; }
+        .confirm-actions button:active { opacity: 0.8; }
+        .confirm-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border) !important; }
+        .confirm-danger { background: var(--danger); color: white; }
     </style>
 </head>
-
 <body>
-
-<!-- Toast -->
 <div class="toast" id="toast"><i></i><span></span></div>
-
-<!-- Scroll to top -->
 <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
     <i class="fas fa-chevron-up"></i>
 </button>
-
 <div class="container">
-
-    <!-- ── TOP BAR ── -->
     <div class="profile-top-bar" style="margin-bottom:12px;">
-        <button class="back-btn" onclick="history.back()">
-            <i class="fas fa-arrow-left"></i>
-        </button>
+        <button class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
         <div style="font-weight:700;font-size:15px;color:var(--text);">Profile</div>
         <div class="top-actions">
-            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()">
-                <i class="fas fa-moon" id="themeIcon"></i>
+            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <button class="icon-btn-sm" id="notifBtn" onclick="openModal('notifModal')">
+                <i class="fas fa-bell"></i>
+                <span class="notif-dot" id="notifDot"></span>
             </button>
-            <button class="icon-btn-sm" onclick="shareProfile()">
-                <i class="fas fa-share-nodes"></i>
-            </button>
+            <button class="icon-btn-sm" onclick="shareProfile()"><i class="fas fa-share-nodes"></i></button>
         </div>
     </div>
-
-    <!-- ── PROFILE HEADER ── -->
     <div class="card" style="padding-top:0;overflow:hidden;">
         <div class="profile-banner">
             <div class="banner-actions">
-                <button class="banner-btn" onclick="showToast('Cover photo coming soon!','info')" title="Change cover">
-                    <i class="fas fa-camera"></i>
-                </button>
+                <button class="banner-btn" onclick="showToast('Cover photo coming soon!','info')" title="Change cover"><i class="fas fa-camera"></i></button>
             </div>
         </div>
         <div class="profile-header" style="position:relative;">
-            <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">
-                Upload
-                <div class="online-indicator"></div>
-                <div class="avatar-edit-badge" id="avatarEditBadge"><i class="fas fa-camera"></i></div>
-            </div>
+            <div class="avatar" onclick="document.getElementById('avatarUpload').click()" id="avatarBox">Upload<div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge"><i class="fas fa-camera"></i></div></div>
             <input type="file" id="avatarUpload" hidden accept="image/*">
             <h2 id="viewName" style="margin:0 0 4px;display:flex;align-items:center;justify-content:center;gap:6px;">Loading...</h2>
             <p id="viewCollege" style="color:var(--text-light);margin:0;display:flex;align-items:center;justify-content:center;gap:4px;font-size:13px;"><i class="fas fa-location-dot" style="font-size:11px;"></i> <span></span></p>
-
-            <!-- Reputation Badge -->
-            <div id="repBadge" class="rep-badge newbie" style="margin:10px auto 0; display:inline-flex;">🌱 Newbie</div>
+            <div id="repBadge" class="rep-badge newbie" style="margin:10px auto 0;display:inline-flex;">🌱 Newbie</div>
             <div id="repScore" class="rep-score"><i class="fas fa-chart-line" style="font-size:10px;"></i> Reputation score: 0</div>
-
-            <!-- Member Since -->
             <div class="member-since" id="memberSince"><i class="far fa-calendar"></i> Member since ...</div>
-
-            <!-- Follow Stats -->
             <div class="follow-stats">
-                <div class="follow-stat" onclick="openFollowersModal('followers')">
-                    <strong id="followersCount">0</strong>
-                    <span><i class="fas fa-users" style="font-size:10px;"></i> Followers</span>
-                </div>
-                <div class="follow-stat" onclick="openFollowersModal('following')">
-                    <strong id="followingCount">0</strong>
-                    <span><i class="fas fa-user-plus" style="font-size:10px;"></i> Following</span>
-                </div>
+                <div class="follow-stat" onclick="openFollowersModal('followers')"><strong id="followersCount">0</strong><span><i class="fas fa-users" style="font-size:10px;"></i> Followers</span></div>
+                <div class="follow-stat" onclick="openFollowersModal('following')"><strong id="followingCount">0</strong><span><i class="fas fa-user-plus" style="font-size:10px;"></i> Following</span></div>
             </div>
-
             <div style="display:flex;gap:10px;justify-content:center;margin-top:15px;">
                 <button class="btn-outline" id="editProfileBtn" onclick="toggleEditMode(true)"><i class="fas fa-pen"></i> Edit Profile</button>
+                <button class="btn-outline" id="msgBtn" style="display:none;" onclick="sendMessage()"><i class="fas fa-comment-dots"></i> Message</button>
                 <button id="followBtn" class="follow-btn not-following" onclick="toggleFollow()" style="display:none;"><i class="fas fa-user-plus"></i> Follow</button>
             </div>
-
-            <!-- Profile Completion (own only) -->
             <div class="completion-bar-wrap" id="completionWrap">
-                <div class="completion-header">
-                    <span><i class="fas fa-circle-check"></i> Profile completion</span>
-                    <strong id="completionPct">0%</strong>
-                </div>
-                <div class="completion-bar">
-                    <div class="completion-fill" id="completionFill" style="width:0%"></div>
-                </div>
+                <div class="completion-header"><span><i class="fas fa-circle-check"></i> Profile completion</span><strong id="completionPct">0%</strong></div>
+                <div class="completion-bar"><div class="completion-fill" id="completionFill" style="width:0%"></div></div>
                 <div class="completion-hints" id="completionHints"></div>
             </div>
-
-            <!-- Quick Actions (own only) -->
             <div class="quick-actions" id="quickActions">
-                <a href="add_product.html" class="quick-action">
-                    <div class="qa-icon" style="background:linear-gradient(135deg,#059669,#34d399);"><i class="fas fa-plus"></i></div>
-                    <span>Sell Item</span>
-                </a>
-                <a href="chats.html" class="quick-action">
-                    <div class="qa-icon" style="background:linear-gradient(135deg,#2563eb,#60a5fa);"><i class="fas fa-comment-dots"></i></div>
-                    <span>Messages</span>
-                </a>
-                <a href="orders.html" class="quick-action">
-                    <div class="qa-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);"><i class="fas fa-receipt"></i></div>
-                    <span>Orders</span>
-                </a>
-                <a href="wishlist.html" class="quick-action">
-                    <div class="qa-icon" style="background:linear-gradient(135deg,#ef4444,#f87171);"><i class="fas fa-heart"></i></div>
-                    <span>Wishlist</span>
-                </a>
+                <a href="add_product.html" class="quick-action"><div class="qa-icon" style="background:linear-gradient(135deg,#059669,#34d399);"><i class="fas fa-plus"></i></div><span>Sell Item</span></a>
+                <a href="chats.html" class="quick-action"><div class="qa-icon" style="background:linear-gradient(135deg,#2563eb,#60a5fa);"><i class="fas fa-comment-dots"></i></div><span>Messages</span></a>
+                <a href="orders.html" class="quick-action"><div class="qa-icon" style="background:linear-gradient(135deg,#d97706,#fbbf24);"><i class="fas fa-receipt"></i></div><span>Orders</span></a>
+                <a href="wishlist.html" class="quick-action"><div class="qa-icon" style="background:linear-gradient(135deg,#ef4444,#f87171);"><i class="fas fa-heart"></i></div><span>Wishlist</span></a>
             </div>
         </div>
     </div>
-
-    <!-- ── ACCOUNT INFORMATION ── -->
     <div class="card">
         <h3 style="margin:0 0 16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-circle-info" style="color:var(--primary-dark);"></i> Account Information</h3>
         <div id="infoDisplay" class="info-display">
-            <label><i class="fas fa-user"></i> Full Name</label>
-            <p id="displayNameText">-</p>
-            <label><i class="fas fa-building-columns"></i> College</label>
-            <p id="displayCollegeText">-</p>
-            <label><i class="fas fa-pen-fancy"></i> Bio</label>
-            <p id="displayBioText">-</p>
-            <label><i class="fas fa-wallet"></i> UPI ID</label>
-            <p id="displayUpiText">Not set</p>
+            <label><i class="fas fa-user"></i> Full Name</label><p id="displayNameText">-</p>
+            <label><i class="fas fa-building-columns"></i> College</label><p id="displayCollegeText">-</p>
+            <label><i class="fas fa-pen-fancy"></i> Bio</label><p id="displayBioText">-</p>
+            <label><i class="fas fa-wallet"></i> UPI ID</label><p id="displayUpiText">Not set</p>
         </div>
-
         <div id="infoEdit" class="edit-form">
-            <label>Full Name</label>
-            <input id="nameInput" placeholder="Enter your name">
-
+            <label>Full Name</label><input id="nameInput" placeholder="Enter your name">
             <label>College</label>
             <div class="college-dropdown-wrap">
-                <input type="text" id="collegeInput" placeholder="Search college..." autocomplete="off"
-                       oninput="filterColleges()" onfocus="filterColleges()" onblur="hideColleges()">
+                <input type="text" id="collegeInput" placeholder="Search college..." autocomplete="off" oninput="filterColleges()" onfocus="filterColleges()" onblur="hideColleges()">
                 <div class="college-suggestions" id="collegeSuggestions"></div>
             </div>
-
-            <label>Bio</label>
-            <textarea id="bioInput" rows="2" placeholder="Tell others about yourself..."></textarea>
-            <label>UPI ID</label>
-            <input id="upiInput" placeholder="example@upi">
+            <label>Bio</label><textarea id="bioInput" rows="2" placeholder="Tell others about yourself..."></textarea>
+            <label>UPI ID</label><input id="upiInput" placeholder="example@upi">
             <div style="display:flex;gap:10px;">
                 <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-check"></i> Save Changes</button>
                 <button class="btn-primary" style="background:#ef4444;" onclick="toggleEditMode(false)"><i class="fas fa-xmark"></i> Cancel</button>
             </div>
         </div>
     </div>
-
-    <!-- ── EARNINGS OVERVIEW ── -->
     <div class="card" id="earningsCard" style="padding:16px 20px;">
         <div class="earnings-card">
-            <div>
-                <div class="earn-label"><i class="fas fa-indian-rupee-sign"></i> Total Earnings</div>
-                <div class="earn-amount" id="totalEarnings">₹0</div>
-            </div>
+            <div><div class="earn-label"><i class="fas fa-indian-rupee-sign"></i> Total Earnings</div><div class="earn-amount" id="totalEarnings">₹0</div></div>
             <div class="earn-icon"><i class="fas fa-coins"></i></div>
         </div>
         <div style="display:flex;gap:8px;">
-            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;">
-                <div style="font-size:18px;font-weight:800;" id="thisMonthEarnings">₹0</div>
-                <div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">This month</div>
-            </div>
-            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;">
-                <div style="font-size:18px;font-weight:800;" id="pendingPayout">₹0</div>
-                <div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">Pending</div>
-            </div>
+            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:18px;font-weight:800;" id="thisMonthEarnings">₹0</div><div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">This month</div></div>
+            <div style="flex:1;background:var(--bg);border-radius:12px;padding:12px;text-align:center;"><div style="font-size:18px;font-weight:800;" id="pendingPayout">₹0</div><div style="font-size:10px;color:var(--text-light);font-weight:700;text-transform:uppercase;">Pending</div></div>
         </div>
     </div>
-
-    <!-- ── SELLER STATS DASHBOARD ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-chart-pie"></i> Seller Stats</h3>
-            <span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="far fa-calendar"></i> This month</span>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-chart-pie"></i> Seller Stats</h3><span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="far fa-calendar"></i> All time</span></div>
         <div class="stats-grid">
-            <div class="stat-box green">
-                <div class="stat-icon">👁️</div>
-                <strong id="statViews">0</strong>
-                <span>Total Views</span>
-            </div>
-            <div class="stat-box blue">
-                <div class="stat-icon">🛒</div>
-                <strong id="statSold">0</strong>
-                <span>Items Sold</span>
-            </div>
-            <div class="stat-box amber">
-                <div class="stat-icon">⭐</div>
-                <strong id="statRating">–</strong>
-                <span>Avg Rating</span>
-            </div>
-            <div class="stat-box rose">
-                <div class="stat-icon">💬</div>
-                <strong id="statResponse">–</strong>
-                <span>Response Rate</span>
-            </div>
+            <div class="stat-box green"><div class="stat-icon">👁️</div><strong id="statViews">0</strong><span>Total Views</span></div>
+            <div class="stat-box blue"><div class="stat-icon">🛒</div><strong id="statSold">0</strong><span>Items Sold</span></div>
+            <div class="stat-box amber"><div class="stat-icon">⭐</div><strong id="statRating">–</strong><span>Avg Rating</span></div>
+            <div class="stat-box rose"><div class="stat-icon">💬</div><strong id="statResponse">–</strong><span>Response Rate</span></div>
         </div>
-        <!-- Extra stats row -->
         <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px;">
-            <div class="stat-box purple" style="padding:12px;">
-                <div class="stat-icon" style="font-size:16px;">🔄</div>
-                <strong id="statTrades" style="font-size:18px;">0</strong>
-                <span>Trades</span>
-            </div>
-            <div class="stat-box green" style="padding:12px;">
-                <div class="stat-icon" style="font-size:16px;">⏱️</div>
-                <strong id="statResponseTime" style="font-size:18px;">–</strong>
-                <span>Resp. Time</span>
-            </div>
-            <div class="stat-box blue" style="padding:12px;">
-                <div class="stat-icon" style="font-size:16px;">📅</div>
-                <strong id="statActive" style="font-size:18px;">0</strong>
-                <span>Active</span>
-            </div>
+            <div class="stat-box purple" style="padding:12px;"><div class="stat-icon" style="font-size:16px;">🔄</div><strong id="statTrades" style="font-size:18px;">0</strong><span>Trades</span></div>
+            <div class="stat-box green" style="padding:12px;"><div class="stat-icon" style="font-size:16px;">⏱️</div><strong id="statResponseTime" style="font-size:18px;">–</strong><span>Resp. Time</span></div>
+            <div class="stat-box blue" style="padding:12px;"><div class="stat-icon" style="font-size:16px;">📅</div><strong id="statActive" style="font-size:18px;">0</strong><span>Active</span></div>
         </div>
     </div>
-
-    <!-- ── ACHIEVEMENTS ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-trophy"></i> Achievements</h3>
-            <span style="font-size:11px;color:var(--text-light);font-weight:600;" id="achieveCount">0/8</span>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-trophy"></i> Achievements</h3><span style="font-size:11px;color:var(--text-light);font-weight:600;" id="achieveCount">0/8</span></div>
         <div class="achievements-grid" id="achievementsGrid"></div>
     </div>
-
-    <!-- ── INVENTORY / COLLECTION ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-box-open"></i> My Inventory</h3>
-            <button class="see-all-btn" onclick="location.href='my-ads.html'">See All <i class="fas fa-arrow-right"></i></button>
-        </div>
-        <!-- Inventory Tabs -->
+        <div class="section-header"><h3><i class="fas fa-box-open"></i> My Inventory</h3><button class="see-all-btn" onclick="location.href='my-ads.html'">See All <i class="fas fa-arrow-right"></i></button></div>
         <div class="inventory-tabs" id="inventoryTabs">
-            <button class="inventory-tab active" data-status="all" onclick="filterByStatus('all', this)">
-                All <span class="tab-count" id="tabAll">0</span>
-            </button>
-            <button class="inventory-tab" data-status="active" onclick="filterByStatus('active', this)">
-                <span class="status-dot active"></span> Active <span class="tab-count" id="tabActive">0</span>
-            </button>
-            <button class="inventory-tab" data-status="sold" onclick="filterByStatus('sold', this)">
-                <span class="status-dot sold"></span> Sold <span class="tab-count" id="tabSold">0</span>
-            </button>
+            <button class="inventory-tab active" data-status="all" onclick="filterByStatus('all',this)">All <span class="tab-count" id="tabAll">0</span></button>
+            <button class="inventory-tab" data-status="active" onclick="filterByStatus('active',this)"><span class="status-dot active"></span> Active <span class="tab-count" id="tabActive">0</span></button>
+            <button class="inventory-tab" data-status="sold" onclick="filterByStatus('sold',this)"><span class="status-dot sold"></span> Sold <span class="tab-count" id="tabSold">0</span></button>
         </div>
-        <!-- Inventory Search -->
-        <div class="inventory-search">
-            <i class="fas fa-search"></i>
-            <input type="text" id="inventorySearchInput" placeholder="Search your items..." oninput="searchInventory()">
-        </div>
-        <!-- Collection Filter Tags -->
+        <div class="inventory-search"><i class="fas fa-search"></i><input type="text" id="inventorySearchInput" placeholder="Search your items..." oninput="searchInventory()"></div>
         <div class="collection-tags" id="collectionTags">
-            <span class="collection-tag active" data-cat="all" onclick="filterInventory('all', this)"><i class="fas fa-border-all"></i> All</span>
-            <span class="collection-tag" data-cat="Books" onclick="filterInventory('Books', this)"><i class="fas fa-book"></i> Books</span>
-            <span class="collection-tag" data-cat="Electronics" onclick="filterInventory('Electronics', this)"><i class="fas fa-microchip"></i> Electronics</span>
-            <span class="collection-tag" data-cat="Stationery" onclick="filterInventory('Stationery', this)"><i class="fas fa-pen"></i> Stationery</span>
-            <span class="collection-tag" data-cat="Gaming" onclick="filterInventory('Gaming', this)"><i class="fas fa-gamepad"></i> Gaming</span>
-            <span class="collection-tag" data-cat="Hostel Essentials" onclick="filterInventory('Hostel Essentials', this)"><i class="fas fa-bed"></i> Hostel</span>
+            <span class="collection-tag active" data-cat="all" onclick="filterInventory('all',this)"><i class="fas fa-border-all"></i> All</span>
+            <span class="collection-tag" data-cat="Books" onclick="filterInventory('Books',this)"><i class="fas fa-book"></i> Books</span>
+            <span class="collection-tag" data-cat="Electronics" onclick="filterInventory('Electronics',this)"><i class="fas fa-microchip"></i> Electronics</span>
+            <span class="collection-tag" data-cat="Stationery" onclick="filterInventory('Stationery',this)"><i class="fas fa-pen"></i> Stationery</span>
+            <span class="collection-tag" data-cat="Gaming" onclick="filterInventory('Gaming',this)"><i class="fas fa-gamepad"></i> Gaming</span>
+            <span class="collection-tag" data-cat="Hostel Essentials" onclick="filterInventory('Hostel Essentials',this)"><i class="fas fa-bed"></i> Hostel</span>
         </div>
         <div id="inventoryList" style="margin-top:14px;"></div>
     </div>
-
-    <!-- ── RECENT ACTIVITY ── -->
+    <div class="card" id="tradesCard" style="display:none;">
+        <div class="section-header"><h3><i class="fas fa-arrow-right-arrow-left" style="color:var(--trade);"></i> Trade Offers</h3></div>
+        <div id="tradesList"></div>
+    </div>
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-clock-rotate-left"></i> Recent Activity</h3></div>
         <div id="activityTimeline"></div>
     </div>
-
-    <!-- ── REVIEWS ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-star"></i> Reviews</h3>
-            <button class="see-all-btn" id="reviewsSeeAll" onclick="showToast('Full reviews coming soon!','info')">See All <i class="fas fa-arrow-right"></i></button>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-star"></i> Reviews</h3><button class="see-all-btn" onclick="showToast('Full reviews coming soon!','info')">See All <i class="fas fa-arrow-right"></i></button></div>
         <div id="reviewsList"></div>
     </div>
-
-    <!-- ── CAMPUS TRENDING TRADERS ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-fire" style="color:#ef4444;"></i> Trending Traders</h3>
-            <span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="fas fa-building-columns"></i> Your college</span>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-fire" style="color:#ef4444;"></i> Trending Traders</h3><span style="font-size:11px;color:var(--text-light);font-weight:600;display:flex;align-items:center;gap:4px;"><i class="fas fa-building-columns"></i> Your college</span></div>
         <div class="trend-scroll" id="trendingTraders"></div>
     </div>
-
-    <!-- ── SELLER LEADERBOARD ── -->
     <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-ranking-star" style="color:var(--gold);"></i> College Leaderboard</h3>
-        </div>
+        <div class="section-header"><h3><i class="fas fa-ranking-star" style="color:var(--gold);"></i> College Leaderboard</h3></div>
         <div id="leaderboard"></div>
     </div>
-
-    <!-- ── WISHLIST ── -->
-    <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-heart" style="color:#ef4444;"></i> My Wishlist</h3>
-            <button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button>
-        </div>
+    <div class="card" id="wishlistCard">
+        <div class="section-header"><h3><i class="fas fa-heart" style="color:#ef4444;"></i> My Wishlist</h3><button id="wishlistToggle" class="see-all-btn" onclick="location.href='wishlist.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button></div>
         <div id="wishlistGrid" class="grid"></div>
     </div>
-
-    <!-- ── ORDERS ── -->
-    <div class="card">
-        <div class="section-header">
-            <h3><i class="fas fa-bag-shopping" style="color:var(--trade);"></i> My Orders</h3>
-            <button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button>
-        </div>
+    <div class="card" id="ordersCard">
+        <div class="section-header"><h3><i class="fas fa-bag-shopping" style="color:var(--trade);"></i> My Orders</h3><button id="ordersToggle" class="see-all-btn" onclick="location.href='orders.html'" style="display:none;">See All <i class="fas fa-arrow-right"></i></button></div>
         <div id="ordersGrid" class="grid"></div>
     </div>
-
     <button style="background:#fee2e2;color:#ef4444;border:none;width:100%;padding:14px;border-radius:12px;font-weight:700;margin-bottom:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14px;transition:background 0.2s;" onclick="logout()">
         <i class="fas fa-right-from-bracket"></i> Logout
     </button>
 </div>
-
-<!-- ── FOLLOWERS MODAL ── -->
+<!-- Followers Modal -->
 <div class="modal-overlay" id="followersModal">
     <div class="modal-sheet">
         <div class="modal-handle"></div>
@@ -869,97 +685,86 @@
         <div id="followersModalList"></div>
     </div>
 </div>
-
-<!-- BOTTOM NAV -->
+<!-- Notifications Modal -->
+<div class="modal-overlay" id="notifModal">
+    <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <button class="modal-close" onclick="closeModal('notifModal')"><i class="fas fa-xmark"></i></button>
+        <h3 style="margin:0 0 16px;display:flex;align-items:center;gap:8px;"><i class="fas fa-bell" style="color:var(--primary-dark);"></i> Notifications</h3>
+        <div id="notifList"></div>
+    </div>
+</div>
+<!-- Confirm Dialog -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-sheet" style="max-width:400px;">
+        <div class="modal-handle"></div>
+        <div class="confirm-body">
+            <div class="confirm-icon">🗑️</div>
+            <div class="confirm-title" id="confirmTitle">Are you sure?</div>
+            <div class="confirm-sub" id="confirmSub">This action cannot be undone.</div>
+            <div class="confirm-actions">
+                <button class="confirm-cancel" onclick="closeModal('confirmModal')">Cancel</button>
+                <button class="confirm-danger" id="confirmOkBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Bottom Nav -->
 <nav class="bottom-nav">
-    <a href="dashboard.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Home
-    </a>
-    <a href="chats.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        Chats
-    </a>
-    <a href="add_product.html" class="nav-item nav-sell">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    </a>
-    <a href="my-ads.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
-    </svg>
-        My Ads
-    </a>
-    <a href="profile.html" class="nav-item active">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-        Profile
-    </a>
+    <a href="dashboard.html" class="nav-item"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Home</a>
+    <a href="chats.html" class="nav-item"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>Chats</a>
+    <a href="add_product.html" class="nav-item nav-sell"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></a>
+    <a href="my-ads.html" class="nav-item"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>My Ads</a>
+    <a href="profile.html" class="nav-item active"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Profile</a>
 </nav>
-
 <script>
-// ════════════════════════════════════════════════════════
-//  DATA & CONSTANTS
-// ════════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════════
+   DATA & CONSTANTS
+   ════════════════════════════════════════════════════════ */
 const MUMBAI_COLLEGES = [
-    "University of Mumbai",
-    "VJTI – Veermata Jijabai Technological Institute",
-    "SPIT – Sardar Patel Institute of Technology",
-    "DJ Sanghvi – Dwarkadas J. Sanghvi College of Engineering",
-    "KJ Somaiya College of Engineering",
-    "Thadomal Shahani Engineering College",
-    "Fr. CRCE – Fathers Conceicao Rodrigues College of Engineering",
-    "Xavier Institute of Engineering",
-    "Don Bosco Institute of Technology",
-    "Atharva College of Engineering",
-    "MMCOE – Maharashtra Maritime Academy",
-    "Rizvi College of Engineering",
-    "MH Saboo Siddik College of Engineering",
-    "Shah & Anchor Kutchhi Engineering College",
-    "Vivekanand Education Society's Institute of Technology (VESIT)",
-    "Rajiv Gandhi Institute of Technology",
-    "St. Francis Institute of Technology (SFIT)",
-    "Vidyalankar Institute of Technology",
-    "Pillai College of Engineering",
-    "Lokmanya Tilak College of Engineering (LTCE)",
-    "K.C. College of Engineering & Management Studies",
-    "Terna Engineering College",
-    "Mumbai University Institute of Chemical Technology (ICT)",
-    "Narsee Monjee Institute of Management Studies (NMIMS)",
-    "FLAME University – Mumbai Campus",
-    "HR College of Commerce and Economics",
-    "Sophia College for Women",
-    "St. Xavier's College Mumbai",
-    "Wilson College",
-    "Jai Hind College",
-    "Mithibai College",
-    "Ruia College",
-    "Sathaye College",
-    "KC College",
-    "Elphinstone College",
-    "Sydenham College of Commerce and Economics",
-    "Lala Lajpat Rai College of Commerce and Economics",
-    "Datta Meghe College of Engineering"
+    "University of Mumbai","VJTI – Veermata Jijabai Technological Institute",
+    "SPIT – Sardar Patel Institute of Technology","DJ Sanghvi – Dwarkadas J. Sanghvi College of Engineering",
+    "KJ Somaiya College of Engineering","Thadomal Shahani Engineering College",
+    "Fr. CRCE – Fathers Conceicao Rodrigues College of Engineering","Xavier Institute of Engineering",
+    "Don Bosco Institute of Technology","Atharva College of Engineering",
+    "Rizvi College of Engineering","MH Saboo Siddik College of Engineering",
+    "Vivekanand Education Society's Institute of Technology (VESIT)","Rajiv Gandhi Institute of Technology",
+    "St. Francis Institute of Technology (SFIT)","Vidyalankar Institute of Technology",
+    "Pillai College of Engineering","Lokmanya Tilak College of Engineering (LTCE)",
+    "Terna Engineering College","Narsee Monjee Institute of Management Studies (NMIMS)",
+    "St. Xavier's College Mumbai","Jai Hind College","Mithibai College","Ruia College",
+    "Sathaye College","KC College","Elphinstone College","Sydenham College of Commerce and Economics",
+    "HR College of Commerce and Economics","Sophia College for Women","Wilson College",
+    "Datta Meghe College of Engineering","Shah & Anchor Kutchhi Engineering College"
 ];
 
 const ACHIEVEMENTS = [
-    { id: 'first_sale', icon: '🛒', label: 'First Sale', check: (d) => (d.items_sold || 0) >= 1 },
-    { id: 'five_sales', icon: '🔥', label: '5 Sales', check: (d) => (d.items_sold || 0) >= 5 },
-    { id: 'ten_sales', icon: '💎', label: '10 Sales', check: (d) => (d.items_sold || 0) >= 10 },
-    { id: 'first_trade', icon: '🔄', label: 'First Trade', check: (d) => getSuccessfulTradesCount(d) >= 1 },
-    { id: 'five_trades', icon: '🤝', label: '5 Trades', check: (d) => getSuccessfulTradesCount(d) >= 5 },
-    { id: 'five_star', icon: '⭐', label: '5-Star Avg', check: (d) => (d.rating || 0) >= 4.8 },
-    { id: 'ten_reviews', icon: '💬', label: '10 Reviews', check: (d) => getReviewCount(d) >= 10 },
-    { id: 'verified', icon: '✅', label: 'Verified', check: (d) => d.is_verified === true },
+    { id:'first_sale', icon:'🛒', label:'First Sale', check:(d,c)=>(d.items_sold||0)>=1 },
+    { id:'five_sales', icon:'🔥', label:'5 Sales', check:(d,c)=>(d.items_sold||0)>=5 },
+    { id:'ten_sales', icon:'💎', label:'10 Sales', check:(d,c)=>(d.items_sold||0)>=10 },
+    { id:'first_trade', icon:'🔄', label:'First Trade', check:(d,c)=>c>=1 },
+    { id:'five_trades', icon:'🤝', label:'5 Trades', check:(d,c)=>c>=5 },
+    { id:'five_star', icon:'⭐', label:'5-Star Avg', check:(d,c)=>(d.rating||0)>=4.8 },
+    { id:'ten_reviews', icon:'💬', label:'10 Reviews', check:(d,c)=>d._reviewCount>=10 },
+    { id:'verified', icon:'✅', label:'Verified', check:(d,c)=>d.is_verified===true },
 ];
 
-// ════════════════════════════════════════════════════
-//  INIT
-// ══════════════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   STATE
+   ════════════════════════════════════════════════════ */
 let currentUser = null;
 let profileUserId = null;
 let allInventory = [];
 let isOwnProfile = true;
 let currentStatusFilter = 'all';
 let currentCategoryFilter = 'all';
+let confirmCallback = null;
+let cachedTradeCount = 0;
+let cachedReviewCount = 0;
 
+/* ════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════ */
 async function init() {
     applySavedTheme();
     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -970,67 +775,55 @@ async function init() {
     profileUserId = params.get("uid") || currentUser.id;
     isOwnProfile = profileUserId === currentUser.id;
 
-    if (!isOwnProfile) {
-        await supabaseClient.rpc('increment_profile_views', { target_user_id: profileUserId });
-    }
+    // Toggle visibility based on own vs other profile
+    document.getElementById('followBtn').style.display = isOwnProfile ? 'none' : 'inline-flex';
+    document.getElementById('msgBtn').style.display = isOwnProfile ? 'none' : 'inline-flex';
+    document.getElementById('editProfileBtn').style.display = isOwnProfile ? 'inline-flex' : 'none';
+    document.getElementById('avatarEditBadge').style.display = isOwnProfile ? 'flex' : 'none';
+    document.getElementById('completionWrap').style.display = isOwnProfile ? 'block' : 'none';
+    document.getElementById('quickActions').style.display = isOwnProfile ? 'grid' : 'none';
+    document.getElementById('earningsCard').style.display = isOwnProfile ? 'block' : 'none';
+    document.getElementById('wishlistCard').style.display = isOwnProfile ? 'block' : 'none';
+    document.getElementById('ordersCard').style.display = isOwnProfile ? 'block' : 'none';
 
-    // Show/hide sections based on own vs other
-    if (isOwnProfile) {
-        document.getElementById('followBtn').style.display = 'none';
-        document.getElementById('editProfileBtn').style.display = 'inline-flex';
-        document.getElementById('avatarEditBadge').style.display = 'flex';
-        document.getElementById('completionWrap').style.display = 'block';
-        document.getElementById('quickActions').style.display = 'grid';
-        document.getElementById('earningsCard').style.display = 'block';
-    } else {
-        document.getElementById('followBtn').style.display = 'inline-flex';
-        document.getElementById('editProfileBtn').style.display = 'none';
-        document.getElementById('avatarEditBadge').style.display = 'none';
-        document.getElementById('completionWrap').style.display = 'none';
-        document.getElementById('quickActions').style.display = 'none';
-        document.getElementById('earningsCard').style.display = 'none';
+    if (!isOwnProfile) {
         checkFollowStatus();
     }
 
     document.getElementById('avatarUpload').addEventListener('change', uploadAvatar);
 
     await loadProfile();
-    loadWishlist();
-    loadOrders();
-    loadInventory();
     loadSellerStats();
     loadFollowCounts();
-    loadTrendingTraders();
-    loadLeaderboard();
+    loadInventory();
     loadReviews();
     loadActivity();
+    loadTrades();
+    loadNotifications();
+
+    if (isOwnProfile) {
+        loadWishlist();
+        loadOrders();
+    }
+
+    loadTrendingTraders();
+    loadLeaderboard();
+    setupRealtime();
 }
 
-// ════════════════════════════════════════════════
-//  HELPER: Compute trades & review count from other tables
-// ══════════════════════════════════════════════
-function getSuccessfulTradesCount(user) {
-    // Count trades where this user is sender OR receiver with status 'completed'
-    return (user.trade_success_rate || 0);
-}
-
-function getReviewCount(user) {
-    // Must compute from reviews table since users table has no review_count column
-    return 0; // Will be fetched in loadSellerStats
-}
-
-// ══════════════════════════════════════════
-//  PROFILE LOAD / SAVE
-// ══════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   PROFILE LOAD / SAVE
+   ════════════════════════════════════════════════════ */
 async function loadProfile() {
-    const { data } = await supabaseClient.from("users").select("*").eq("id", profileUserId).single();
-    if (!data) return;
+    const { data, error } = await supabaseClient.from("users").select("*").eq("id", profileUserId).single();
+    if (error || !data) { showToast('Failed to load profile', 'error'); return; }
 
     const nameEl = document.getElementById('viewName');
     nameEl.innerHTML = (data.name || "Student") + (data.is_verified ? ' <i class="fas fa-circle-check" style="color:var(--primary-dark);font-size:16px;" title="Verified"></i>' : '');
 
     const collegeSpan = document.querySelector('#viewCollege span');
     if (collegeSpan) collegeSpan.innerText = data.college || "";
+
     document.getElementById('displayNameText').innerText = data.name || "Not set";
     document.getElementById('displayCollegeText').innerText = data.college || "Not set";
     document.getElementById('displayBioText').innerText = data.bio || "No bio added";
@@ -1042,49 +835,31 @@ async function loadProfile() {
     document.getElementById('upiInput').value = data.upi_id || "";
 
     if (data.avatar_url) {
-        document.getElementById('avatarBox').innerHTML = `<img src="${data.avatar_url}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:${isOwnProfile?'flex':'none'}"><i class="fas fa-camera"></i></div>`;
+        document.getElementById('avatarBox').innerHTML =
+            `<img src="${data.avatar_url}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:${isOwnProfile?'flex':'none'}"><i class="fas fa-camera"></i></div>`;
     }
 
-    // Reputation — uses reputation_score directly from users table
     computeAndDisplayReputation(data);
 
-    // Member since
     if (data.created_at) {
         const d = new Date(data.created_at);
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         document.getElementById('memberSince').innerHTML = `<i class="far fa-calendar"></i> Member since ${months[d.getMonth()]} ${d.getFullYear()}`;
     }
 
-    // Profile completion (own only)
     if (isOwnProfile) computeCompletion(data);
-
-    // Achievements — compute trade count from trades table, review count from reviews table
-    renderAchievements(data);
 }
 
 function computeAndDisplayReputation(data) {
-    // Use reputation_score directly from users table
     const score = data.reputation_score || 0;
-
     document.getElementById('repScore').innerHTML = `<i class="fas fa-chart-line" style="font-size:10px;"></i> Reputation score: ${score}`;
-
     const badge = document.getElementById('repBadge');
-    if (score >= 500) {
-        badge.className = 'rep-badge legend';
-        badge.innerHTML = '<i class="fas fa-crown"></i> Legend';
-    } else if (score >= 200) {
-        badge.className = 'rep-badge trusted';
-        badge.innerHTML = '<i class="fas fa-circle-check"></i> Trusted Trader';
-    } else if (score >= 50) {
-        badge.className = 'rep-badge rising';
-        badge.innerHTML = '<i class="fas fa-arrow-trend-up"></i> Rising Star';
-    } else {
-        badge.className = 'rep-badge newbie';
-        badge.innerHTML = '<i class="fas fa-seedling"></i> Newbie';
-    }
+    if (score >= 500) { badge.className = 'rep-badge legend'; badge.innerHTML = '<i class="fas fa-crown"></i> Legend'; }
+    else if (score >= 200) { badge.className = 'rep-badge trusted'; badge.innerHTML = '<i class="fas fa-circle-check"></i> Trusted Trader'; }
+    else if (score >= 50) { badge.className = 'rep-badge rising'; badge.innerHTML = '<i class="fas fa-arrow-trend-up"></i> Rising Star'; }
+    else { badge.className = 'rep-badge newbie'; badge.innerHTML = '<i class="fas fa-seedling"></i> Newbie'; }
 }
 
-// ── PROFILE COMPLETION ──
 function computeCompletion(data) {
     const checks = [
         { label: 'Photo', done: !!data.avatar_url },
@@ -1094,46 +869,41 @@ function computeCompletion(data) {
         { label: 'UPI ID', done: !!data.upi_id },
         { label: 'First listing', done: false },
     ];
-    const doneCount = checks.filter(c => c.done).length;
-    supabaseClient.from("products").select("id", { count: 'exact', head: true }).eq("seller_id", currentUser.id).then(({ count }) => {
+    supabaseClient.from("products").select("id", { count:'exact', head:true }).eq("seller_id", currentUser.id).then(({ count }) => {
         checks[5].done = (count || 0) > 0;
-        const total = checks.length;
-        const done = checks.filter(c => c.done).length;
-        const pct = Math.round((done / total) * 100);
-        document.getElementById('completionPct').innerText = pct + '%';
-        document.getElementById('completionFill').style.width = pct + '%';
-        document.getElementById('completionHints').innerHTML = checks.map(c =>
-            `<span class="completion-hint ${c.done ? 'done' : ''}"><i class="fas fa-check"></i> ${c.label}</span>`
-        ).join('');
+        renderCompletion(checks);
     });
+    renderCompletion(checks);
+}
+
+function renderCompletion(checks) {
     const total = checks.length;
-    const pct = Math.round((doneCount / total) * 100);
+    const done = checks.filter(c => c.done).length;
+    const pct = Math.round((done / total) * 100);
     document.getElementById('completionPct').innerText = pct + '%';
     document.getElementById('completionFill').style.width = pct + '%';
     document.getElementById('completionHints').innerHTML = checks.map(c =>
-        `<span class="completion-hint ${c.done ? 'done' : ''}"><i class="fas fa-check"></i> ${c.label}</span>`
+        `<span class="completion-hint ${c.done?'done':''}"><i class="fas fa-check"></i> ${c.label}</span>`
     ).join('');
 }
 
-// ── ACHIEVEMENTS ──
+/* ════════════════════════════════════════════════════
+   ACHIEVEMENTS
+   ════════════════════════════════════════════════════ */
 function renderAchievements(data) {
     const grid = document.getElementById('achievementsGrid');
     let unlocked = 0;
     grid.innerHTML = ACHIEVEMENTS.map(a => {
-        // Use the correct column names from your schema:
-        // users: items_sold, rating, is_verified
-        // trades: computed from trades table (sender_id OR receiver_id = user, status = 'completed')
-        // reviews: computed from reviews table (seller_id = user)
-        const isUnlocked = a.check(data);
-        if (isUnlocked) unlocked++;
-        return `<div class="achievement ${isUnlocked ? '' : 'locked'}" title="${a.label}">
-            <div class="ach-icon">${a.icon}</div>
-            <span>${a.label}</span>
-        </div>`;
+        const ok = a.check(data, cachedTradeCount);
+        if (ok) unlocked++;
+        return `<div class="achievement ${ok?'':'locked'}" title="${a.label}"><div class="ach-icon">${a.icon}</div><span>${a.label}</span></div>`;
     }).join('');
     document.getElementById('achieveCount').innerText = `${unlocked}/${ACHIEVEMENTS.length}`;
 }
 
+/* ════════════════════════════════════════════════════
+   EDIT MODE
+   ════════════════════════════════════════════════════ */
 function toggleEditMode(isEditing) {
     document.getElementById('infoDisplay').style.display = isEditing ? 'none' : 'block';
     document.getElementById('infoEdit').style.display = isEditing ? 'block' : 'none';
@@ -1142,19 +912,18 @@ function toggleEditMode(isEditing) {
 
 async function saveProfile() {
     const { error } = await supabaseClient.from("users").update({
-        name: document.getElementById('nameInput').value,
-        college: document.getElementById('collegeInput').value,
-        bio: document.getElementById('bioInput').value,
-        upi_id: document.getElementById('upiInput').value
+        name: document.getElementById('nameInput').value.trim(),
+        college: document.getElementById('collegeInput').value.trim(),
+        bio: document.getElementById('bioInput').value.trim(),
+        upi_id: document.getElementById('upiInput').value.trim()
     }).eq('id', currentUser.id);
-
-    if (error) showToast('Error saving: ' + error.message, 'error');
+    if (error) showToast('Error: ' + error.message, 'error');
     else { showToast('Profile saved!', 'success'); location.reload(); }
 }
 
-// ════════════════════════════════════════════
-//  AVATAR UPLOAD
-// ════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   AVATAR UPLOAD
+   ════════════════════════════════════════════════════ */
 async function uploadAvatar(e) {
     if (!isOwnProfile) return;
     const file = e.target.files[0];
@@ -1162,118 +931,108 @@ async function uploadAvatar(e) {
     showToast('Uploading avatar...', 'info');
     const ext = file.name.split('.').pop();
     const path = `avatars/${currentUser.id}.${ext}`;
-
     const { error: upErr } = await supabaseClient.storage.from('avatars').upload(path, file, { upsert: true });
     if (upErr) return showToast('Upload failed', 'error');
-
     const { data: urlData } = supabaseClient.storage.from('avatars').getPublicUrl(path);
     await supabaseClient.from("users").update({ avatar_url: urlData.publicUrl }).eq('id', currentUser.id);
     document.getElementById('avatarBox').innerHTML = `<img src="${urlData.publicUrl}"><div class="online-indicator"></div><div class="avatar-edit-badge" id="avatarEditBadge" style="display:flex"><i class="fas fa-camera"></i></div>`;
     showToast('Avatar updated!', 'success');
 }
 
-// ══════════════════════════════════════════════
-//  COLLEGE DROPDOWN
-// ════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   COLLEGE DROPDOWN
+   ════════════════════════════════════════════════════ */
 function filterColleges() {
     const q = document.getElementById('collegeInput').value.toLowerCase();
     const box = document.getElementById('collegeSuggestions');
-    const filtered = q.length === 0
-        ? MUMBAI_COLLEGES
-        : MUMBAI_COLLEGES.filter(c => c.toLowerCase().includes(q));
-
-    box.innerHTML = filtered.map(c =>
-        `<div class="college-suggestion-item" onmousedown="selectCollege('${c.replace(/'/g, "\\'")}')">${c}</div>`
-    ).join('');
+    const filtered = q.length === 0 ? MUMBAI_COLLEGES : MUMBAI_COLLEGES.filter(c => c.toLowerCase().includes(q));
+    box.innerHTML = filtered.map(c => `<div class="college-suggestion-item" onmousedown="selectCollege('${c.replace(/'/g,"\\'")}')">${c}</div>`).join('');
     box.classList.toggle('open', filtered.length > 0);
 }
-
 function selectCollege(name) {
     document.getElementById('collegeInput').value = name;
     document.getElementById('collegeSuggestions').classList.remove('open');
 }
+function hideColleges() { setTimeout(() => document.getElementById('collegeSuggestions').classList.remove('open'), 200); }
 
-function hideColleges() {
-    setTimeout(() => document.getElementById('collegeSuggestions').classList.remove('open'), 200);
-}
-
-// ════════════════════════════════════════════
-//  SELLER STATS
-// ════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   SELLER STATS
+   ════════════════════════════════════════════════════ */
 async function loadSellerStats() {
-    const { data } = await supabaseClient.from("users").select(
+    const { data: ud } = await supabaseClient.from("users").select(
         "items_sold, rating, response_rate, response_time, total_products, total_sales, views"
     ).eq("id", profileUserId).single();
-    if (!data) return;
+    if (!ud) return;
 
-    // Views — read directly from users table (no need to sum from products)
-    const totalViews = data.views || 0;
+    // Active product count from products table
+    const { count: activeCount } = await supabaseClient.from("products")
+        .select("id", { count:'exact', head:true })
+        .eq("seller_id", profileUserId).eq("status", "active");
 
-    // Active products count
-    const { data: prods } = await supabaseClient.from("products").select("status", { count: 'exact', head: true }).eq("seller_id", profileUserId);
-    const activeCount = prods ? prods.filter(p => p.status === 'active').count : 0;
+    // Completed trades count
+    const { count: tradeCount } = await supabaseClient.from("trades")
+        .select("id", { count:'exact', head:true })
+        .eq("status", "accepted")
+        .or(`sender_id.eq.${profileUserId},receiver_id.eq.${profileUserId}`);
+    cachedTradeCount = tradeCount || 0;
 
-    // Trades — computed from trades table
-    // trades where sender_id = user OR receiver_id = user and status = 'completed'
-    const { data: tradesData } = await supabaseClient.from("trades")
-        .select("status", { count: 'exact', head: true })
-        .or({ "filter": "or", "column": "sender_id", "value": profileUserId })
-        .or({ "filter": "or", "column": "receiver_id", "value": profileUserId });
-    const completedTrades = tradesData ? parseInt(tradesData[0].count) : 0;
-
-    // Reviews — computed from reviews table
-    const { data: reviewsData } = await supabaseClient.from("reviews")
-        .select("id", { count: 'exact', head: true })
+    // Review count
+    const { count: reviewCount } = await supabaseClient.from("reviews")
+        .select("id", { count:'exact', head:true })
         .eq("seller_id", profileUserId);
-    const reviewCount = reviewsData ? parseInt(reviewsData[0].count) : 0;
+    cachedReviewCount = reviewCount || 0;
 
-    // Trade success rate — also computed from trades
-    const tradeRate = completedTrades > 0
-        ? Math.round((completedTrades / Math.max(completedTrades + (completedTrades || 1), 0) * 100)
-        : 0;
+    document.getElementById('statViews').innerText = (ud.views || 0).toLocaleString();
+    document.getElementById('statSold').innerText = ud.items_sold || 0;
+    document.getElementById('statRating').innerText = ud.rating ? `${parseFloat(ud.rating).toFixed(1)}★` : '–';
+    document.getElementById('statResponse').innerText = ud.response_rate ? `${ud.response_rate}%` : '–';
+    document.getElementById('statTrades').innerText = cachedTradeCount;
+    document.getElementById('statResponseTime').innerText = ud.response_time ? `${ud.response_time} min` : '–';
+    document.getElementById('statActive').innerText = activeCount || 0;
 
-    // Display all stats
-    document.getElementById('statViews').innerText = totalViews.toLocaleString();
-    document.getElementById('statSold').innerText = data.items_sold || 0;
-    document.getElementById('statRating').innerText = data.rating ? `${parseFloat(data.rating).toFixed(1)}★` : '–';
-    document.getElementById('statResponse').innerText = data.response_rate ? `${data.response_rate}%` : '–';
-    document.getElementById('statTrades').innerText = completedTrades;
-    document.getElementById('statResponseTime').innerText = data.response_time ? `${data.response_time} min` : '–';
-    document.getElementById('statActive').innerText = activeCount;
-
-    // Earnings — from orders table
+    // Earnings for own profile
     if (isOwnProfile) {
-        const { data: orders } = await supabaseClient.from("orders")
+        const { data: completedOrders } = await supabaseClient.from("orders")
             .select("amount, payment_status, created_at")
             .eq("seller_id", currentUser.id)
-            .eq("payment_status", 'completed');
-        const total = orders ? orders.reduce((s, o) => s + (o.amount || 0), 0) : 0;
+            .eq("payment_status", "completed");
+        const orders = completedOrders || [];
+        const total = orders.reduce((s, o) => s + (o.amount || 0), 0);
         document.getElementById('totalEarnings').innerText = '₹' + Math.floor(total).toLocaleString('en-IN');
         const now = new Date();
-        const thisMonth = orders ? orders.filter(o => {
+        const thisMonth = orders.filter(o => {
             const d = new Date(o.created_at);
             return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-        }).reduce((s, o) => s + (o.amount || 0), 0) : 0;
+        }).reduce((s, o) => s + (o.amount || 0), 0);
         document.getElementById('thisMonthEarnings').innerText = '₹' + Math.floor(thisMonth).toLocaleString('en-IN');
+
+        // Pending payout = orders with status other than completed
+        const { data: pendingOrders } = await supabaseClient.from("orders")
+            .select("amount")
+            .eq("seller_id", currentUser.id)
+            .neq("payment_status", "completed");
+        const pendingTotal = (pendingOrders || []).reduce((s, o) => s + (o.amount || 0), 0);
+        document.getElementById('pendingPayout').innerText = '₹' + Math.floor(pendingTotal).toLocaleString('en-IN');
+    }
+
+    // Render achievements with computed counts
+    const { data: fullUser } = await supabaseClient.from("users").select("*").eq("id", profileUserId).single();
+    if (fullUser) {
+        fullUser._reviewCount = cachedReviewCount;
+        renderAchievements(fullUser);
     }
 }
 
-// ══════════════════════════════════════════
-//  INVENTORY / COLLECTIONS
-// ════════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   INVENTORY
+   ════════════════════════════════════════════════════ */
 async function loadInventory() {
-    const { data, error } = await supabaseClient
-        .from("products")
-        .select("*")
-        .eq("seller_id", profileUserId);
-
+    const { data, error } = await supabaseClient.from("products").select("*").eq("seller_id", profileUserId).order("created_at", { ascending: false });
     if (error) return;
     allInventory = data || [];
-
     document.getElementById('tabAll').innerText = allInventory.length;
     document.getElementById('tabActive').innerText = allInventory.filter(p => p.status === 'active').length;
     document.getElementById('tabSold').innerText = allInventory.filter(p => p.status === 'sold').length;
-
     renderInventory(allInventory);
 }
 
@@ -1282,31 +1041,27 @@ function getFilteredInventory() {
     if (currentStatusFilter !== 'all') items = items.filter(p => p.status === currentStatusFilter);
     if (currentCategoryFilter !== 'all') items = items.filter(p => p.category === currentCategoryFilter);
     const q = document.getElementById('inventorySearchInput').value.toLowerCase().trim();
-    if (q) items = items.filter(p => (p.title || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+    if (q) items = items.filter(p => (p.title||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
     return items;
 }
 
 function renderInventory(items) {
     const list = document.getElementById('inventoryList');
-    if (!items.length) {
-        list.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i>No items found</div>`;
-        return;
-    }
-    list.innerHTML = items.slice(0, 5).map(p => {
+    if (!items.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-box-open"></i>No items found</div>`; return; }
+    list.innerHTML = items.slice(0, 6).map(p => {
         const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
         const isSold = p.status === 'sold';
         const isPending = p.status === 'pending';
         return `
-        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'"
-             style="cursor:pointer; opacity: ${isSold ? '0.6' : '1'};">
+        <div class="inventory-item" onclick="location.href='product-details.html?id=${p.id}'" style="cursor:pointer;opacity:${isSold?'0.6':'1'};">
             <img src="${img}" onerror="this.src='placeholder.png'">
             <div class="inventory-item-info">
-                <strong>${p.title} ${isSold ? '<span style="color:var(--danger)">[SOLD]</span>' : ''} ${isPending ? '<span style="color:var(--warning)">[PENDING]</span>' : ''}</strong>
-                <span><i class="fas fa-tag"></i> ${p.category || 'Uncategorized'} • ₹${p.price}</span>
+                <strong>${p.title}${isSold?' <span style="color:var(--danger)">[SOLD]</span>':''}${isPending?' <span style="color:var(--warning)">[PENDING]</span>':''}</strong>
+                <span><i class="fas fa-tag"></i> ${p.category||'Uncategorized'} • ₹${p.price}</span>
             </div>
-            <span class="trade-badge ${isSold ? 'no' : (p.swap_enabled ? '' : 'no')}">
-                <i class="fas ${isSold ? 'fa-check' : (p.swap_enabled ? 'fa-arrows-rotate' : 'fa-xmark')}"></i>
-                ${isSold ? 'Sold' : (p.swap_enabled ? ' Trade' : 'No Trade')}
+            <span class="trade-badge ${isSold?'no':(p.swap_enabled?'':'no')}">
+                <i class="fas ${isSold?'fa-check':(p.swap_enabled?'fa-arrows-rotate':'fa-xmark')}"></i>
+                ${isSold?'Sold':(p.swap_enabled?' Trade':'No Trade')}
             </span>
         </div>`;
     }).join('');
@@ -1318,47 +1073,111 @@ function filterInventory(cat, el) {
     currentCategoryFilter = cat;
     renderInventory(getFilteredInventory());
 }
-
 function filterByStatus(status, el) {
     document.querySelectorAll('.inventory-tab').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
     currentStatusFilter = status;
     renderInventory(getFilteredInventory());
 }
+function searchInventory() { renderInventory(getFilteredInventory()); }
 
-function searchInventory() {
-    renderInventory(getFilteredInventory());
+/* ════════════════════════════════════════════════════
+   TRADES
+   ════════════════════════════════════════════════════ */
+async function loadTrades() {
+    const card = document.getElementById('tradesCard');
+    const list = document.getElementById('tradesList');
+    try {
+        const { data, error } = await supabaseClient
+            .from("trades")
+            .select("*, offered_item:offered_item_id(title), requested_item:requested_item_id(title), sender:sender_id(name, avatar_url), receiver:receiver_id(name, avatar_url)")
+            .or(`sender_id.eq.${profileUserId},receiver_id.eq.${profileUserId}`)
+            .order("created_at", { ascending: false })
+            .limit(10);
+
+        if (error) throw error;
+        if (!data || !data.length) { card.style.display = 'none'; return; }
+        card.style.display = 'block';
+
+        list.innerHTML = data.map(t => {
+            const isSender = t.sender_id === profileUserId;
+            const partnerName = isSender ? (t.receiver?.name || 'User') : (t.sender?.name || 'User');
+            const statusClass = t.status === 'accepted' ? 'trade-status-accepted' : t.status === 'rejected' ? 'trade-status-rejected' : 'trade-status-pending';
+            const statusLabel = (t.status || 'pending').charAt(0).toUpperCase() + (t.status || 'pending').slice(1);
+            const offered = t.offered_item || {};
+            const requested = t.requested_item || {};
+            let actionsHtml = '';
+            if (t.status === 'pending' && !isSender) {
+                actionsHtml = `
+                    <div class="trade-offer-actions">
+                        <button class="btn-sm" style="background:var(--primary-dark);color:white;" onclick="updateTradeStatus('${t.id}','accepted')"><i class="fas fa-check"></i> Accept</button>
+                        <button class="btn-sm" style="background:#fee2e2;color:#ef4444;" onclick="updateTradeStatus('${t.id}','rejected')"><i class="fas fa-xmark"></i> Reject</button>
+                    </div>`;
+            }
+            return `
+            <div class="trade-offer-card">
+                <div class="trade-offer-header">
+                    <div class="trade-offer-partner">
+                        <i class="fas ${isSender?'fa-arrow-up-right':'fa-arrow-down-left'}"></i>
+                        ${isSender?'To':'From'}: <strong>${partnerName}</strong>
+                    </div>
+                    <span class="trade-offer-status ${statusClass}">${statusLabel}</span>
+                </div>
+                <div class="trade-items-row">
+                    <div class="trade-mini-card">
+                        <div class="trade-mini-label">${isSender?'You Offer':'They Offer'}</div>
+                        <div class="trade-mini-title">${offered.title||'Unknown'}</div>
+                    </div>
+                    <div class="trade-arrow-icon"><i class="fas fa-arrow-right-arrow-left"></i></div>
+                    <div class="trade-mini-card">
+                        <div class="trade-mini-label">${isSender?'You Want':'They Want'}</div>
+                        <div class="trade-mini-title">${requested.title||'Unknown'}</div>
+                    </div>
+                </div>
+                <div class="trade-offer-time"><i class="far fa-clock" style="font-size:10px;"></i> ${getTimeAgo(t.created_at)}</div>
+                ${actionsHtml}
+            </div>`;
+        }).join('');
+    } catch(e) {
+        card.style.display = 'none';
+    }
 }
 
-// ════════════════════════════════════════
-//  REVIEWS
-// ══════════════════════════════════════════
+async function updateTradeStatus(tradeId, status) {
+    try {
+        const { error } = await supabaseClient.from("trades").update({ status }).eq("id", tradeId);
+        if (error) throw error;
+        showToast(`Trade ${status}!`, status === 'accepted' ? 'success' : 'info');
+        loadTrades();
+        loadSellerStats();
+    } catch(e) {
+        showToast('Failed to update trade', 'error');
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   REVIEWS
+   ════════════════════════════════════════════════════ */
 async function loadReviews() {
     const container = document.getElementById('reviewsList');
     try {
-        // reviews table: seller_id, buyer_id, product_id, rating, comment, created_at
-        const { data } = await supabaseClient
+        const { data, error } = await supabaseClient
             .from("reviews")
-            .select("*, reviewer:users!reviewer_id(id, name, avatar_url)")
+            .select("*, buyer:buyer_id(id, name, avatar_url)")
             .eq("seller_id", profileUserId)
             .order("created_at", { ascending: false })
             .limit(3);
-        if (!data || !data.length) {
-            container.innerHTML = `<div class="empty-state"><i class="far fa-comment-dots"></i>No reviews yet</div>`;
-            return;
-        }
+        if (error) throw error;
+        if (!data || !data.length) { container.innerHTML = `<div class="empty-state"><i class="far fa-comment-dots"></i>No reviews yet</div>`; return; }
         container.innerHTML = data.map(r => {
-            const initials = (r.reviewer?.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const buyer = r.buyer || {};
+            const initials = (buyer.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const stars = '★'.repeat(r.rating || 0) + '☆'.repeat(5 - (r.rating || 0));
-            const timeAgo = getTimeAgo(r.created_at);
             return `
             <div class="review-item">
                 <div class="review-header">
-                    <div class="review-avatar">${r.reviewer?.avatar_url ? `<img src="${r.reviewer.avatar_url}">` : initials}</div>
-                    <div>
-                        <div class="review-name">${r.reviewer?.name || 'User'}</div>
-                        <div class="review-date">${timeAgo}</div>
-                    </div>
+                    <div class="review-avatar">${buyer.avatar_url ? `<img src="${buyer.avatar_url}">` : initials}</div>
+                    <div><div class="review-name">${buyer.name || 'User'}</div><div class="review-date">${getTimeAgo(r.created_at)}</div></div>
                 </div>
                 <div class="review-stars">${stars}</div>
                 <div class="review-text">${r.comment || 'No comment'}</div>
@@ -1369,9 +1188,9 @@ async function loadReviews() {
     }
 }
 
-// ════════════════════════════════════════
-//  ACTIVITY TIMELINE
-// ════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   ACTIVITY TIMELINE
+   ════════════════════════════════════════════════════ */
 async function loadActivity() {
     const container = document.getElementById('activityTimeline');
     try {
@@ -1380,32 +1199,50 @@ async function loadActivity() {
             .select("id, title, status, created_at")
             .eq("seller_id", profileUserId)
             .order("created_at", { ascending: false })
-            .limit(5);
+            .limit(6);
+        if (!products || !products.length) { container.innerHTML = `<div class="empty-state"><i class="fas fa-clock"></i>No activity yet</div>`; return; }
 
-        if (!products || !products.length) {
-            container.innerHTML = `<div class="empty-state"><i class="fas fa-clock"></i>No activity yet</div>`;
-            return;
+        // Also fetch recent trades for timeline
+        const { data: trades } = await supabaseClient
+            .from("trades")
+            .select("id, status, created_at, offered_item:offered_item_id(title), requested_item:requested_item_id(title)")
+            .or(`sender_id.eq.${profileUserId},receiver_id.eq.${profileUserId}`)
+            .order("created_at", { ascending: false })
+            .limit(3);
+
+        let items = products.map(p => ({
+            type: p.status === 'sold' ? 'sold' : 'listed',
+            title: p.status === 'sold' ? `Sold "${p.title}"` : `Listed "${p.title}"`,
+            time: getTimeAgo(p.created_at),
+            link: `product-details.html?id=${p.id}`
+        }));
+
+        if (trades) {
+            trades.forEach(t => {
+                if (t.status === 'accepted') {
+                    const offered = t.offered_item || {};
+                    const requested = t.requested_item || {};
+                    items.push({
+                        type: 'trade',
+                        title: `Traded "${offered.title || 'item'}" for "${requested.title || 'item'}"`,
+                        time: getTimeAgo(t.created_at),
+                        link: null
+                    });
+                }
+            });
         }
 
-        const items = products.map(p => {
-            const isSold = p.status === 'sold';
-            return {
-                type: isSold ? 'sold' : 'listed',
-                title: isSold ? `Sold "${p.title}"` : `Listed "${p.title}"`,
-                time: getTimeAgo(p.created_at),
-                link: `product-details.html?id=${p.id}`
-            };
+        // Sort by time (newest first) and take top 6
+        items.sort((a, b) => {
+            // getTimeAgo is a string, we need raw dates — but we already converted. Use simple heuristic.
+            return 0; // Keep products order as primary
         });
+        items = items.slice(0, 6);
 
         container.innerHTML = items.map(item => `
-            <div class="timeline-item" onclick="location.href='${item.link}'" style="cursor:pointer;">
-                <div class="timeline-icon ${item.type}">
-                    <i class="fas ${item.type === 'sold' ? 'fa-check' : 'fa-plus'}"></i>
-                </div>
-                <div class="timeline-content">
-                    <strong>${item.title}</strong>
-                    <span><i class="far fa-clock" style="font-size:10px;"></i> ${item.time}</span>
-                </div>
+            <div class="timeline-item" ${item.link ? `onclick="location.href='${item.link}'" style="cursor:pointer;"` : ''}>
+                <div class="timeline-icon ${item.type}"><i class="fas ${item.type==='sold'?'fa-check':item.type==='trade'?'fa-arrows-rotate':'fa-plus'}"></i></div>
+                <div class="timeline-content"><strong>${item.title}</strong><span><i class="far fa-clock" style="font-size:10px;"></i> ${item.time}</span></div>
             </div>
         `).join('');
     } catch(e) {
@@ -1413,160 +1250,169 @@ async function loadActivity() {
     }
 }
 
-// ════════════════════════════════════════
-//  TRENDING TRADERS
-// ════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   TRENDING TRADERS
+   ════════════════════════════════════════════════════ */
 async function loadTrendingTraders() {
     const { data: me } = await supabaseClient.from("users").select("college").eq("id", currentUser.id).single();
     if (!me || !me.college) return;
-
-    const { data } = await supabaseClient
-        .from("users")
+    const { data } = await supabaseClient.from("users")
         .select("id, name, avatar_url, items_sold, rating")
-        .eq("college", me.college)
-        .neq("id", currentUser.id)
-        .order("items_sold", { ascending: false })
-        .limit(10);
-
+        .eq("college", me.college).neq("id", currentUser.id)
+        .order("items_sold", { ascending: false }).limit(10);
     const container = document.getElementById('trendingTraders');
-    if (!data || !data.length) {
-        container.innerHTML = `<div class="empty-state" style="width:100%;"><i class="fas fa-users"></i>No traders yet in your college</div>`;
-        return;
-    }
+    if (!data || !data.length) { container.innerHTML = `<div class="empty-state" style="width:100%;"><i class="fas fa-users"></i>No traders yet in your college</div>`; return; }
     container.innerHTML = data.map((u, i) => {
-        const initials = (u.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const avatarHtml = u.avatar_url
-            ? `<img src="${u.avatar_url}">`
-            : initials;
+        const initials = (u.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
         return `
         <div class="trader-card" onclick="location.href='profile.html?uid=${u.id}'">
-            <div class="t-avatar">${avatarHtml}</div>
-            <span class="fire-badge">${i < 3 ? '🔥' : '⭐'}</span>
-            <strong>${u.name || 'Student'}</strong>
-            <span><i class="fas fa-shopping-bag" style="font-size:9px;"></i> ${u.items_sold || 0} sold</span>
+            <div class="t-avatar">${u.avatar_url?`<img src="${u.avatar_url}">`:initials}</div>
+            <span class="fire-badge">${i<3?'🔥':'⭐'}</span>
+            <strong>${u.name||'Student'}</strong>
+            <span><i class="fas fa-shopping-bag" style="font-size:9px;"></i> ${u.items_sold||0} sold</span>
         </div>`;
     }).join('');
 }
 
-// ══════════════════════════════════════════
-//  LEADERBOARD
-// ══════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   LEADERBOARD
+   ════════════════════════════════════════════════════ */
 async function loadLeaderboard() {
     const { data: me } = await supabaseClient.from("users").select("college").eq("id", profileUserId).single();
     if (!me || !me.college) return;
-
-    const { data } = await supabaseClient
-        .from("users")
-        .select("id, name, avatar_url, items_sold, rating, review_count, successful_trades")
-        .eq("college", me.college)
-        .order("items_sold", { ascending: false })
-        .limit(10);
-
+    const { data } = await supabaseClient.from("users")
+        .select("id, name, avatar_url, items_sold, rating")
+        .eq("college", me.college).order("items_sold", { ascending: false }).limit(10);
     const container = document.getElementById('leaderboard');
-    if (!data || !data.length) {
-        container.innerHTML = `<div class="empty-state"><i class="fas fa-trophy"></i>No sellers in this college yet</div>`;
-        return;
-    }
-
-    const medals = ['🥇', '🥈', '🥉'];
+    if (!data || !data.length) { container.innerHTML = `<div class="empty-state"><i class="fas fa-trophy"></i>No sellers in this college yet</div>`; return; }
+    const medals = ['🥇','🥈','🥉'];
     container.innerHTML = data.map((u, i) => {
-        const initials = (u.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-        const avatarHtml = u.avatar_url ? `<img src="${u.avatar_url}">` : initials;
-        const rank = medals[i] || `#${i + 1}`;
+        const initials = (u.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+        const rank = medals[i] || `#${i+1}`;
         const starCount = Math.round(u.rating || 0);
-        const stars = '<i class="fas fa-star" style="font-size:11px;"></i>'.repeat(starCount) + '<i class="far fa-star" style="font-size:11px;"></i>'.repeat(5 - starCount);
+        const stars = '<i class="fas fa-star" style="font-size:11px;"></i>'.repeat(starCount) + '<i class="far fa-star" style="font-size:11px;"></i>'.repeat(5-starCount);
         const isMe = u.id === profileUserId;
         return `
-        <div class="leader-item rank-${Math.min(i+1, 4)}" onclick="location.href='profile.html?uid=${u.id}'" style="cursor:pointer;${isMe ? 'background:var(--bg);border-radius:12px;padding:10px;margin:-2px -4px;' : ''}">
+        <div class="leader-item rank-${Math.min(i+1,4)}" onclick="location.href='profile.html?uid=${u.id}'" style="cursor:pointer;${isMe?'background:var(--bg);border-radius:12px;padding:10px;margin:-2px -4px;':''}">
             <div class="leader-rank">${rank}</div>
-            <div class="leader-avatar">${avatarHtml}</div>
+            <div class="leader-avatar">${u.avatar_url?`<img src="${u.avatar_url}">`:initials}</div>
             <div class="leader-info">
-                <strong>${u.name || 'Student'} ${isMe ? '<span style="font-size:10px;color:var(--primary-dark);font-weight:600;">(You)</span>' : ''}</strong>
-                <span><span class="star-rating">${stars}</span> ${(u.rating || 0).toFixed(1)}</span>
+                <strong>${u.name||'Student'} ${isMe?'<span style="font-size:10px;color:var(--primary-dark);font-weight:600;">(You)</span>':''}</strong>
+                <span><span class="star-rating">${stars}</span> ${(u.rating||0).toFixed(1)}</span>
             </div>
-            <div class="leader-meta">
-                <strong>${u.items_sold || 0}</strong>
-                <span>sold</span>
-            </div>
+            <div class="leader-meta"><strong>${u.items_sold||0}</strong><span>sold</span></div>
         </div>`;
     }).join('');
 }
 
-// ════════════════════════════════════════
-//  WISHLIST
-// ════════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   WISHLIST
+   ════════════════════════════════════════════════════ */
 async function loadWishlist() {
-    const { data, error } = await supabaseClient
-        .from("wishlist")
-        .select("id, product:products(*)")
-        .eq("user_id", currentUser.id);
-
-    if (error) return console.error(error);
+    const { data, error } = await supabaseClient.from("wishlist")
+        .select("id, created_at, product:products(id, title, price, image_url)")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+    if (error) return;
     const grid = document.getElementById("wishlistGrid");
     const toggleBtn = document.getElementById("wishlistToggle");
     const items = data || [];
-
     if (items.length > 2) toggleBtn.style.display = "flex";
     if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><i class="far fa-heart"></i>No wishlist items yet</div>`; return; }
-
-    items.slice(0, 2).forEach(item => {
+    grid.innerHTML = items.slice(0, 4).map(item => {
         const p = item.product;
-        if (!p) return;
+        if (!p) return '';
         const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
-        grid.innerHTML += `
-            <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
-                <div class="heart-btn" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
-                    <i class="fas fa-heart"></i>
-                </div>
-                <img src="${img}">
-                <div style="font-weight:700;margin-top:5px;">₹${p.price}</div>
-                <div style="font-size:11px;color:gray;">${p.title}</div>
-            </div>`;
-    });
+        return `
+        <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+            <div class="heart-btn" onclick="event.stopPropagation();removeFromWishlist('${item.id}')"><i class="fas fa-heart"></i></div>
+            <img src="${img}" onerror="this.src='placeholder.png'">
+            <div style="font-weight:700;margin-top:5px;">₹${p.price}</div>
+            <div style="font-size:11px;color:var(--text-light);">${p.title}</div>
+        </div>`;
+    }).join('');
 }
 
 async function removeFromWishlist(wishlistId) {
-    const { error } = await supabaseClient.from("wishlist").delete().eq("id", wishlistId);
-    if (error) showToast('Error removing', 'error'); else { showToast('Removed from wishlist', 'info'); location.reload(); }
-}
-
-// ══════════════════════════════════════
-//  ORDERS
-// ══════════════════════════════════════
-async function loadOrders() {
-    const { data, error } = await supabaseClient
-        .from("orders")
-        .select("product:products(*)")
-        .eq("buyer_id", currentUser.id);
-
-    if (error) return console.error(error);
-    const grid = document.getElementById("ordersGrid");
-    const toggleBtn = document.getElementById("ordersToggle");
-    const items = data || [];
-
-    if (items.length > 2) toggleBtn.style.display = "flex";
-    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><i class="fas fa-bag-shopping"></i>No orders yet</div>`; return; }
-
-    items.slice(0, 2).forEach(item => {
-        const p = item.product;
-        if (!p) return;
-        const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
-        grid.innerHTML += `
-            <div class="product-item" onclick="location.href='product-detail.html?id=${p.id}'">
-                <img src="${img}">
-                <div style="font-weight:700;margin-top:5px;">₹${p.price}</div>
-                <div style="font-size:11px;color:gray;">${p.title}</div>
-            </div>`;
+    showConfirm('Remove from wishlist?', 'This item will be removed from your wishlist.', async () => {
+        const { error } = await supabaseClient.from("wishlist").delete().eq("id", wishlistId);
+        if (error) showToast('Error removing', 'error');
+        else { showToast('Removed from wishlist', 'info'); loadWishlist(); }
     });
 }
 
-// ════════════════════════════════════════
-//  FOLLOW SYSTEM
-// ══════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   ORDERS
+   ════════════════════════════════════════════════════ */
+async function loadOrders() {
+    const { data, error } = await supabaseClient.from("orders")
+        .select("id, amount, payment_status, created_at, product:products(id, title, price, image_url), seller:seller_id(name)")
+        .eq("buyer_id", currentUser.id)
+        .order("created_at", { ascending: false });
+    if (error) return;
+    const grid = document.getElementById("ordersGrid");
+    const toggleBtn = document.getElementById("ordersToggle");
+    const items = data || [];
+    if (items.length > 2) toggleBtn.style.display = "flex";
+    if (!items.length) { grid.innerHTML = `<div class="empty-state" style="grid-column:span 2;"><i class="fas fa-bag-shopping"></i>No orders yet</div>`; return; }
+    grid.innerHTML = items.slice(0, 4).map(item => {
+        const p = item.product;
+        if (!p) return '';
+        const img = p.image_url ? p.image_url.split(",")[0] : "placeholder.png";
+        const statusColor = item.payment_status === 'completed' ? 'var(--primary-dark)' : item.payment_status === 'failed' ? 'var(--danger)' : 'var(--warning)';
+        return `
+        <div class="product-item" onclick="location.href='product-details.html?id=${p.id}'">
+            <img src="${img}" onerror="this.src='placeholder.png'">
+            <div style="font-weight:700;margin-top:5px;">₹${item.amount || p.price}</div>
+            <div style="font-size:11px;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.title}</div>
+            <div style="font-size:10px;font-weight:700;color:${statusColor};margin-top:2px;">${(item.payment_status||'pending').toUpperCase()}</div>
+        </div>`;
+    }).join('');
+}
+
+/* ════════════════════════════════════════════════════
+   NOTIFICATIONS
+   ════════════════════════════════════════════════════ */
+async function loadNotifications() {
+    try {
+        const { data, error } = await supabaseClient.from("notifications")
+            .select("*")
+            .eq("user_id", currentUser.id)
+            .order("created_at", { ascending: false })
+            .limit(20);
+        if (error) throw error;
+        const list = document.getElementById('notifList');
+        const dot = document.getElementById('notifDot');
+        const items = data || [];
+        const unreadCount = items.filter(n => !n.is_read).length;
+        dot.classList.toggle('active', unreadCount > 0);
+
+        if (!items.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i>No notifications yet</div>`; return; }
+        list.innerHTML = items.map(n => `
+            <div class="notif-item ${n.is_read?'':'unread'}">
+                <div class="notif-item-title">${n.title || 'Notification'}</div>
+                <div class="notif-item-msg">${n.message || ''}</div>
+                <div class="notif-item-time">${getTimeAgo(n.created_at)}</div>
+            </div>
+        `).join('');
+
+        // Mark all as read
+        if (unreadCount > 0) {
+            await supabaseClient.from("notifications").update({ is_read: true }).eq("user_id", currentUser.id).eq("is_read", false);
+            dot.classList.remove('active');
+        }
+    } catch(e) {
+        document.getElementById('notifList').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash"></i>No notifications yet</div>`;
+    }
+}
+
+/* ════════════════════════════════════════════════════
+   FOLLOW SYSTEM
+   ════════════════════════════════════════════════════ */
 async function loadFollowCounts() {
     const [{ count: frs }, { count: fng }] = await Promise.all([
-        supabaseClient.from("follows").select("*", { count: 'exact', head: true }).eq("following_id", profileUserId),
-        supabaseClient.from("follows").select("*", { count: 'exact', head: true }).eq("follower_id", profileUserId)
+        supabaseClient.from("follows").select("*", { count:'exact', head:true }).eq("following_id", profileUserId),
+        supabaseClient.from("follows").select("*", { count:'exact', head:true }).eq("follower_id", profileUserId)
     ]);
     document.getElementById('followersCount').innerText = frs || 0;
     document.getElementById('followingCount').innerText = fng || 0;
@@ -1574,7 +1420,7 @@ async function loadFollowCounts() {
 
 async function checkFollowStatus() {
     const { data } = await supabaseClient.from("follows")
-        .select("id").eq("follower_id", currentUser.id).eq("following_id", profileUserId).single();
+        .select("id").eq("follower_id", currentUser.id).eq("following_id", profileUserId).maybeSingle();
     const btn = document.getElementById('followBtn');
     if (data) { btn.className = 'follow-btn following'; btn.innerHTML = '<i class="fas fa-user-check"></i> Following'; }
     else { btn.className = 'follow-btn not-following'; btn.innerHTML = '<i class="fas fa-user-plus"></i> Follow'; }
@@ -1584,8 +1430,7 @@ async function toggleFollow() {
     const btn = document.getElementById('followBtn');
     const isFollowing = btn.classList.contains('following');
     if (isFollowing) {
-        await supabaseClient.from("follows").delete()
-            .eq("follower_id", currentUser.id).eq("following_id", profileUserId);
+        await supabaseClient.from("follows").delete().eq("follower_id", currentUser.id).eq("following_id", profileUserId);
         btn.className = 'follow-btn not-following'; btn.innerHTML = '<i class="fas fa-user-plus"></i> Follow';
         showToast('Unfollowed', 'info');
     } else {
@@ -1599,8 +1444,7 @@ async function toggleFollow() {
 async function openFollowersModal(type) {
     const modal = document.getElementById('followersModal');
     document.getElementById('followersModalTitle').innerHTML = type === 'followers'
-        ? '<i class="fas fa-users"></i> Followers'
-        : '<i class="fas fa-user-plus"></i> Following';
+        ? '<i class="fas fa-users"></i> Followers' : '<i class="fas fa-user-plus"></i> Following';
     const list = document.getElementById('followersModalList');
     list.innerHTML = '<p style="color:var(--text-light);font-size:13px;display:flex;align-items:center;gap:6px;"><i class="fas fa-spinner fa-spin"></i> Loading...</p>';
     modal.classList.add('open');
@@ -1611,48 +1455,101 @@ async function openFollowersModal(type) {
     } else {
         query = supabaseClient.from("follows").select("following:users!following_id(id,name,avatar_url,college)").eq("follower_id", profileUserId);
     }
-
-    const { data } = await query;
-    if (error || !data.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i>No ${type} yet</div>`; return; }
-
+    const { data, error } = await query;
+    if (error || !data || !data.length) { list.innerHTML = `<div class="empty-state"><i class="fas fa-users"></i>No ${type} yet</div>`; return; }
     list.innerHTML = data.map(row => {
         const u = type === 'followers' ? row.follower : row.following;
         if (!u) return '';
-        const initials = (u.name || 'U').split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+        const initials = (u.name||'U').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
         return `
         <div class="follow-list-item" onclick="location.href='profile.html?uid=${u.id}'" style="cursor:pointer;">
-            <div class="follow-list-avatar">${u.avatar_url ? `<img src="${u.avatar_url}">` : initials}</div>
+            <div class="follow-list-avatar">${u.avatar_url?`<img src="${u.avatar_url}">`:initials}</div>
             <div>
-                <strong style="font-size:14px;">${u.name || 'Student'}</strong>
-                <div style="font-size:11px;color:var(--text-light);display:flex;align-items:center;gap:4px;"><i class="fas fa-location-dot" style="font-size:10px;"></i> ${u.college || ''}</div>
+                <strong style="font-size:14px;">${u.name||'Student'}</strong>
+                <div style="font-size:11px;color:var(--text-light);display:flex;align-items:center;gap:4px;"><i class="fas fa-location-dot" style="font-size:10px;"></i> ${u.college||''}</div>
             </div>
             <i class="fas fa-chevron-right" style="margin-left:auto;color:var(--text-light);font-size:12px;"></i>
         </div>`;
     }).join('');
 }
 
-// ══════════════════════════════════════════
-//  SHARE PROFILE
-// ════════════════════════════════════
-function shareProfile() {
-    const url = window.location.origin + window.location.pathname + '?uid=' + profileUserId;
-    if (navigator.share) {
-        navigator.share({ title: 'Check out this profile on DormKart', url }).catch(() => {});
-    } else {
-        navigator.clipboard.writeText(url).then(() => {
-            showToast('Profile link copied!', 'success');
-        }).catch(() => showToast('Could not copy link', 'error'));
+/* ════════════════════════════════════════════════════
+   SEND MESSAGE
+   ════════════════════════════════════════════════════ */
+async function sendMessage() {
+    try {
+        const { data: existing } = await supabaseClient.from("chats")
+            .select("id").eq("sender_id", currentUser.id).eq("receiver_id", profileUserId)
+            .limit(1);
+        if (existing && existing.length > 0) {
+            showToast('Chat already exists. Open it from messages.', 'info');
+            return;
+        }
+        const { error } = await supabaseClient.from("chats").insert({
+            sender_id: currentUser.id,
+            receiver_id: profileUserId,
+            message: "Hi, I'm interested in your items!",
+            is_read: false
+        });
+        if (error) throw error;
+        showToast('Message sent!', 'success');
+    } catch(e) {
+        showToast('Failed to send message', 'error');
     }
 }
 
-// ════════════════════════════════════
-//  THEME
-// ════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   REALTIME
+   ════════════════════════════════════════════════════ */
+function setupRealtime() {
+    if (!supabaseClient || !currentUser) return;
+    supabaseClient.channel('profile-realtime')
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications', filter:`user_id=eq.${currentUser.id}` }, () => {
+            loadNotifications();
+            showToast('New notification', 'info');
+        })
+        .on('postgres_changes', { event:'INSERT', schema:'public', table:'chats', filter:`receiver_id=eq.${currentUser.id}` }, () => {
+            showToast('New message received', 'info');
+        })
+        .on('postgres_changes', { event:'*', schema:'public', table:'trades', filter:`sender_id=eq.${currentUser.id}` }, (payload) => {
+            if (payload.eventType === 'UPDATE') { loadTrades(); showToast('Trade status updated', 'info'); }
+        })
+        .on('postgres_changes', { event:'*', schema:'public', table:'trades', filter:`receiver_id=eq.${currentUser.id}` }, (payload) => {
+            if (payload.eventType === 'INSERT') { loadTrades(); showToast('New trade offer received', 'info'); }
+            if (payload.eventType === 'UPDATE') { loadTrades(); showToast('Trade status updated', 'info'); }
+        })
+        .subscribe();
+}
+
+/* ════════════════════════════════════════════════════
+   CONFIRM DIALOG
+   ════════════════════════════════════════════════════ */
+function showConfirm(title, sub, callback) {
+    document.getElementById('confirmTitle').innerText = title;
+    document.getElementById('confirmSub').innerText = sub;
+    confirmCallback = callback;
+    document.getElementById('confirmOkBtn').onclick = () => {
+        closeModal('confirmModal');
+        if (typeof confirmCallback === 'function') confirmCallback();
+        confirmCallback = null;
+    };
+    openModal('confirmModal');
+}
+
+/* ════════════════════════════════════════════════════
+   SHARE
+   ════════════════════════════════════════════════════ */
+function shareProfile() {
+    const url = window.location.origin + window.location.pathname + '?uid=' + profileUserId;
+    if (navigator.share) { navigator.share({ title:'Check out this profile on DormKart', url }).catch(()=>{}); }
+    else { navigator.clipboard.writeText(url).then(()=>showToast('Profile link copied!','success')).catch(()=>showToast('Could not copy link','error')); }
+}
+
+/* ════════════════════════════════════════════════════
+   THEME
+   ════════════════════════════════════════════════════ */
 function applySavedTheme() {
-    if (localStorage.getItem('theme') === 'dark') {
-        document.body.classList.add('dark');
-        document.getElementById('themeIcon').className = 'fas fa-sun';
-    }
+    if (localStorage.getItem('theme') === 'dark') { document.body.classList.add('dark'); document.getElementById('themeIcon').className = 'fas fa-sun'; }
 }
 function toggleDarkMode() {
     const dark = document.body.classList.toggle('dark');
@@ -1660,9 +1557,9 @@ function toggleDarkMode() {
     document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
 }
 
-// ══════════════════════════════════
-//  HELPERS
-// ════════════════════════════════════
+/* ════════════════════════════════════════════════════
+   HELPERS
+   ════════════════════════════════════════════════════ */
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
@@ -1685,30 +1582,21 @@ let toastTimer;
 function showToast(msg, type) {
     type = type || 'info';
     const t = document.getElementById('toast');
-    const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
-    t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${msg}</span>`;
+    const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info' };
+    t.innerHTML = `<i class="fas ${icons[type]||icons.info}"></i><span>${msg}</span>`;
     t.className = 'toast show ' + type;
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
-    overlay.addEventListener('click', e => {
-        if (e.target === overlay) overlay.classList.remove('open');
-    });
+    overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
 });
 
-// Scroll to top
-window.addEventListener('scroll', () => {
-    document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
-});
+window.addEventListener('scroll', () => { document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400); });
 
-// Keyboard escape
 document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-    }
+    if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
 });
 
 async function logout() {
