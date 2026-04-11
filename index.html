@@ -41,9 +41,11 @@
         .splash-container {
             text-align: center;
             animation: fadeInScale 1.2s ease-out forwards;
+            /* Added margin to push it slightly up from the center for better visual balance */
+            margin-top: -60px;
         }
 
-        /* Icon Container with backdrop blur for startup professional feel */
+        /* Icon Container */
         .icon-box {
             background: rgba(255, 255, 255, 0.4);
             padding: 25px;
@@ -103,7 +105,7 @@
 
         /* Subtitle Text Alignment */
         .subtitle-box {
-            max-width: 300px;
+            max-width: 320px;
             margin: 15px auto 0 auto;
             text-align: center;
         }
@@ -112,7 +114,6 @@
         .dot-loader {
             width: 7px;
             height: 7px;
-            background: var(--sky-blue);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
@@ -131,15 +132,20 @@
             bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
+            width: 85%;
+            max-width: 380px;
             background: white;
-            padding: 20px 25px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            padding: 25px;
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
             border: 1px solid #f3f4f6;
             animation: fadeInSlideUp 1.5s ease-out forwards;
             opacity: 0;
+            /* Center children */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         @keyframes fadeInSlideUp {
@@ -149,17 +155,19 @@
 
         /* Title in Why Section */
         .why-title {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 19px;
+            font-weight: 800;
             color: #111827;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
         }
         
         .why-title i {
-            color: var(--mint-green);
+            color: var(--emerald-dark, #059669);
+            font-size: 22px;
         }
 
         /* Description in Why Section */
@@ -167,7 +175,8 @@
             font-size: 14px;
             line-height: 1.6;
             color: #6b7280;
-            font-weight: 400;
+            font-weight: 500;
+            max-width: 300px;
         }
     </style>
 </head>
@@ -184,7 +193,7 @@
 
         <div class="subtitle-box">
             <div class="loading-text">
-                Loading your campus marketplace
+                Connecting your campus
                 <div class="dot-loader"></div>
                 <div class="dot-loader"></div>
                 <div class="dot-loader"></div>
@@ -195,16 +204,16 @@
 
     <div class="why-section">
         <div class="why-title">
-            <i class="material-icons">verified</i>
+            <i class="material-icons" style="color: #3a86ff;">verified</i>
             Why DormKart?
         </div>
         <div class="why-desc">
-            Everything you need to find, share, and save on study materials. Connecting campus communities.
+            The smartest way to find, share, and save on campus essentials. Connecting student communities.
         </div>
     </div>
 
     <script>
-        // Set timeout to redirect after 5 seconds
+        // Redirect after 5 seconds
         setTimeout(function () {
             window.location.href = "login-signup.html";
         }, 5000);
