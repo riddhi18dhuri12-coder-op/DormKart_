@@ -10,12 +10,14 @@
 
     <style>
         :root {
-            /* Solid Palette - No Gradients */
+            /* Solid Pastel Palette */
             --apricot: #ffdfba;
             --baby-pink: #ffb3ba;
+            --pale-yellow: #ffffba;
             --mint-green: #baffc9;
             --sky-blue: #bae1ff;
             
+            /* UI Essentials */
             --text-main: #0f172a;
             --text-muted: #64748b;
             --bg-canvas: #ffffff;
@@ -121,7 +123,7 @@
         .hero {
             padding: 100px 6% 80px;
             text-align: center;
-            background-color: #fff9f2; /* Very light solid apricot tint */
+            background-color: #fffaf5; /* Solid light pastel background */
         }
 
         .badge-student {
@@ -146,7 +148,7 @@
             line-height: 1.1;
         }
 
-        .hero h1 span.apricot-text { color: #e67e22; } /* Darker solid apricot for text */
+        .hero h1 span.highlight { color: #e67e22; }
 
         .hero p {
             color: var(--text-muted);
@@ -204,6 +206,11 @@
             cursor: pointer;
         }
 
+        /* Assigning solid pastel colors to cards */
+        .f-card.pink { background-color: #fff5f6; }
+        .f-card.mint { background-color: #f6fff9; }
+        .f-card.blue { background-color: #f6faff; }
+
         .f-card:hover { 
             transform: translateY(-10px); 
             border-color: var(--apricot);
@@ -215,8 +222,8 @@
             border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             margin-bottom: 24px;
-            background: var(--apricot);
-            color: var(--text-main);
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         /* --- FOOTER --- */
@@ -262,7 +269,6 @@
         <div class="nav-links">
             <a onclick="checkAuth('dashboard.html')">Marketplace</a>
             <a onclick="checkAuth('dashboard.html')">Browse</a>
-            <a onclick="checkAuth('chats.html')">Messages</a>
             <a href="#">How it Works</a>
         </div>
 
@@ -277,7 +283,7 @@
             <span class="material-icons-round" style="color:#e67e22; font-size:18px;">school</span>
             Built for students, by students
         </div>
-        <h1>Your Campus <span class="apricot-text">Dorm</span><br>Marketplace</h1>
+        <h1>Your Campus <span class="highlight">Dorm</span><br>Marketplace</h1>
         <p>Buy, sell, exchange, and borrow essentials within your college community. Save money and reduce waste with DormKart.</p>
         
         <div class="hero-btns">
@@ -289,20 +295,20 @@
     </section>
 
     <section class="features">
-        <div class="f-card" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round">verified_user</span></div>
+        <div class="f-card pink" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--baby-pink);">verified_user</span></div>
             <h3>Verified Students</h3>
             <p>Every user is verified via college email to ensure a safe, trusted community.</p>
         </div>
 
-        <div class="f-card" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round">auto_awesome</span></div>
+        <div class="f-card mint" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--mint-green);">auto_awesome</span></div>
             <h3>Smart Discovery</h3>
             <p>Find materials specifically categorized by your branch and semester.</p>
         </div>
 
-        <div class="f-card" onclick="checkAuth('dashboard.html')">
-            <div class="f-icon-box"><span class="material-icons-round">sync</span></div>
+        <div class="f-card blue" onclick="checkAuth('dashboard.html')">
+            <div class="f-icon-box"><span class="material-icons-round" style="color:var(--sky-blue);">sync</span></div>
             <h3>Barter & Swap</h3>
             <p>Swap items you no longer need with other students easily.</p>
         </div>
@@ -315,7 +321,7 @@
                     <div class="logo-icon"><span class="material-icons-round">storefront</span></div>
                     <span class="logo-text">DormKart</span>
                 </div>
-                <p style="margin-top: 15px;">The solid marketplace solution for campus life.</p>
+                <p style="margin-top: 15px;">The smarter way to manage your campus essentials.</p>
             </div>
             
             <div class="footer-col">
@@ -329,7 +335,7 @@
             <div class="footer-col">
                 <h4>Company</h4>
                 <ul>
-                    <li><a href="#">About Us</a></li>
+                    <li><a onclick="checkAuth('profile.html')">About Us</a></li>
                     <li><a href="#">Contact</a></li>
                 </ul>
             </div>
@@ -345,7 +351,7 @@
 
         <div class="footer-bottom">
             <p>&copy; 2026 DormKart. All rights reserved.</p>
-            <p>Made with <span style="color:var(--apricot)">❤</span> for students</p>
+            <p>Made with <span style="color:var(--baby-pink)">❤</span> for students</p>
         </div>
     </footer>
 
@@ -362,6 +368,7 @@
                     window.location.href = "login-signup.html";
                 }
             } catch (error) {
+                console.error("Auth error:", error);
                 window.location.href = "login-signup.html";
             }
         }
