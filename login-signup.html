@@ -1,318 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>DormKart - Login / Signup</title>
-
+    <title>Login & Sign Up | DormKart</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
 
     <style>
+        :root {
+            --pale-yellow: #ffffba;
+            --mint-green: #baffc9;
+            --sky-blue: #bae1ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-canvas: #f8faff;
+            --white: #ffffff;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
+            background-color: var(--bg-canvas);
+            background-image: radial-gradient(circle at 0% 0%, var(--pale-yellow) 0%, transparent 20%),
+                              radial-gradient(circle at 100% 100%, var(--mint-green) 0%, transparent 20%);
             height: 100vh;
             display: flex;
-            align-items: center;
             justify-content: center;
-            /* Emerald Light background */
-            background: #F0FDFA; 
+            align-items: center;
+            color: var(--text-main);
+            padding: 20px;
         }
 
-        .container {
-            width: 850px;
-            height: 500px;
-            display: flex;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(5, 150, 105, 0.1);
-            overflow: hidden;
-        }
-
-        .left {
-            flex: 1;
-            /* Emerald Gradient */
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--white);
             padding: 40px;
+            border-radius: 32px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--sky-blue);
             text-align: center;
         }
 
-        .left h1 {
-            font-size: 40px;
+        .logo-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            background: var(--mint-green);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 10px;
+            font-size: 24px;
+        }
+
+        .logo-text {
+            font-size: 22px;
             font-weight: 800;
-            margin-bottom: 10px;
             letter-spacing: -1px;
         }
 
-        .left p {
-            opacity: 0.9;
-            font-weight: 500;
+        h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .right {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .tabs {
-            display: flex;
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
             margin-bottom: 25px;
-            background: #f1f5f9;
-            border-radius: 12px;
-            padding: 5px;
         }
 
-        .tabs button {
-            flex: 1;
-            padding: 10px;
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            color: #64748b;
-            border-radius: 8px;
-            transition: 0.3s;
+        .form-group {
+            text-align: left;
+            margin-bottom: 18px;
         }
 
-        .tabs button.active {
-            background: white;
-            color: #059669; /* Emerald Dark */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .form {
-            display: none;
-            flex-direction: column;
-        }
-
-        .form.active {
-            display: flex;
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            margin-left: 4px;
         }
 
         input {
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1.5px solid #f1f5f9;
+            background: #f8fafc;
+            font-size: 15px;
+            transition: 0.2s;
             outline: none;
-            transition: border-color 0.3s;
         }
 
         input:focus {
-            border-color: #10b981;
+            border-color: var(--sky-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(186, 225, 255, 0.3);
         }
 
-        button.submit {
-            padding: 14px;
-            border: none;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border-radius: 10px;
+        .forgot-link {
+            display: block;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-top: -10px;
+            margin-bottom: 20px;
             cursor: pointer;
+        }
+
+        .forgot-link:hover { color: var(--text-main); }
+
+        .btn-auth {
+            width: 100%;
+            padding: 16px;
+            background: var(--sky-blue);
+            color: var(--text-main);
+            border: none;
+            border-radius: 14px;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
+            cursor: pointer;
             transition: 0.3s;
+            margin-top: 10px;
         }
 
-        button.submit:hover {
+        .btn-auth:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+            filter: brightness(0.95);
         }
 
-        .message {
+        .toggle-text {
+            margin-top: 25px;
             font-size: 14px;
-            margin-top: 15px;
-            text-align: center;
-            font-weight: 500;
+            color: var(--text-muted);
+            font-weight: 600;
         }
+
+        .toggle-text span {
+            color: var(--text-main);
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .hidden { display: none; }
+
+        #statusMessage {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+        .error { color: #ef4444; }
+        .success { color: #10b981; }
     </style>
-
 </head>
-
 <body>
 
-    <div class="container">
-
-        <div class="left">
-            <h1>DormKart</h1>
-            <p>Smart Campus Marketplace</p>
+    <div class="auth-container">
+        <div class="logo-area">
+            <div class="logo-icon"><span class="material-icons-round">storefront</span></div>
+            <span class="logo-text">DormKart</span>
         </div>
 
-        <div class="right">
-
-            <div class="tabs">
-                <button id="loginTab" class="active">Login</button>
-                <button id="signupTab">Sign Up</button>
+        <div id="loginSection">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Access the smartest campus marketplace.</p>
+            
+            <div class="form-group">
+                <label>College Email</label>
+                <input type="email" id="loginEmail" placeholder="student@college.edu">
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPass" placeholder="••••••••">
             </div>
 
-            <div id="loginForm" class="form active">
-                <input type="email" id="loginEmail" placeholder="College Email">
-                <input type="password" id="loginPassword" placeholder="Password">
-                <button class="submit" onclick="login()">Login</button>
-                <p style="text-align:right;font-size:13px;margin-top:-10px;margin-bottom:10px;cursor:pointer;color:#059669;" onclick="forgotPassword()">Forgot Password?</p>
-                <div id="loginMsg" class="message"></div>
-            </div>
+            <span class="forgot-link" onclick="showReset()">Forgot Password?</span>
 
-            <div id="signupForm" class="form">
-                <input type="email" id="signupEmail" placeholder="College Email">
-                <input type="password" id="signupPassword" placeholder="Password">
-                <button class="submit" onclick="signup()">Create Account</button>
-                <div id="signupMsg" class="message"></div>
-            </div>
-
+            <button class="btn-auth" onclick="handleLogin()">Log In</button>
+            
+            <p class="toggle-text">New to DormKart? <span onclick="toggleAuth('signup')">Create account</span></p>
         </div>
+
+        <div id="signupSection" class="hidden">
+            <h2>Join DormKart</h2>
+            <p class="subtitle">Start trading with your community today.</p>
+            
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="regName" placeholder="Alex Johnson">
+            </div>
+
+            <div class="form-group">
+                <label>College Email</label>
+                <input type="email" id="regEmail" placeholder="student@college.edu">
+            </div>
+            
+            <div class="form-group">
+                <label>Create Password</label>
+                <input type="password" id="regPass" placeholder="Min. 6 characters">
+            </div>
+
+            <button class="btn-auth" style="background: var(--mint-green);" onclick="handleSignup()">Sign Up</button>
+            
+            <p class="toggle-text">Have an account? <span onclick="toggleAuth('login')">Log in</span></p>
+        </div>
+
+        <div id="resetSection" class="hidden">
+            <h2>Reset Password</h2>
+            <p class="subtitle">We'll email you a link to reset your password.</p>
+            
+            <div class="form-group">
+                <label>Registered Email</label>
+                <input type="email" id="resetEmail" placeholder="student@college.edu">
+            </div>
+
+            <button class="btn-auth" style="background: var(--pale-yellow);" onclick="handleReset()">Send Reset Link</button>
+            
+            <p class="toggle-text"><span onclick="toggleAuth('login')">Back to Login</span></p>
+        </div>
+
+        <div id="statusMessage"></div>
     </div>
 
     <script>
-        const loginTab = document.getElementById("loginTab")
-        const signupTab = document.getElementById("signupTab")
-        const loginForm = document.getElementById("loginForm")
-        const signupForm = document.getElementById("signupForm")
+        const loginSec = document.getElementById('loginSection');
+        const signupSec = document.getElementById('signupSection');
+        const resetSec = document.getElementById('resetSection');
+        const statusDiv = document.getElementById('statusMessage');
 
-        loginTab.onclick = () => {
-            loginTab.classList.add("active")
-            signupTab.classList.remove("active")
-            loginForm.classList.add("active")
-            signupForm.classList.remove("active")
+        function toggleAuth(view) {
+            loginSec.classList.add('hidden');
+            signupSec.classList.add('hidden');
+            resetSec.classList.add('hidden');
+            statusDiv.innerText = "";
+            statusDiv.className = "";
+
+            if(view === 'login') loginSec.classList.remove('hidden');
+            else if(view === 'signup') signupSec.classList.remove('hidden');
         }
 
-        signupTab.onclick = () => {
-            signupTab.classList.add("active")
-            loginTab.classList.remove("active")
-            signupForm.classList.add("active")
-            loginForm.classList.remove("active")
+        function showReset() {
+            loginSec.classList.add('hidden');
+            resetSec.classList.remove('hidden');
+            statusDiv.innerText = "";
         }
 
-        async function signup() {
-            const email = document.getElementById("signupEmail").value
-            const password = document.getElementById("signupPassword").value
-            const msg = document.getElementById("signupMsg")
-
-            if (!email || !password) {
-                msg.style.color = "#ef4444"
-                msg.innerText = "Enter email and password"
-                return
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+            
+            if(!email || !pass) {
+                showMessage("Please fill in all fields.", "error");
+                return;
             }
 
-            msg.style.color = "#059669"
-            msg.innerText = "Creating account..."
+            const { error } = await supabaseClient.auth.signInWithPassword({ email, password: pass });
 
-            const { data, error } = await supabaseClient.auth.signUp({
-                email: email,
-                password: password
-            })
-
-            if (error) {
-                msg.style.color = "#ef4444"
-                msg.innerText = error.message
-                return
-            }
-
-            const user = data.user
-            await supabaseClient
-                .from("users")
-                .upsert({
-                    id: user.id,
-                    email: user.email
-                })
-
-            msg.style.color = "#059669"
-            msg.innerText = "Signup successful! Redirecting..."
-
-            setTimeout(() => {
-                window.location = "profile.html"
-            }, 1500)
+            if (error) showMessage(error.message, "error");
+            else window.location.href = "dashboard.html";
         }
 
-        async function login() {
-            const email = document.getElementById("loginEmail").value
-            const password = document.getElementById("loginPassword").value
-            const msg = document.getElementById("loginMsg")
+        async function handleSignup() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const pass = document.getElementById('regPass').value;
 
-            if (!email || !password) {
-                msg.style.color = "#ef4444"
-                msg.innerText = "Enter email and password"
-                return
+            if(!name || !email || !pass) {
+                showMessage("Please fill in all fields.", "error");
+                return;
             }
 
-            msg.style.color = "#059669"
-            msg.innerText = "Logging in..."
+            const { error } = await supabaseClient.auth.signUp({
+                email, password: pass,
+                options: { data: { full_name: name } }
+            });
 
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            })
-
-            if (error) {
-                msg.style.color = "#ef4444"
-                msg.innerText = error.message
-                return
-            }
-
-            msg.style.color = "#059669"
-            msg.innerText = "Login successful! Redirecting..."
-
-            setTimeout(() => {
-                window.location = "dashboard.html"
-            }, 1000)
-        }
-
-        async function forgotPassword() {
-
-    const email = document.getElementById("loginEmail").value
-    const msg = document.getElementById("loginMsg")
-
-    if (!email) {
-        msg.style.color = "#ef4444"
-        msg.innerText = "Enter your email first"
-        return
-    }
-
-    msg.style.color = "#059669"
-    msg.innerText = "Sending reset email..."
-
-    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + "/reset-password.html"
-    })
-
-    if (error) {
-        msg.style.color = "#ef4444"
-        msg.innerText = error.message
-        return
-    }
-
-    msg.style.color = "#059669"
-    msg.innerText = "Password reset link sent to your email"
-}
-        async function checkSession() {
-            const { data } = await supabaseClient.auth.getSession()
-            if (data.session) {
-                window.location = "dashboard.html"
+            if (error) showMessage(error.message, "error");
+            else {
+                showMessage("Check your email for the verification link!", "success");
+                setTimeout(() => toggleAuth('login'), 3000);
             }
         }
 
-        checkSession()
+        async function handleReset() {
+            const email = document.getElementById('resetEmail').value;
+            if(!email) {
+                showMessage("Please enter your email address.", "error");
+                return;
+            }
+
+            const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                redirectTo: window.location.origin + '/reset-password.html',
+            });
+
+            if (error) showMessage(error.message, "error");
+            else showMessage("Reset link sent! Please check your inbox.", "success");
+        }
+
+        function showMessage(msg, type) {
+            statusDiv.innerText = msg;
+            statusDiv.className = type;
+        }
     </script>
-
 </body>
-
 </html>
