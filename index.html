@@ -8,13 +8,19 @@
     <title>DormKart</title>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            /* Lush Emerald Colors */
-            --emerald-light: #10b981;
-            --emerald-dark: #059669;
+            /* Pastel Rainbow Palette */
+            --baby-pink: #ffb3ba;
+            --apricot: #ffdfba;
+            --pale-yellow: #ffffba;
+            --mint-green: #baffc9;
+            --sky-blue: #bae1ff;
+            
+            /* Text Color */
+            --text-dark: #1f2937;
         }
 
         body {
@@ -22,104 +28,186 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            /* Enhanced Emerald Gradient */
-            background: linear-gradient(135deg, var(--emerald-light) 0%, var(--emerald-dark) 100%);
-            color: white;
+            /* Gentle gradient for background */
+            background: linear-gradient(135deg, #f3f6ff 0%, #e8f0fe 100%);
+            color: var(--text-dark);
             flex-direction: column;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
             overflow: hidden;
         }
 
-        /* Splash Animation Enhancements */
-        .logo-container {
+        /* Splash Screen Container */
+        .splash-container {
             text-align: center;
             animation: fadeInScale 1.2s ease-out forwards;
         }
 
+        /* Icon Container with backdrop blur for startup professional feel */
         .icon-box {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.4);
             padding: 25px;
             border-radius: 30px;
             display: inline-block;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            animation: pulseEmerald 2.5s infinite ease-in-out;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            animation: pulseSoft 3s infinite ease-in-out;
+            position: relative;
         }
 
+        /* Material Icon Style */
+        .startup-icon {
+            font-size: 80px;
+            display: block;
+            background: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Animations */
         @keyframes fadeInScale {
             0% { opacity: 0; transform: scale(0.9); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        @keyframes pulseEmerald {
-            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
-            50% { transform: scale(1.08); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15); }
-            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); }
+        @keyframes pulseSoft {
+            0% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1); }
+            100% { transform: scale(1); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); }
         }
 
+        /* App Title Style */
         h1 {
-            font-size: 38px;
+            font-size: 42px;
             font-weight: 800;
             margin: 0;
-            letter-spacing: -1px;
-            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: -1.5px;
+            color: #111827;
         }
 
+        /* Subtitle / Loading Text */
         .loading-text {
             margin-top: 15px;
+            font-size: 16px;
             font-weight: 500;
-            opacity: 0.85;
+            color: #4b5563;
             letter-spacing: 0.5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        /* Subtle Loading Indicator */
+        /* Subtitle Text Alignment */
+        .subtitle-box {
+            max-width: 300px;
+            margin: 15px auto 0 auto;
+            text-align: center;
+        }
+
+        /* Subtle Loading Dots */
         .dot-loader {
-            width: 6px;
-            height: 6px;
-            background: white;
+            width: 7px;
+            height: 7px;
+            background: var(--sky-blue);
             border-radius: 50%;
             animation: bounce 1.4s infinite ease-in-out both;
         }
-        .dot-loader:nth-child(1) { animation-delay: -0.32s; }
-        .dot-loader:nth-child(2) { animation-delay: -0.16s; }
+        .dot-loader:nth-child(1) { animation-delay: -0.32s; background-color: var(--baby-pink); }
+        .dot-loader:nth-child(2) { animation-delay: -0.16s; background-color: var(--mint-green); }
+        .dot-loader:nth-child(3) { background-color: var(--sky-blue); }
 
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); }
             40% { transform: scale(1); }
+        }
+
+        /* Bottom "Why" Section - Startup Feature Style */
+        .why-section {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f3f4f6;
+            animation: fadeInSlideUp 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInSlideUp {
+            0% { opacity: 0; transform: translate(-50%, 20px); }
+            100% { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        /* Title in Why Section */
+        .why-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .why-title i {
+            color: var(--mint-green);
+        }
+
+        /* Description in Why Section */
+        .why-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #6b7280;
+            font-weight: 400;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="logo-container">
+    <div class="splash-container">
 
         <div class="icon-box">
-            <i class="material-icons" style="font-size:80px; display: block;">storefront</i>
+            <i class="material-icons startup-icon">storefront</i>
         </div>
 
         <h1>DormKart</h1>
 
-        <div class="loading-text">
-            Loading your campus
-            <div class="dot-loader"></div>
-            <div class="dot-loader"></div>
-            <div class="dot-loader"></div>
+        <div class="subtitle-box">
+            <div class="loading-text">
+                Loading your campus marketplace
+                <div class="dot-loader"></div>
+                <div class="dot-loader"></div>
+                <div class="dot-loader"></div>
+            </div>
         </div>
 
     </div>
 
+    <div class="why-section">
+        <div class="why-title">
+            <i class="material-icons">verified</i>
+            Why DormKart?
+        </div>
+        <div class="why-desc">
+            Everything you need to find, share, and save on study materials. Connecting campus communities.
+        </div>
+    </div>
+
     <script>
-        // Kept your original logic
+        // Set timeout to redirect after 5 seconds
         setTimeout(function () {
-            window.location.href = "login-signup.html"
-        }, 5000)
+            window.location.href = "login-signup.html";
+        }, 5000);
     </script>
 
 </body>
