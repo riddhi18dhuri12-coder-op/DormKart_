@@ -547,6 +547,7 @@
   <select id="priceSort" class="filter-select">
     <option value="">Sort by</option>
     <option value="low">Price: Low to High</option>
+       <option value="my_campus">My Campus</option>
     <option value="high">Price: High to Low</option>
     <option value="newest">Newest First</option>
     <option value="oldest">Oldest First</option>
@@ -797,6 +798,35 @@ function applyFilters() {
   let f = [...allProducts];
   const q  = document.getElementById('searchInput').value.toLowerCase().trim();const cat = document.getElementById('categoryFilter').value;
   const srt = document.getElementById('priceSort').value;
+
+     function applyFilters() {
+  let f = [...allProducts];
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cat = document.getElementById('categoryFilter').value;
+  const srt = document.getElementById('priceSort').value;
+
+  if (q) f = f.filter(p => (p.title || '').toLowerCase().includes(q) || (p.description || '').toLowerCase().includes(q) || (p.category || '').toLowerCase().includes(q));
+  if (cat) f = f.filter(p => p.category === cat);
+  if (tradeOnly) f = f.filter(p => Boolean(p.swap_enabled));
+
+  // --- New Campus Sorting Logic ---
+  if (srt === 'my_campus' && session?.user) {
+    // Assuming 'college' is stored in user_metadata or you have access to user's college
+    const userCollege = session.user.user_metadata?.college || ""; 
+    f.sort((a, b) => {
+      const aMatch = a.seller?.college === userCollege ? 1 : 0;
+      const bMatch = b.seller?.college === userCollege ? 1 : 0;
+      return bMatch - aMatch; // Puts matches (1) before non-matches (0)
+    });
+  } 
+  // --- End of New Logic ---
+  else if (srt === 'low') f.sort((a, b) => (a.price || 0) - (b.price || 0));
+  else if (srt === 'high') f.sort((a, b) => (b.price || 0) - (a.price || 0));
+  else if (srt === 'newest') f.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  else if (srt === 'oldest') f.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+  renderGrid(f);
+}
   if (q)    f = f.filter(p => (p.title||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q) || (p.category||'').toLowerCase().includes(q));
   if (cat)  f = f.filter(p => p.category === cat);
   if (tradeOnly) f = f.filter(p => Boolean(p.swap_enabled));
