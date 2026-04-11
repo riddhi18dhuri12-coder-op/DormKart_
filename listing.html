@@ -180,22 +180,22 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 .empty-state{text-align:center;padding:56px 20px}
 .empty-state i{font-size:44px;color:var(--muted-light);margin-bottom:14px}
 .empty-state h4{font-size:16px;font-weight:700;color:var(--text-secondary);margin-bottom:6px}
-.empty-state p{font-size:13px;color:var(--muted);max-width:340px;margin:0 auto 20px}
+.empty-state p{font-size:13px;color:var(--muted);max-width:340px;margin:0 auto 20px;line-height:1.6}
 .btn-primary{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--radius);background:var(--primary);color:white;font-size:14px;font-weight:700;transition:all var(--transition);box-shadow:0 2px 8px rgba(37,99,235,0.25)}
 .btn-primary:hover{background:var(--primary-hover);box-shadow:0 4px 14px rgba(37,99,235,0.35);transform:translateY(-1px)}
 .btn-primary:active{transform:translateY(0)}
 
-/* Auth gate - full page overlay */
 .auth-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:40px 20px}
 .auth-gate-icon{width:72px;height:72px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin-bottom:20px}
 .auth-gate-icon i{font-size:28px;color:var(--primary)}
 .auth-gate h2{font-size:22px;font-weight:800;margin-bottom:8px;letter-spacing:-.3px}
 .auth-gate p{font-size:14px;color:var(--muted);max-width:380px;margin-bottom:24px;line-height:1.6}
-.auth-gate .btn-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .btn-outline{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--radius);border:1.5px solid var(--border);background:transparent;color:var(--text);font-size:14px;font-weight:700;transition:all var(--transition)}
 .btn-outline:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-light)}
-.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:var(--radius);border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;transition:all var(--transition)}
-.btn-ghost:hover{color:var(--text);background:var(--border-light)}
+
+.debug-banner{background:var(--warning-bg);color:var(--warning-text);padding:10px 20px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;margin:0 20px 16px;border-radius:var(--radius-sm);border:1px solid rgba(217,119,6,0.2)}
+.debug-banner i{font-size:14px}
+.debug-banner code{font-family:monospace;font-size:11px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px}
 
 .skeleton{background:linear-gradient(90deg,var(--border-light) 25%,var(--border) 50%,var(--border-light) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:var(--radius-sm)}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
@@ -306,7 +306,6 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 <i class="fa-solid fa-ellipsis-vertical" style="color:var(--muted-light);font-size:14px"></i>
 </div>
 </div>
-</aside>
 
 <header class="header">
 <button class="header-menu-btn" id="menuBtn" aria-label="Toggle menu"><i class="fa-solid fa-bars"></i></button>
@@ -323,21 +322,24 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 
 <main class="main" id="mainContent">
 
-<!-- Auth Gate: shown when user is NOT logged in -->
 <div id="authGate" style="display:none">
 <div class="auth-gate">
 <div class="auth-gate-icon"><i class="fa-solid fa-lock"></i></div>
 <h2>Login Required</h2>
 <p>You need to be logged in to view and manage your listings. Sign in to access your seller dashboard.</p>
-<div class="btn-row">
+<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
 <a href="login-signup.html" class="btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Sign In</a>
 <a href="index.html" class="btn-outline"><i class="fa-solid fa-house"></i> Go Home</a>
 </div>
 </div>
 </div>
 
-<!-- Main Content: shown when user IS logged in -->
 <div id="appContent" style="display:none">
+<!-- Debug info (hidden by default, toggle in console: showDebug()) -->
+<div id="debugBanner" class="debug-banner" style="display:none">
+<i class="fa-solid fa-bug"></i>
+<span id="debugText">Connecting to database...</span>
+</div>
 
 <div class="page-header">
 <div>
@@ -417,10 +419,7 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 </div>
 
 <div class="tab-content" id="pending-list">
-<div class="toolbar">
-<div class="spacer"></div>
-<span class="toolbar-count" id="pendingCount">0 items</span>
-</div>
+<div class="toolbar"><div class="spacer"></div><span class="toolbar-count" id="pendingCount">0 items</span></div>
 <div id="pendingGridContainer" class="listings-grid"></div>
 <div id="pendingListContainer" class="listings-list" style="display:none"></div>
 </div>
@@ -436,20 +435,14 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 </div>
 
 <div class="tab-content" id="unavailable-list">
-<div class="toolbar">
-<div class="spacer"></div>
-<span class="toolbar-count" id="unavailableCount">0 items</span>
-</div>
+<div class="toolbar"><div class="spacer"></div><span class="toolbar-count" id="unavailableCount">0 items</span></div>
 <div id="unavailableGridContainer" class="listings-grid"></div>
 <div id="unavailableListContainer" class="listings-list" style="display:none"></div>
 </div>
 
 </div>
-</div><!-- end #appContent -->
+</div>
 
-</main>
-
-<!-- Delete Modal -->
 <div class="modal-overlay" id="deleteModal">
 <div class="modal">
 <div class="modal-header">
@@ -459,17 +452,16 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 <div class="modal-body">
 <div style="text-align:center;margin-bottom:18px">
 <div style="width:52px;height:52px;border-radius:50%;background:var(--danger-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 12px"><i class="fa-solid fa-trash" style="font-size:22px;color:var(--danger-text)"></i></div>
-<p style="font-size:14px;color:var(--text-secondary);font-weight:500" id="deleteProductName">Are you sure you want to delete this listing? This cannot be undone.</p>
+<p style="font-size:14px;color:var(--text-secondary);font-weight:500" id="deleteProductName">Are you sure you want to delete this listing?</p>
 </div>
 <div style="display:flex;gap:10px;justify-content:flex-end">
-<button style="padding:10px 20px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--muted);transition:all var(--transition)" onclick="closeDeleteModal()" onmouseover="this.style.background='var(--border-light)'" onmouseout="this.style.background='transparent'">Cancel</button>
-<button style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--danger);color:white;font-weight:700;font-size:13px;transition:all var(--transition)" onclick="confirmDelete()">Delete</button>
+<button style="padding:10px 20px;border-radius:var(--radius-sm);border:1px solid var(--border);font-size:13px;font-weight:700;color:var(--muted);transition:all var(--transition)" onclick="closeDeleteModal()">Cancel</button>
+<button style="padding:10px 20px;border-radius:var(--radius-sm);background:var(--danger);color:white;font-weight:700;font-size:13px" onclick="confirmDelete()">Delete</button>
 </div>
 </div>
 </div>
 </div>
 
-<!-- Logout Modal -->
 <div class="modal-overlay" id="logoutModal">
 <div class="modal" style="max-width:400px">
 <div class="modal-header">
@@ -482,7 +474,7 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 <p style="font-size:14px;color:var(--text-secondary);font-weight:500">Are you sure you want to log out?</p>
 </div>
 <div style="display:flex;gap:10px">
-<button style="flex:1;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);font-weight:700;font-size:13px;color:var(--muted);transition:all var(--transition)" onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
+<button style="flex:1;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--border);font-weight:700;font-size:13px;color:var(--muted)" onclick="document.getElementById('logoutModal').classList.remove('active')">Cancel</button>
 <button style="flex:1;padding:12px;border-radius:var(--radius-sm);background:var(--danger);color:white;font-weight:700;font-size:13px" onclick="handleLogout()">Logout</button>
 </div>
 </div>
@@ -490,17 +482,20 @@ input,select,textarea{font-family:inherit}img{display:block;max-width:100%}ul{li
 </div>
 
 <script>
-/* ============================
-   State
-   ============================ */
 let currentUser = null;
 let allProducts = [];
 let deleteProductId = null;
 let currentViews = { all: 'grid', active: 'grid', pending: 'grid', sold: 'grid', unavailable: 'grid' };
 
-/* ============================
-   Utilities
-   ============================ */
+/* Debug helper — type showDebug() in console */
+window.showDebug = function() { document.getElementById('debugBanner').style.display = 'flex'; };
+
+function setDebug(text) {
+  const el = document.getElementById('debugText');
+  if (el) el.textContent = text;
+}
+
+/* ========== Utilities ========== */
 function showToast(msg, type) {
   const c = document.getElementById('toastContainer');
   const t = document.createElement('div');
@@ -528,6 +523,11 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function safeNum(val, fallback) {
+  const n = Number(val);
+  return isNaN(n) ? fallback : n;
+}
+
 const statusCfg = {
   active: { label: 'Active', class: 'status-active', bg: 'var(--success-bg)', color: 'var(--success-text)' },
   pending: { label: 'Pending', class: 'status-pending', bg: 'var(--warning-bg)', color: 'var(--warning-text)' },
@@ -535,9 +535,7 @@ const statusCfg = {
   unavailable: { label: 'Unavailable', class: 'status-unavailable', bg: 'var(--danger-bg)', color: 'var(--danger-text)' }
 };
 
-/* ============================
-   Theme
-   ============================ */
+/* ========== Theme ========== */
 function getTheme() { return localStorage.getItem('dk-theme') || 'light'; }
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
@@ -546,23 +544,20 @@ function applyTheme(t) {
 }
 function toggleTheme() {
   const n = getTheme() === 'dark' ? 'light' : 'dark';
-  localStorage.setItem('dk-theme', n); applyTheme(n);
+  localStorage.setItem('dk-theme', n);
+  applyTheme(n);
   showToast(n === 'dark' ? 'Dark mode' : 'Light mode', 'info');
 }
 applyTheme(getTheme());
 document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
-/* ============================
-   Sidebar
-   ============================ */
+/* ========== Sidebar ========== */
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebarOverlay');
 document.getElementById('menuBtn').addEventListener('click', () => { sidebar.classList.toggle('open'); overlay.classList.toggle('active'); });
 overlay.addEventListener('click', () => { sidebar.classList.remove('open'); overlay.classList.remove('active'); });
 
-/* ============================
-   Tabs
-   ============================ */
+/* ========== Tabs ========== */
 document.querySelectorAll('.tabs').forEach(tg => {
   tg.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
@@ -579,9 +574,7 @@ document.querySelectorAll('.tabs').forEach(tg => {
   });
 });
 
-/* ============================
-   View Toggle
-   ============================ */
+/* ========== View Toggle ========== */
 function setView(tab, view) {
   currentViews[tab] = view;
   const parent = document.getElementById(tab + '-list');
@@ -597,33 +590,21 @@ function setView(tab, view) {
   applyFilters(tab);
 }
 
-/* ============================
-   Auth — FIXED: no forced redirect
-   ============================ */
+/* ========== Auth ========== */
 async function checkAuth() {
   try {
-    /* If Supabase client doesn't exist (config.js missing/broken), return null silently */
     if (typeof supabaseClient === 'undefined') {
-      console.warn('supabaseClient not found — running without auth');
+      setDebug('supabaseClient not found');
       return null;
     }
-
     const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-    if (error) {
-      console.warn('Auth session check failed:', error.message);
-      return null;
-    }
-
-    if (!session) {
-      /* NOT logged in — return null instead of redirecting */
-      return null;
-    }
-
+    if (error) { setDebug('Auth error: ' + error.message); return null; }
+    if (!session) { setDebug('No active session'); return null; }
     currentUser = session.user;
+    setDebug('Logged in as ' + (currentUser.email || currentUser.id));
     return currentUser;
   } catch (e) {
-    console.warn('Auth check exception:', e);
+    setDebug('Auth exception: ' + e.message);
     return null;
   }
 }
@@ -638,39 +619,57 @@ async function fetchUserProfile() {
   }
 }
 
-/* ============================
-   Fetch Products
-   ============================ */
+/* ========== Fetch Products from Database ========== */
 async function fetchMyProducts() {
-  if (!currentUser || typeof supabaseClient === 'undefined') return [];
+  if (!currentUser || typeof supabaseClient === 'undefined') {
+    setDebug('Cannot fetch — no user or no supabase');
+    return [];
+  }
+
+  setDebug('Fetching products from "products" table where seller_id = ' + currentUser.id.slice(0, 12) + '...');
+
   try {
-    const { data, error } = await supabaseClient
+    const { data, error, status, statusText } = await supabaseClient
       .from('products')
       .select('*')
       .eq('seller_id', currentUser.id)
       .order('created_at', { ascending: false });
 
     if (error) {
+      setDebug('DB Error [' + status + ']: ' + error.message + ' | Code: ' + error.code);
       console.error('Supabase fetch error:', error);
       return [];
     }
+
+    if (!data) {
+      setDebug('DB returned null data');
+      return [];
+    }
+
+    setDebug('Loaded ' + data.length + ' products successfully');
+
+    /* Log column names for debugging */
+    if (data.length > 0) {
+      const cols = Object.keys(data[0]);
+      setDebug(data.length + ' products | Columns: ' + cols.join(', '));
+    }
+
     return data || [];
   } catch (e) {
+    setDebug('Fetch exception: ' + e.message);
     console.error('Fetch products error:', e);
     return [];
   }
 }
 
-/* ============================
-   Update Stats
-   ============================ */
+/* ========== Update Stats ========== */
 function updateStats(products) {
   const total = products.length;
   const active = products.filter(p => p.status === 'active').length;
   const pending = products.filter(p => p.status === 'pending').length;
   const sold = products.filter(p => p.status === 'sold').length;
   const unavailable = products.filter(p => p.status === 'unavailable').length;
-  const views = products.reduce((s, p) => s + (p.views || 0), 0);
+  const views = products.reduce((s, p) => s + safeNum(p.views, 0), 0);
 
   document.getElementById('statTotal').textContent = total;
   document.getElementById('statActive').textContent = active;
@@ -687,11 +686,9 @@ function updateStats(products) {
   document.getElementById('sidebarBadge').textContent = total;
 }
 
-/* ============================
-   Populate Category Filters
-   ============================ */
+/* ========== Populate Category Filters ========== */
 function populateCategoryFilters(products) {
-  const cats = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+  const cats = [...new Set(products.map(p => p.category).filter(Boolean).map(c => String(c).trim()))].sort();
   const options = '<option value="">All Categories</option>' + cats.map(c => '<option>' + escapeHtml(c) + '</option>').join('');
   ['allCatFilter', 'activeCatFilter'].forEach(id => {
     const el = document.getElementById(id);
@@ -699,25 +696,32 @@ function populateCategoryFilters(products) {
   });
 }
 
-/* ============================
-   Render Grid Card
-   ============================ */
+/* ========== Render Grid Card ========== */
 function renderGridCard(p) {
-  const imgs = p.image_url ? p.image_url.split(',').filter(Boolean) : [];
+  const imgs = p.image_url ? String(p.image_url).split(',').filter(Boolean) : [];
   const img = imgs[0] || '';
   const sc = statusCfg[p.status] || statusCfg.pending;
-  const isSwap = p.swap_enabled === true;
+  const isSwap = p.swap_enabled === true || p.swap_enabled === 'true';
   const safeTitle = escapeHtml(p.title || 'Untitled');
   const safeCat = escapeHtml(p.category || 'General');
+  const price = safeNum(p.price, 0);
+  const views = safeNum(p.views, 0);
+  const origPrice = safeNum(p.original_price, 0);
+
+  const priceHTML = origPrice > 0 && origPrice > price
+    ? '&#8377;' + price.toLocaleString('en-IN') + ' <small style="font-size:11px;font-weight:600;color:var(--muted-light);text-decoration:line-through">&#8377;' + origPrice.toLocaleString('en-IN') + '</small>'
+    : '&#8377;' + price.toLocaleString('en-IN');
+
+  const imgFallback = '<div class="listing-card-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt);flex-direction:column;gap:4px"><i class="fa-solid fa-image" style="font-size:24px;color:var(--muted-light)"></i><span style="font-size:10px;color:var(--muted-light);font-weight:600">No image</span></div>';
 
   return '<div class="listing-card" data-id="' + p.id + '">' +
     '<div class="listing-card-img-wrap">' +
-      (img ? '<img class="listing-card-img" src="' + img + '" alt="' + safeTitle + '" loading="lazy" onerror="this.outerHTML=\'<div class=listing-card-img style=display:flex;align-items:center;justify-content:center;background:var(--bg-alt)><i class=fa-solid fa-image-slash style=font-size:28px;color:var(--muted-light)></i></div>\'">' : '<div class="listing-card-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt)"><i class="fa-solid fa-image" style="font-size:28px;color:var(--muted-light)"></i></div>') +
+      (img ? '<img class="listing-card-img" src="' + img + '" alt="' + safeTitle + '" loading="lazy" onerror="this.outerHTML=\'' + imgFallback.replace(/'/g, "\\'") + '\'">' : imgFallback) +
       '<span class="listing-card-status" style="background:' + sc.bg + ';color:' + sc.color + '">' + sc.label + '</span>' +
       (isSwap ? '<span class="listing-card-swap"><i class="fa-solid fa-rotate" style="font-size:9px"></i> SWAP</span>' : '') +
       '<div class="listing-card-actions-overlay">' +
         '<button class="lc-action" title="Edit" onclick="event.stopPropagation();editProduct(\'' + p.id + '\')"><i class="fa-solid fa-pen"></i></button>' +
-        '<button class="lc-action" title="Promote" onclick="event.stopPropagation();showToast(\'Promotion feature coming soon\',\'info\')"><i class="fa-solid fa-bullhorn"></i></button>' +
+        '<button class="lc-action" title="Share" onclick="event.stopPropagation();shareProduct(\'' + p.id + '\')"><i class="fa-solid fa-share"></i></button>' +
         '<button class="lc-action danger" title="Delete" onclick="event.stopPropagation();openDeleteModal(\'' + p.id + '\')"><i class="fa-solid fa-trash"></i></button>' +
       '</div>' +
     '</div>' +
@@ -725,51 +729,47 @@ function renderGridCard(p) {
       '<div class="listing-card-title">' + safeTitle + '</div>' +
       '<div class="listing-card-cat"><i class="fa-solid fa-tag"></i> ' + safeCat + '</div>' +
       '<div class="listing-card-bottom">' +
-        '<span class="listing-card-price">&#8377;' + (p.price || 0).toLocaleString('en-IN') + '</span>' +
-        '<span class="listing-card-views"><i class="fa-solid fa-eye"></i> ' + (p.views || 0) + '</span>' +
+        '<span class="listing-card-price">' + priceHTML + '</span>' +
+        '<span class="listing-card-views"><i class="fa-solid fa-eye"></i> ' + views + '</span>' +
       '</div>' +
     '</div>' +
-    '<div class="listing-card-footer">' +
-      buildActionButtons(p) +
-    '</div>' +
+    '<div class="listing-card-footer">' + buildActionButtons(p) + '</div>' +
   '</div>';
 }
 
-/* ============================
-   Render List Row
-   ============================ */
+/* ========== Render List Row ========== */
 function renderListRow(p) {
-  const imgs = p.image_url ? p.image_url.split(',').filter(Boolean) : [];
+  const imgs = p.image_url ? String(p.image_url).split(',').filter(Boolean) : [];
   const img = imgs[0] || '';
   const sc = statusCfg[p.status] || statusCfg.pending;
   const safeTitle = escapeHtml(p.title || 'Untitled');
   const safeCat = escapeHtml(p.category || 'General');
+  const price = safeNum(p.price, 0);
+
+  const imgFallback = '<div class="list-item-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt);flex-direction:column;gap:2px"><i class="fa-solid fa-image" style="font-size:18px;color:var(--muted-light)"></i></div>';
 
   return '<div class="list-item" data-id="' + p.id + '">' +
-    (img ? '<img class="list-item-img" src="' + img + '" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=list-item-img style=display:flex;align-items:center;justify-content:center;background:var(--bg-alt)><i class=fa-solid fa-image style=font-size:20px;color:var(--muted-light)></i></div>\'">' : '<div class="list-item-img" style="display:flex;align-items:center;justify-content:center;background:var(--bg-alt)"><i class="fa-solid fa-image" style="font-size:20px;color:var(--muted-light)"></i></div>') +
+    (img ? '<img class="list-item-img" src="' + img + '" alt="" loading="lazy" onerror="this.outerHTML=\'' + imgFallback.replace(/'/g, "\\'") + '\'">' : imgFallback) +
     '<div class="list-item-body">' +
       '<div class="list-item-title">' + safeTitle + '</div>' +
       '<div class="list-item-meta">' +
         '<span><i class="fa-solid fa-tag"></i> ' + safeCat + '</span>' +
         '<span><i class="fa-regular fa-clock"></i> ' + timeAgo(p.created_at) + '</span>' +
-        (p.swap_enabled ? '<span><i class="fa-solid fa-rotate"></i> Swap</span>' : '') +
+        (p.swap_enabled === true || p.swap_enabled === 'true' ? '<span><i class="fa-solid fa-rotate"></i> Swap</span>' : '') +
       '</div>' +
     '</div>' +
     '<div class="list-item-right">' +
-      '<div class="list-item-price">&#8377;' + (p.price || 0).toLocaleString('en-IN') + '</div>' +
+      '<div class="list-item-price">&#8377;' + price.toLocaleString('en-IN') + '</div>' +
       '<div class="list-item-status"><span class="status-badge ' + sc.class + '">' + sc.label + '</span></div>' +
       '<div class="list-item-actions">' +
         '<button class="li-action" title="Edit" onclick="editProduct(\'' + p.id + '\')"><i class="fa-solid fa-pen"></i></button>' +
-        '<button class="li-action" title="Promote" onclick="showToast(\'Coming soon\',\'info\')"><i class="fa-solid fa-bullhorn"></i></button>' +
         '<button class="li-action danger" title="Delete" onclick="openDeleteModal(\'' + p.id + '\')"><i class="fa-solid fa-trash"></i></button>' +
       '</div>' +
     '</div>' +
   '</div>';
 }
 
-/* ============================
-   Build Action Buttons
-   ============================ */
+/* ========== Action Buttons ========== */
 function buildActionButtons(p) {
   let btns = '';
   if (p.status === 'active') {
@@ -786,23 +786,31 @@ function buildActionButtons(p) {
   return btns;
 }
 
-/* ============================
-   Render Into Containers
-   ============================ */
+/* ========== Share ========== */
+function shareProduct(id) {
+  const url = window.location.origin + '/product.html?id=' + id;
+  if (navigator.share) {
+    navigator.share({ title: 'Check out this item on DormKart', url: url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('Link copied!', 'success')).catch(() => {});
+  }
+}
+
+/* ========== Render ========== */
 function renderInto(prefix, products) {
   const gridC = document.getElementById(prefix + 'GridContainer');
   const listC = document.getElementById(prefix + 'ListContainer');
   const countEl = document.getElementById(prefix + 'Count');
 
   if (!products.length) {
-    const emptyMsg = {
+    const emptyMsgs = {
       all: { icon: 'fa-box-open', title: 'No listings yet', desc: 'Start selling by adding your first product to the marketplace.' },
       active: { icon: 'fa-circle-pause', title: 'No active listings', desc: 'Your active products will appear here.' },
       pending: { icon: 'fa-clock', title: 'No pending listings', desc: 'Listings under review will show up here.' },
       sold: { icon: 'fa-handshake', title: 'No sold items', desc: 'Items you\'ve marked as sold will appear here.' },
       unavailable: { icon: 'fa-pause-circle', title: 'No unavailable items', desc: 'Paused listings will show up here.' }
     };
-    const msg = emptyMsg[prefix] || emptyMsg.all;
+    const msg = emptyMsgs[prefix] || emptyMsgs.all;
     const emptyHTML = '<div class="empty-state"><i class="fa-solid ' + msg.icon + '"></i><h4>' + msg.title + '</h4><p>' + msg.desc + '</p>' +
       (prefix === 'all' ? '<button class="btn-primary" onclick="location.href=\'add_product.html\'"><i class="fa-solid fa-plus"></i> Add Your First Listing</button>' : '') +
       '</div>';
@@ -815,9 +823,7 @@ function renderInto(prefix, products) {
   if (countEl) countEl.textContent = products.length + ' item' + (products.length !== 1 ? 's' : '');
 }
 
-/* ============================
-   Filter & Sort
-   ============================ */
+/* ========== Filter & Sort ========== */
 function getFilteredSorted(tabPrefix) {
   let filtered = [...allProducts];
 
@@ -827,16 +833,16 @@ function getFilteredSorted(tabPrefix) {
 
   const catEl = document.getElementById(tabPrefix + 'CatFilter');
   if (catEl && catEl.value) {
-    filtered = filtered.filter(p => p.category === catEl.value);
+    filtered = filtered.filter(p => String(p.category || '').trim().toLowerCase() === catEl.value.toLowerCase());
   }
 
   const sortEl = document.getElementById(tabPrefix + 'SortFilter');
   if (sortEl) {
     switch (sortEl.value) {
       case 'oldest': filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at)); break;
-      case 'price-low': filtered.sort((a, b) => (a.price || 0) - (b.price || 0)); break;
-      case 'price-high': filtered.sort((a, b) => (b.price || 0) - (a.price || 0)); break;
-      case 'popular': filtered.sort((a, b) => (b.views || 0) - (a.views || 0)); break;
+      case 'price-low': filtered.sort((a, b) => safeNum(a.price, 0) - safeNum(b.price, 0)); break;
+      case 'price-high': filtered.sort((a, b) => safeNum(b.price, 0) - safeNum(a.price, 0)); break;
+      case 'popular': filtered.sort((a, b) => safeNum(b.views, 0) - safeNum(a.views, 0)); break;
       default: filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     }
   }
@@ -859,7 +865,6 @@ function applyFilters(tabPrefix) {
     renderInto(tabPrefix + 'List', filtered);
     if (gridC) gridC.innerHTML = '';
   }
-
   const countEl = document.getElementById(tabPrefix + 'Count');
   if (countEl) countEl.textContent = filtered.length + ' item' + (filtered.length !== 1 ? 's' : '');
 }
@@ -886,7 +891,7 @@ document.getElementById('searchInput').addEventListener('input', function() {
     if (!activeTab) return;
     const tabId = activeTab.getAttribute('data-tab');
     const prefix = tabId.replace('-list', '');
-    const filtered = getFilteredSorted(prefix);
+    const filtered = getFiltered(prefix);
 
     const searched = q
       ? filtered.filter(p =>
@@ -903,7 +908,7 @@ document.getElementById('searchInput').addEventListener('input', function() {
     if (!searched.length && q) {
       const emptyHTML = '<div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i><h4>No results found</h4><p>No listings match "' + escapeHtml(q) + '"</p></div>';
       if (gridC) { gridC.style.display = ''; gridC.innerHTML = emptyHTML; }
-      if (listC) { listC.style.display = 'none'; }
+      if (listC) listC.style.display = 'none';
     } else {
       if (view === 'grid') {
         if (gridC) { gridC.style.display = ''; gridC.innerHTML = searched.map(renderGridCard).join(''); }
@@ -918,9 +923,7 @@ document.getElementById('searchInput').addEventListener('input', function() {
   }, 250);
 });
 
-/* ============================
-   Status Change
-   ============================ */
+/* ========== Status Change ========== */
 async function changeStatus(productId, newStatus) {
   if (!currentUser) { showToast('Please login first', 'error'); return; }
   try {
@@ -928,7 +931,6 @@ async function changeStatus(productId, newStatus) {
       .from('products')
       .update({ status: newStatus })
       .eq('id', productId);
-
     if (error) throw error;
 
     const product = allProducts.find(p => p.id === productId);
@@ -945,36 +947,24 @@ async function changeStatus(productId, newStatus) {
   }
 }
 
-/* ============================
-   Edit Product
-   ============================ */
+/* ========== Edit ========== */
 function editProduct(productId) {
   window.location.href = 'add_product.html?edit=' + productId;
 }
 
-/* ============================
-   Delete Product
-   ============================ */
+/* ========== Delete ========== */
 function openDeleteModal(id) {
   deleteProductId = id;
   const product = allProducts.find(p => p.id === id);
-  const name = product ? product.title : 'this listing';
-  document.getElementById('deleteProductName').textContent = 'Are you sure you want to delete "' + name + '"? This cannot be undone.';
+  document.getElementById('deleteProductName').textContent = 'Are you sure you want to delete "' + (product ? product.title : 'this listing') + '"? This cannot be undone.';
   document.getElementById('deleteModal').classList.add('active');
 }
-function closeDeleteModal() {
-  document.getElementById('deleteModal').classList.remove('active');
-  deleteProductId = null;
-}
+function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); deleteProductId = null; }
 async function confirmDelete() {
   if (!deleteProductId) return;
   try {
-    const { error } = await supabaseClient
-      .from('products')
-      .delete()
-      .eq('id', deleteProductId);
+    const { error } = await supabaseClient.from('products').delete().eq('id', deleteProductId);
     if (error) throw error;
-
     allProducts = allProducts.filter(p => p.id !== deleteProductId);
     showToast('Listing deleted', 'success');
     closeDeleteModal();
@@ -989,32 +979,23 @@ async function confirmDelete() {
 }
 document.getElementById('deleteModal').addEventListener('click', function(e) { if (e.target === this) closeDeleteModal(); });
 
-/* ============================
-   Refresh All Views
-   ============================ */
+/* ========== Refresh ========== */
 function refreshAll() {
   updateStats(allProducts);
   populateCategoryFilters(allProducts);
-  ['all', 'active', 'pending', 'sold', 'unavailable'].forEach(prefix => {
-    applyFilters(prefix);
-  });
+  ['all', 'active', 'pending', 'sold', 'unavailable'].forEach(p => applyFilters(p));
 }
 
-/* ============================
-   Logout
-   ============================ */
+/* ========== Logout ========== */
 document.getElementById('logoutBtn').addEventListener('click', () => { document.getElementById('logoutModal').classList.add('active'); });
 async function handleLogout() {
   document.getElementById('logoutModal').classList.remove('active');
   try { if (typeof supabaseClient !== 'undefined') await supabaseClient.auth.signOut(); } catch (e) {}
-  /* Redirect to login page after logout */
   window.location.href = 'login-signup.html';
 }
 document.getElementById('logoutModal').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
 
-/* ============================
-   Keyboard
-   ============================ */
+/* ========== Keyboard ========== */
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     closeDeleteModal();
@@ -1024,27 +1005,16 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-/* ============================
-   Show Auth Gate vs App Content
-   ============================ */
-function showAuthGate() {
-  document.getElementById('authGate').style.display = 'block';
-  document.getElementById('appContent').style.display = 'none';
-}
-function showAppContent() {
-  document.getElementById('authGate').style.display = 'none';
-  document.getElementById('appContent').style.display = 'block';
-}
+/* ========== Show Gate ========== */
+function showAuthGate() { document.getElementById('authGate').style.display = 'block'; document.getElementById('appContent').style.display = 'none'; }
+function showAppContent() { document.getElementById('authGate').style.display = 'none'; document.getElementById('appContent').style.display = 'block'; document.getElementById('debugBanner').style.display = 'none'; }
 
-/* ============================
-   Init — FIXED: no silent redirect
-   ============================ */
+/* ========== Init ========== */
 async function init() {
   const user = await checkAuth();
   let profile = { name: 'User', branch: 'CSE', semester: '5' };
 
   if (user) {
-    /* User is logged in — show the listings dashboard */
     profile = await fetchUserProfile();
     const initials = profile.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
     document.getElementById('sidebarUserName').textContent = profile.name.length > 16 ? profile.name.slice(0, 16) + '...' : profile.name;
@@ -1052,21 +1022,17 @@ async function init() {
     document.getElementById('headerAvatar').textContent = initials;
     document.getElementById('sidebarUserRole').textContent = (profile.branch || 'CSE') + ' · Sem ' + (profile.semester || '5');
 
-    /* Fetch real products from database */
+    /* Fetch products from database */
     allProducts = await fetchMyProducts();
-    console.log('Loaded ' + allProducts.length + ' listings for user');
 
     /* Show the full app */
     showAppContent();
     refreshAll();
-
   } else {
-    /* User is NOT logged in — show login gate, do NOT redirect */
-    console.log('No active session — showing auth gate');
     showAuthGate();
   }
 
-  /* Hide loader regardless */
+  /* Hide loader */
   const loader = document.getElementById('loadingOverlay');
   loader.classList.add('hide');
   setTimeout(() => loader.remove(), 400);
