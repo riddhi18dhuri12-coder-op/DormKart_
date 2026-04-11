@@ -310,7 +310,7 @@
             input.value = '';
 
             const { error } = await supabaseClient.from('chats').insert([{
-                sender_id: currentUserId,
+                sender_id: currentUserId, 
                 receiver_id: otherUserId,
                 message: text,
                 is_read: false
