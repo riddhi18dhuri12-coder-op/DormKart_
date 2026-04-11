@@ -6,656 +6,250 @@
     <title>DormKart • My Wishlist</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=DM+Sans:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --primary: #4ade80;
-            --primary-dark: #059669;
-            --text: #0f172a;
-            --text-light: #64748b;
+            --pale-yellow: #ffffba;
+            --mint-green: #baffc9;
+            --sky-blue: #bae1ff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
             --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --border: #e2e8f0;
-            --nav-height: 70px;
-            --danger: #ef4444;
-            --trade: #7c3aed;
-            --trade-light: #ede9fe;
-        }
-        body.dark {
-            --text: #e8f0e8;
-            --text-light: #7a8c7a;
-            --bg: #0a0f0a;
-            --card-bg: #111811;
-            --border: #1e2a1e;
-            --trade-light: #2e1a4a;
+            --card: #ffffff;
+            --border: #f1f5f9;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
             margin: 0;
-            padding-bottom: calc(var(--nav-height) + 40px);
-            color: var(--text);
-            transition: background 0.3s, color 0.3s;
+            padding-bottom: 110px;
+            color: var(--text-main);
         }
 
-        .header-emerald {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            padding: 40px 20px 50px;
-            color: white;
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+        /* --- STARTUP HEADER (Solid Mint Green) --- */
+        .header-box {
+            background: var(--mint-green);
+            padding: 40px 24px 60px;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
             position: relative;
-            overflow: hidden;
-        }
-        .header-emerald::before {
-            content: '';
-            position: absolute; inset: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
         }
 
-        .header-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
-        .back-btn { 
-            background: rgba(255,255,255,0.2); border: none; 
-            border-radius: 12px; padding: 8px; cursor: pointer; color: white;
-            display: flex; align-items: center; justify-content: center;
-            width: 38px; height: 38px; transition: background 0.2s;
-        }
-        .back-btn:hover { background: rgba(255,255,255,0.3); }
-        .header-actions { display: flex; gap: 8px; }
-        .icon-btn-sm {
-            width: 38px; height: 38px; border-radius: 12px;
-            background: rgba(255,255,255,0.2); border: none;
-            color: white; font-size: 15px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            transition: background 0.2s;
-        }
-        .icon-btn-sm:hover { background: rgba(255,255,255,0.35); }
-        .view-toggle-btn {
-            background: white; border: none; color: var(--primary-dark);
-            padding: 8px 14px; border-radius: 10px; font-size: 12px;
-            font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex; align-items: center; gap: 6px;
-            transition: transform 0.15s;
-        }
-        .view-toggle-btn:active { transform: scale(0.95); }
-        .header-content { position: relative; z-index: 1; }
-        .header-content h1 { margin: 20px 0 0; font-weight: 800; font-size: 28px; display: flex; align-items: center; gap: 10px; }
-        .header-content h1 .wish-count {
-            background: rgba(255,255,255,0.25); padding: 3px 10px;
-            border-radius: 20px; font-size: 14px; font-weight: 700;
-        }
-        .header-content p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; display: flex; align-items: center; gap: 6px; }
-
-        .search-container { padding: 0 20px; margin-top: -25px; z-index: 10; position: relative; }
-        .search-wrap { position: relative; }
-        .search-wrap i {
-            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
-            font-size: 15px; color: var(--text-light);
-        }
-        .search-wrap .search-clear {
-            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-            background: none; border: none; color: var(--text-light); cursor: pointer;
-            font-size: 14px; display: none; padding: 4px;
-        }
-        .search-wrap .search-clear.visible { display: block; }
-        input#searchInput {
-            width: 100%; padding: 15px 40px 15px 44px; border-radius: 15px;
-            border: 1px solid var(--border); box-sizing: border-box;
-            font-family: inherit; background: var(--card-bg); box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            outline: none; color: var(--text); transition: border 0.2s, box-shadow 0.2s;
-        }
-        input#searchInput:focus { border-color: var(--primary-dark); box-shadow: 0 0 0 3px rgba(5,150,105,0.12); }
-
-        .filter-bar {
-            display: flex; gap: 8px; padding: 14px 20px 0;
-            overflow-x: auto; scrollbar-width: none; align-items: center;
-        }
-        .filter-bar::-webkit-scrollbar { display: none; }
-        .filter-btn {
-            padding: 7px 14px; border: 1.5px solid var(--border);
-            border-radius: 30px; background: var(--card-bg);
-            color: var(--text-light); font-size: 12px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; white-space: nowrap;
-            font-family: 'Inter', sans-serif; display: flex; align-items: center; gap: 5px;
-        }
-        .filter-btn.active { background: var(--primary-dark); border-color: var(--primary-dark); color: white; }
-        .filter-btn i { font-size: 11px; }
-
-        .result-info {
-            padding: 10px 20px 0; font-size: 12px; color: var(--text-light);
-            display: flex; align-items: center; gap: 6px;
-        }
-        .result-info strong { color: var(--text); }
-
-        .wishlist-container { padding: 12px 20px 20px; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
         
-        .grid { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); transition: all 0.3s ease; }
-        @media (min-width: 500px) { .grid:not(.list-view) { grid-template-columns: repeat(3, 1fr); } }
-        .grid.list-view { grid-template-columns: 1fr; }
-
-        .product-item { 
-            background: var(--card-bg); border-radius: 18px; padding: 10px; 
-            border: 1px solid var(--border); position: relative;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02); cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .product-item:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
-        .product-item:active { transform: scale(0.98); }
-        .product-item .img-wrap { position: relative; overflow: hidden; border-radius: 14px; }
-        .product-item img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.3s; }
-        .product-item:hover img { transform: scale(1.04); }
-
-        .trade-badge-sm {
-            position: absolute; top: 8px; left: 8px; background: var(--trade);
-            color: white; font-size: 9px; font-weight: 700; padding: 3px 8px;
-            border-radius: 20px; display: flex; align-items: center; gap: 3px;
-        }
-        .trade-badge-sm i { font-size: 8px; }
-        .cond-badge-sm {
-            position: absolute; bottom: 8px; left: 8px; background: rgba(5,150,105,0.9);
-            color: white; font-size: 9px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
-        }
-        .status-badge-sold {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); border-radius: 14px;
+        .circle-btn {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5); border: none;
             display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 14px; letter-spacing: 0.05em;
+            cursor: pointer; color: var(--text-main); font-size: 16px;
         }
 
-        .heart-btn {
-            position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.9);
-            border-radius: 50%; width: 32px; height: 32px; display: flex;
-            align-items: center; justify-content: center; border: none;
-            z-index: 5; cursor: pointer; transition: transform 0.2s;
-            backdrop-filter: blur(4px);
+        .header-box h1 { font-family: 'Syne', sans-serif; font-size: 28px; margin: 0; }
+        .wish-count { background: white; padding: 2px 10px; border-radius: 10px; font-size: 14px; margin-left: 8px; }
+
+        /* --- SEARCH & ACTIONS --- */
+        .search-area { padding: 0 24px; margin-top: -25px; }
+        .search-bar {
+            background: white; padding: 15px 20px; border-radius: 20px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1.5px solid var(--border);
         }
-        .heart-btn:hover { transform: scale(1.15); }
-        .heart-btn i { font-size: 15px; color: #ef4444; }
+        .search-bar input { border: none; outline: none; flex: 1; font-size: 15px; font-family: inherit; }
 
-        .item-details { padding: 4px 2px 0; }
-        .price { font-weight: 800; font-size: 17px; margin-top: 4px; color: var(--text); }
-        .title { font-size: 12px; color: var(--text-light); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .item-meta { font-size: 11px; color: var(--text-light); margin-top: 3px; display: flex; align-items: center; gap: 4px; }
-        .item-meta i { font-size: 10px; }
-        .item-meta .sold-label { color: var(--danger); font-weight: 700; }
-
-        .btn-group { display: flex; gap: 6px; margin-top: 8px; }
-        .view-prod-btn {
-            flex: 1; padding: 8px;
-            background: var(--bg); color: var(--text); border: 1px solid var(--border);
-            border-radius: 10px; font-size: 11px; font-weight: 700; cursor: pointer;
-            transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
-            font-family: 'Inter', sans-serif;
+        .filter-row {
+            display: flex; gap: 10px; overflow-x: auto; padding: 15px 24px; scrollbar-width: none;
         }
-        .view-prod-btn:hover { border-color: var(--primary-dark); color: var(--primary-dark); }
-        .btn-seller { background: var(--primary-dark); color: white; border-color: var(--primary-dark); }
-        .btn-seller:hover { background: #047857; color: white; border-color: #047857; }
-
-        /* List view */
-        .grid.list-view .product-item { display: flex; align-items: center; gap: 14px; padding: 12px; }
-        .grid.list-view .img-wrap { width: 90px; height: 90px; flex-shrink: 0; border-radius: 12px; }
-        .grid.list-view .img-wrap img { width: 100%; height: 100%; aspect-ratio: auto; }
-        .grid.list-view .heart-btn { top: 6px; right: 6px; width: 28px; height: 28px; }
-        .grid.list-view .heart-btn i { font-size: 13px; }
-        .grid.list-view .item-details { flex: 1; min-width: 0; }
-        .grid.list-view .title { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-
-        /* Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
-            background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: 8px;
+        .filter-row::-webkit-scrollbar { display: none; }
+        
+        .pill {
+            padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);
+            background: white; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer;
         }
-        .skel-card { border-radius: 18px; overflow: hidden; border: 1px solid var(--border); background: var(--card-bg); }
-        .skel-img { aspect-ratio: 1/1; }
-        @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+        .pill.active { background: var(--sky-blue); border-color: var(--sky-blue); }
 
-        /* Empty */
-        .empty-state { grid-column: 1/-1; text-align: center; padding: 50px 20px; color: var(--text-light); }
-        .empty-state i { font-size: 48px; margin-bottom: 14px; opacity: 0.4; display: block; }
-        .empty-state p { font-size: 15px; margin-bottom: 6px; }
-        .empty-state .empty-sub { font-size: 13px; opacity: 0.7; }
-        .empty-state .empty-action {
-            margin-top: 18px; display: inline-flex; align-items: center; gap: 8px;
-            padding: 10px 22px; border-radius: 12px; background: var(--primary-dark);
-            color: white; font-weight: 700; font-size: 13px; text-decoration: none;
-            border: none; cursor: pointer; transition: transform 0.2s;
-        }
-        .empty-state .empty-action:active { transform: scale(0.96); }
+        /* --- WISHLIST GRID --- */
+        .ads-container { padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .ads-container.list-mode { grid-template-columns: 1fr; }
 
-        /* Remove overlay */
-        .remove-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.6);
-            border-radius: 18px; display: none; align-items: center;
-            justify-content: center; z-index: 10; backdrop-filter: blur(2px);
-            flex-direction: column; gap: 8px;
+        .wish-card {
+            background: white; border-radius: 24px; padding: 12px;
+            border: 1px solid var(--border); position: relative;
+            transition: 0.3s;
         }
-        .remove-overlay.show { display: flex; }
-        .remove-overlay p { color: white; font-size: 12px; font-weight: 600; }
-        .remove-btns { display: flex; gap: 8px; }
-        .remove-confirm-btn {
-            padding: 7px 16px; border-radius: 8px; border: none;
-            font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.15s;
-        }
-        .remove-confirm-btn:active { transform: scale(0.95); }
-        .remove-confirm-btn.yes { background: var(--danger); color: white; }
-        .remove-confirm-btn.no { background: white; color: var(--text); }
+        .wish-card:hover { transform: translateY(-5px); border-color: var(--sky-blue); }
 
-        /* Clear bar */
-        .clear-bar { display: flex; justify-content: flex-end; padding: 0 20px; margin-bottom: 4px; }
-        .clear-all-btn {
-            background: none; border: none; color: var(--danger);
-            font-size: 12px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; gap: 5px;
-            padding: 4px 8px; border-radius: 8px; transition: background 0.2s;
+        .img-wrap { position: relative; overflow: hidden; border-radius: 18px; }
+        .wish-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
+        
+        .remove-btn {
+            position: absolute; top: 8px; right: 8px;
+            background: rgba(255,255,255,0.8); border: none;
+            width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #ef4444; cursor: pointer; z-index: 5;
         }
-        .clear-all-btn:hover { background: #fee2e2; }
 
-        /* Toast */
-        .toast {
-            position: fixed; bottom: calc(var(--nav-height) + 16px); left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: #0f172a; color: white; padding: 10px 20px;
-            border-radius: 20px; font-size: 13px; font-weight: 600;
-            z-index: 9998; opacity: 0; transition: all 0.3s;
-            white-space: nowrap; display: flex; align-items: center; gap: 8px;
-            max-width: 90vw; pointer-events: none;
+        .alert-tag {
+            position: absolute; bottom: 8px; left: 8px;
+            background: var(--pale-yellow); color: #854d0e;
+            font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 100px;
         }
-        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-        .toast i { font-size: 15px; }
-        .toast.success i { color: #4ade80; }
-        .toast.error i { color: #f87171; }
-        .toast.info i { color: #60a5fa; }
 
-        /* Scroll top */
-        .scroll-top-btn {
-            position: fixed; bottom: calc(var(--nav-height) + 16px); right: 16px;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--primary-dark); color: white; border: none;
-            font-size: 16px; cursor: pointer; z-index: 1500;
-            display: none; align-items: center; justify-content: center;
-            box-shadow: 0 4px 16px rgba(5,150,105,0.35); transition: all 0.2s;
+        .wish-info { padding: 10px 4px 0; }
+        .wish-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .wish-price { font-weight: 800; font-size: 17px; color: var(--text-main); }
+        
+        .btn-view {
+            width: 100%; margin-top: 10px; padding: 10px; border-radius: 12px;
+            border: 1.5px solid var(--sky-blue); background: #f0f7ff;
+            color: #1d4ed8; font-size: 12px; font-weight: 800; cursor: pointer;
         }
-        .scroll-top-btn.visible { display: flex; }
-        .scroll-top-btn:hover { transform: translateY(-2px); }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: var(--nav-height); background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; z-index: 2000; padding-bottom: env(safe-area-inset-bottom); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: background 0.3s, border 0.3s; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-light); text-decoration: none; font-size: 10px; font-weight: 600; gap: 3px; transition: color 0.2s; position: relative; }
-        .nav-item.active { color: var(--primary-dark); }
-        .nav-item.active::before { content: ''; position: absolute; top: -1px; left: 50%; transform: translateX(-50%); width: 24px; height: 3px; background: var(--primary-dark); border-radius: 0 0 4px 4px; }
-        .nav-item svg { width: 22px; height: 22px; }
-        .nav-sell { background: var(--primary-dark); width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -30px; border: 4px solid var(--bg); color: white !important; box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4); transition: transform 0.2s; }
-        .nav-sell:hover { transform: scale(1.08); }
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 420px; background: #1e293b;
+            height: 70px; border-radius: 25px; display: flex;
+            justify-content: space-around; align-items: center; z-index: 2000;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; gap: 4px; }
+        .nav-item.active { color: var(--mint-green); }
+        .nav-item i { font-size: 20px; }
+
+        .nav-plus {
+            background: var(--mint-green); width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-top: -30px;
+            border: 4px solid #1e293b; color: #1e293b !important;
+        }
+
+        .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); }
+        .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.3; }
     </style>
 </head>
-
 <body>
 
-<div class="header-emerald">
+<div class="header-box">
     <div class="header-top">
-        <button class="back-btn" onclick="location.href='profile.html'">
-            <i class="fas fa-arrow-left"></i>
-        </button>
-        <div class="header-actions">
-            <button class="icon-btn-sm" id="themeBtn" onclick="toggleDarkMode()">
-                <i class="fas fa-moon" id="themeIcon"></i>
-            </button>
-            <button class="view-toggle-btn" id="viewToggle" onclick="toggleView()">
-                <i class="fas fa-list" id="viewIcon"></i>
-                <span id="viewLabel">List</span>
-            </button>
-        </div>
+        <button class="circle-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="circle-btn" onclick="toggleView()"><i class="fa-solid fa-grip" id="viewIcon"></i></button>
     </div>
-    <div class="header-content">
-        <h1>My Wishlist <span class="wish-count" id="wishCount">0</span></h1>
-        <p><i class="far fa-heart"></i> Items you're keeping an eye on</p>
+    <h1>Wishlist <span class="wish-count" id="wishCount">0</span></h1>
+    <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">Items you're eyeing</p>
+</div>
+
+<div class="search-area">
+    <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+        <input type="text" id="searchInput" placeholder="Search saved items..." oninput="filterWishlist()">
     </div>
 </div>
 
-<div class="search-container">
-    <div class="search-wrap">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search your saved items..." oninput="handleSearch()">
-        <button class="search-clear" id="searchClear" onclick="clearSearch()"><i class="fas fa-xmark"></i></button>
+<div class="filter-row">
+    <div class="pill active" onclick="setFilter('all', this)">All Items</div>
+    <div class="pill" onclick="setFilter('active', this)">In Stock</div>
+    <div class="pill" onclick="setFilter('trade', this)">Swap Enabled</div>
+</div>
+
+<div class="ads-container" id="wishlistList">
     </div>
-</div>
-
-<div class="filter-bar">
-    <button class="filter-btn active" data-sort="newest" onclick="setSort('newest', this)"><i class="fas fa-clock"></i> Newest</button>
-    <button class="filter-btn" data-sort="low" onclick="setSort('low', this)"><i class="fas fa-arrow-up-short-wide"></i> Price Low</button>
-    <button class="filter-btn" data-sort="high" onclick="setSort('high', this)"><i class="fas fa-arrow-down-wide-short"></i> Price High</button>
-    <button class="filter-btn" data-sort="trade" onclick="setSort('trade', this)"><i class="fas fa-arrows-rotate"></i> Trades</button>
-    <button class="filter-btn" data-sort="available" onclick="setSort('available', this)"><i class="fas fa-check-circle"></i> Available</button>
-</div>
-
-<div class="result-info" id="resultInfo" style="display:none;">
-    <i class="fas fa-filter"></i> Showing <strong id="resultNum">0</strong> items
-</div>
-
-<div class="clear-bar" id="clearBar" style="display:none;">
-    <button class="clear-all-btn" onclick="confirmClearAll()"><i class="fas fa-trash-can"></i> Clear all</button>
-</div>
-
-<div class="wishlist-container">
-    <div id="wishlistGrid" class="grid">
-        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
-        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
-        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
-        <div class="skel-card"><div class="skeleton skel-img"></div><div style="padding:10px;"><div class="skeleton" style="height:14px;margin-bottom:8px;"></div><div class="skeleton" style="height:10px;width:70%;"></div></div></div>
-    </div>
-</div>
-
-<button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-    <i class="fas fa-chevron-up"></i>
-</button>
-
-<div class="toast" id="toast"><i></i><span></span></div>
 
 <nav class="bottom-nav">
-    <a href="dashboard.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Home
-    </a>
-    <a href="chats.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
-        Chats
-    </a>
-    <a href="add_product.html" class="nav-item nav-sell">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-    </a>
-    <a href="my-ads.html" class="nav-item">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-        My Ads
-    </a>
-    <a href="profile.html" class="nav-item active">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-        Profile
-    </a>
+    <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
+    <a href="chats.html" class="nav-item"><i class="fa-solid fa-comment"></i><span>Chats</span></a>
+    <a href="add_product.html" class="nav-item nav-plus"><i class="fa-solid fa-plus"></i></a>
+    <a href="my-ads.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>My Ads</span></a>
+    <a href="profile.html" class="nav-item active"><i class="fa-solid fa-heart"></i><span>Saved</span></a>
 </nav>
 
 <script>
-    let wishlistData = [];
-    let isListView = false;
-    let currentSort = 'newest';
-    let clearAllPending = false;
+    let wishlistItems = [];
+    let isList = false;
 
     async function init() {
-        applySavedTheme();
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = 'login-signup.html';
+        fetchWishlist(session.user.id);
+    }
 
-        // ── FIX: Only select columns that exist in the products table ──
-        // products table has: id, seller_id, title, description, price, category,
-        // image_url, created_at, condition, views, likes, status,
-        // allow_swap, swap_with, swap_enabled, swap_item
-        // NO "original_price" column exists — that was breaking the join
-
+    async function fetchWishlist(userId) {
         const { data, error } = await supabaseClient
             .from("wishlist")
-            .select(`
-                id,
-                created_at,
-                product:products(
-                    id,
-                    title,
-                    price,
-                    category,
-                    image_url,
-                    condition,
-                    status,
-                    swap_enabled,
-                    seller_id,
-                    created_at,
-                    seller:users(
-                        id,
-                        name,
-                        college
-                    )
-                )
-            `)
-            .eq("user_id", session.user.id)
-            .order("created_at", { ascending: false });
+            .select(`id, product:products(*)`)
+            .eq("user_id", userId);
 
-        if (error) {
-            console.error("Wishlist fetch error:", error);
-            showToast('Error loading wishlist', 'error');
-        }
-
-        // Filter out any items where product join failed (null product)
-        wishlistData = (data || []).filter(item => item.product);
-        updateCount();
-        renderWishlist();
+        if (error) return console.error(error);
+        
+        wishlistItems = data.filter(item => item.product); // Filter out deleted products
+        document.getElementById('wishCount').innerText = wishlistItems.length;
+        renderWishlist(wishlistItems);
     }
 
-    function updateCount() {
-        document.getElementById('wishCount').innerText = wishlistData.length;
-        document.getElementById('clearBar').style.display = wishlistData.length > 0 ? 'flex' : 'none';
-    }
-
-    function toggleView() {
-        const grid = document.getElementById('wishlistGrid');
-        const icon = document.getElementById('viewIcon');
-        const label = document.getElementById('viewLabel');
-        isListView = !isListView;
-        grid.classList.toggle('list-view', isListView);
-        icon.className = isListView ? 'fas fa-grip' : 'fas fa-list';
-        label.innerText = isListView ? 'Grid' : 'List';
-    }
-
-    function setSort(sort, el) {
-        currentSort = sort;
-        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-        renderWishlist();
-    }
-
-    function getFilteredData() {
-        const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-        let filtered = wishlistData.filter(item => {
-            const p = item.product;
-            return p.title.toLowerCase().includes(searchTerm) ||
-                   (p.category || '').toLowerCase().includes(searchTerm) ||
-                   (p.seller?.name || '').toLowerCase().includes(searchTerm);
-        });
-
-        switch (currentSort) {
-            case 'low':    filtered.sort((a, b) => (a.product.price || 0) - (b.product.price || 0)); break;
-            case 'high':   filtered.sort((a, b) => (b.product.price || 0) - (a.product.price || 0)); break;
-            case 'newest': filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); break;
-            case 'trade':  filtered = filtered.filter(item => Boolean(item.product.swap_enabled)); break;
-            case 'available': filtered = filtered.filter(item => item.product.status === 'active'); break;
-        }
-
-        return filtered;
-    }
-
-    function handleSearch() {
-        const q = document.getElementById('searchInput').value;
-        document.getElementById('searchClear').classList.toggle('visible', q.length > 0);
-        renderWishlist();
-    }
-
-    function clearSearch() {
-        document.getElementById('searchInput').value = '';
-        document.getElementById('searchClear').classList.remove('visible');
-        renderWishlist();
-    }
-
-    function renderWishlist() {
-        const filtered = getFilteredData();
-        const grid = document.getElementById('wishlistGrid');
-        const resultInfo = document.getElementById('resultInfo');
-        const q = document.getElementById('searchInput').value.trim();
-        const isFiltered = q || currentSort !== 'newest';
-
-        if (isFiltered) {
-            resultInfo.style.display = 'flex';
-            document.getElementById('resultNum').innerText = filtered.length;
-        } else {
-            resultInfo.style.display = 'none';
-        }
-
-        if (filtered.length === 0) {
-            const isTradeFilter = currentSort === 'trade';
-            const isAvailFilter = currentSort === 'available';
-            grid.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas ${isTradeFilter ? 'fa-arrows-rotate' : (isAvailFilter ? 'fa-check-circle' : 'far fa-heart')}"></i>
-                    <p>${isTradeFilter ? 'No trade items in wishlist' : (isAvailFilter ? 'No available items' : (q ? 'No matching items found' : 'Your wishlist is empty'))}</p>
-                    <p class="empty-sub">${isTradeFilter ? 'Save items with swap enabled to see them here' : (q ? 'Try a different search term' : 'Browse the marketplace and tap the heart icon')}</p>
-                    ${!q && !isTradeFilter && !isAvailFilter ? '<a href="dashboard.html" class="empty-action"><i class="fas fa-compass"></i> Explore Items</a>' : ''}
-                </div>`;
+    function renderWishlist(items) {
+        const container = document.getElementById('wishlistList');
+        if (items.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-heart-crack"></i><p>Your wishlist is empty</p></div>`;
             return;
         }
 
-        grid.innerHTML = "";
-        filtered.forEach(item => {
+        container.innerHTML = items.map(item => {
             const p = item.product;
             const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
-            const isTrade = Boolean(p.swap_enabled);
-            const isSold = p.status === 'sold';
-            const isCond = !!p.condition;
-            const sellerName = p.seller?.name || 'Seller';
-
-            grid.innerHTML += `
-                <div class="product-item" onclick="${isSold ? '' : `location.href='product_detail.html?id=${p.id}'`}" style="${isSold ? 'opacity:0.65;cursor:default;' : ''}">
+            return `
+                <div class="wish-card">
+                    <button class="remove-btn" onclick="removeFromWishlist('${item.id}')"><i class="fa-solid fa-heart"></i></button>
                     <div class="img-wrap">
-                        ${isTrade ? '<div class="trade-badge-sm"><i class="fas fa-arrows-rotate"></i> Trade</div>' : ''}
-                        ${isCond ? `<div class="cond-badge-sm">${p.condition}</div>` : ''}
-                        ${isSold ? '<div class="status-badge-sold">SOLD</div>' : ''}
-                        <button class="heart-btn" onclick="event.stopPropagation(); showRemoveConfirm(this, '${item.id}')">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                        <img src="${img}" loading="lazy" onerror="this.src='placeholder.png'">
+                        <img src="${img}" class="wish-img">
+                        ${p.swap_enabled ? '<div class="alert-tag">SWAP OK</div>' : ''}
                     </div>
-                    <div class="item-details">
-                        <div class="price">₹${Math.floor(p.price || 0).toLocaleString('en-IN')}</div>
-                        <div class="title">${p.title}</div>
-                        <div class="item-meta">
-                            ${isSold ? '<span class="sold-label"><i class="fas fa-circle-xmark"></i> Sold</span>' : `<span><i class="fas fa-store"></i> ${sellerName}</span>`}
-                            ${p.category ? `<span><i class="fas fa-tag"></i> ${p.category}</span>` : ''}
-                        </div>
-                        
-                        ${!isSold ? `
-                        <div class="btn-group">
-                            <button class="view-prod-btn" onclick="event.stopPropagation(); location.href='product_detail.html?id=${p.id}'">
-                                <i class="fas fa-eye"></i> View
-                            </button>
-                            <button class="view-prod-btn btn-seller" onclick="event.stopPropagation(); location.href='seller_profile.html?id=${p.seller_id}'">
-                                <i class="fas fa-user"></i> Seller
-                            </button>
-                        </div>` : `
-                        <div class="btn-group">
-                            <button class="view-prod-btn" style="flex:1;color:var(--danger);border-color:#fecdd3;" onclick="event.stopPropagation(); showRemoveConfirm(this, '${item.id}')">
-                                <i class="fas fa-trash-can"></i> Remove
-                            </button>
-                        </div>`}
+                    <div class="wish-info">
+                        <div class="wish-title">${p.title}</div>
+                        <div class="wish-price">₹${p.price}</div>
+                        <button class="btn-view" onclick="location.href='product_detail.html?id=${p.id}'">View Listing</button>
                     </div>
-                    <div class="remove-overlay" id="remove-${item.id}">
-                        <p>Remove from wishlist?</p>
-                        <div class="remove-btns">
-                            <button class="remove-confirm-btn yes" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">Remove</button>
-                            <button class="remove-confirm-btn no" onclick="event.stopPropagation(); hideRemoveConfirm('${item.id}')">Cancel</button>
-                        </div>
-                    </div>
-                </div>`;
-        });
-    }
-
-    function showRemoveConfirm(btn, id) {
-        document.getElementById('remove-' + id).classList.add('show');
-    }
-
-    function hideRemoveConfirm(id) {
-        document.getElementById('remove-' + id).classList.remove('show');
+                </div>
+            `;
+        }).join('');
     }
 
     async function removeFromWishlist(id) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
         if (!error) {
-            wishlistData = wishlistData.filter(i => i.id !== id);
-            updateCount();
-            renderWishlist();
-            showToast('Removed from wishlist', 'info');
-        } else {
-            showToast('Could not remove item', 'error');
+            wishlistItems = wishlistItems.filter(item => item.id !== id);
+            document.getElementById('wishCount').innerText = wishlistItems.length;
+            renderWishlist(wishlistItems);
         }
     }
 
-    function confirmClearAll() {
-        if (clearAllPending) {
-            clearAllPending = false;
-            clearAllWishlist();
-            return;
-        }
-        clearAllPending = true;
-        const btn = document.querySelector('.clear-all-btn');
-        btn.innerHTML = '<i class="fas fa-triangle-exclamation"></i> Tap again to confirm';
-        btn.style.background = '#fee2e2';
-        setTimeout(() => {
-            clearAllPending = false;
-            btn.innerHTML = '<i class="fas fa-trash-can"></i> Clear all';
-            btn.style.background = 'none';
-        }, 3000);
+    function toggleView() {
+        isList = !isList;
+        const container = document.getElementById('wishlistList');
+        const icon = document.getElementById('viewIcon');
+        container.classList.toggle('list-mode', isList);
+        icon.className = isList ? 'fa-solid fa-list' : 'fa-solid fa-grip';
     }
 
-    async function clearAllWishlist() {
-        const { error } = await supabaseClient.from("wishlist").delete().in(
-            "id", wishlistData.map(i => i.id)
+    function filterWishlist() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = wishlistItems.filter(item => 
+            item.product.title.toLowerCase().includes(q)
         );
-        if (!error) {
-            wishlistData = [];
-            updateCount();
-            renderWishlist();
-            showToast('Wishlist cleared', 'success');
-        } else {
-            showToast('Could not clear wishlist', 'error');
-        }
-        const btn = document.querySelector('.clear-all-btn');
-        btn.innerHTML = '<i class="fas fa-trash-can"></i> Clear all';
-        btn.style.background = 'none';
+        renderWishlist(filtered);
     }
 
-    // ── THEME ──
-    function applySavedTheme() {
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark');
-            document.getElementById('themeIcon').className = 'fas fa-sun';
-        }
+    function setFilter(type, el) {
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        
+        let filtered = wishlistItems;
+        if(type === 'active') filtered = wishlistItems.filter(i => i.product.status === 'active');
+        if(type === 'trade') filtered = wishlistItems.filter(i => i.product.swap_enabled);
+        
+        renderWishlist(filtered);
     }
-    function toggleDarkMode() {
-        const dark = document.body.classList.toggle('dark');
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-        document.getElementById('themeIcon').className = dark ? 'fas fa-sun' : 'fas fa-moon';
-    }
-
-    // ── TOAST ──
-    let toastTimer;
-    function showToast(msg, type) {
-        type = type || 'info';
-        const t = document.getElementById('toast');
-        const icons = { success: 'fa-circle-check', error: 'fa-circle-xmark', info: 'fa-circle-info' };
-        t.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${msg}</span>`;
-        t.className = 'toast show ' + type;
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
-    }
-
-    // ── SCROLL TO TOP ──
-    window.addEventListener('scroll', () => {
-        document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 400);
-    });
-
-    // ── KEYBOARD ──
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            document.querySelectorAll('.remove-overlay.show').forEach(o => o.classList.remove('show'));
-        }
-    });
 
     window.onload = init;
 </script>
