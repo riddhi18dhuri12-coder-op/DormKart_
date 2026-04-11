@@ -3,252 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-    <title>DormKart • My Wishlist</title>
+    <title>DormKart • Saved Essentials</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
         :root {
-            --pale-yellow: #ffffba;
-            --mint-green: #baffc9;
             --sky-blue: #bae1ff;
-            --text-main: #1e293b;
+            --mint-green: #baffc9;
+            --pale-yellow: #ffffba;
+            --baby-pink: #ffb3ba;
+            --text-dark: #0f172a;
             --text-muted: #64748b;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --border: #f1f5f9;
+            --bg-light: #f8fafc;
+            --white: #ffffff;
         }
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            margin: 0;
-            padding-bottom: 110px;
-            color: var(--text-main);
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-light); color: var(--text-dark); padding-bottom: 110px; }
 
-        /* --- STARTUP HEADER (Solid Mint Green) --- */
-        .header-box {
+        /* --- STARTUP FLOATING HEADER --- */
+        .header-section {
             background: var(--mint-green);
-            padding: 40px 24px 60px;
+            padding: 40px 24px 70px;
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
             position: relative;
         }
 
-        .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         
-        .circle-btn {
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5); border: none;
+        .btn-circle {
+            width: 42px; height: 42px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4); border: none;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; color: var(--text-main); font-size: 16px;
+            cursor: pointer; color: var(--text-dark); font-size: 18px;
+            backdrop-filter: blur(10px);
         }
 
-        .header-box h1 { font-family: 'Syne', sans-serif; font-size: 28px; margin: 0; }
-        .wish-count { background: white; padding: 2px 10px; border-radius: 10px; font-size: 14px; margin-left: 8px; }
-
-        /* --- SEARCH & ACTIONS --- */
-        .search-area { padding: 0 24px; margin-top: -25px; }
-        .search-bar {
-            background: white; padding: 15px 20px; border-radius: 20px;
-            display: flex; align-items: center; gap: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05); border: 1.5px solid var(--border);
-        }
-        .search-bar input { border: none; outline: none; flex: 1; font-size: 15px; font-family: inherit; }
-
-        .filter-row {
-            display: flex; gap: 10px; overflow-x: auto; padding: 15px 24px; scrollbar-width: none;
-        }
-        .filter-row::-webkit-scrollbar { display: none; }
+        .header-section h1 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; letter-spacing: -1px; }
+        .header-section p { font-size: 14px; font-weight: 600; opacity: 0.7; margin-top: 4px; }
         
-        .pill {
-            padding: 8px 16px; border-radius: 100px; border: 1px solid var(--border);
-            background: white; font-size: 12px; font-weight: 700; white-space: nowrap; cursor: pointer;
+        /* --- DYNAMIC STATS --- */
+        .wish-stat-badge {
+            position: absolute; bottom: -20px; right: 24px;
+            background: var(--text-dark); color: white;
+            padding: 12px 20px; border-radius: 20px;
+            font-size: 12px; font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        .pill.active { background: var(--sky-blue); border-color: var(--sky-blue); }
 
-        /* --- WISHLIST GRID --- */
-        .ads-container { padding: 0 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .ads-container.list-mode { grid-template-columns: 1fr; }
-
-        .wish-card {
-            background: white; border-radius: 24px; padding: 12px;
-            border: 1px solid var(--border); position: relative;
-            transition: 0.3s;
+        /* --- SEARCH & FILTERS --- */
+        .utility-box { padding: 0 24px; margin-top: 30px; }
+        .search-minimal {
+            background: var(--white);
+            padding: 14px 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 2px solid var(--sky-blue);
+            box-shadow: 0 10px 30px rgba(186, 225, 255, 0.2);
         }
-        .wish-card:hover { transform: translateY(-5px); border-color: var(--sky-blue); }
+        .search-minimal input { border: none; outline: none; flex: 1; font-size: 15px; font-weight: 600; background: transparent; }
 
-        .img-wrap { position: relative; overflow: hidden; border-radius: 18px; }
-        .wish-img { width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--bg); }
+        .pills-container {
+            display: flex; gap: 8px; overflow-x: auto;
+            padding: 20px 24px 10px; scrollbar-width: none;
+        }
+        .filter-pill {
+            padding: 10px 18px; border-radius: 100px; border: 1.5px solid #f1f5f9;
+            background: white; font-size: 13px; font-weight: 700; white-space: nowrap; cursor: pointer;
+            color: var(--text-muted); transition: 0.2s;
+        }
+        .filter-pill.active { background: var(--pale-yellow); border-color: var(--pale-yellow); color: var(--text-dark); }
+
+        /* --- PREMIUM GRID --- */
+        .items-grid { padding: 15px 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .items-grid.list-view { grid-template-columns: 1fr; }
+
+        .premium-card {
+            background: var(--white); border-radius: 28px; padding: 12px;
+            border: 1px solid #f1f5f9; position: relative;
+            transition: 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+        }
+        .premium-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(0,0,0,0.04); }
+
+        .img-container { position: relative; border-radius: 20px; overflow: hidden; aspect-ratio: 1; }
+        .item-img { width: 100%; height: 100%; object-fit: cover; background: #f1f5f9; }
         
-        .remove-btn {
-            position: absolute; top: 8px; right: 8px;
-            background: rgba(255,255,255,0.8); border: none;
-            width: 30px; height: 30px; border-radius: 50%;
+        .unlike-btn {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(255,255,255,0.9); border: none;
+            width: 34px; height: 34px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             color: #ef4444; cursor: pointer; z-index: 5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
-        .alert-tag {
-            position: absolute; bottom: 8px; left: 8px;
-            background: var(--pale-yellow); color: #854d0e;
-            font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 100px;
+        .price-drop-tag {
+            position: absolute; bottom: 10px; left: 10px;
+            background: var(--baby-pink); color: #881337;
+            font-size: 10px; font-weight: 800; padding: 5px 10px; border-radius: 10px;
         }
 
-        .wish-info { padding: 10px 4px 0; }
-        .wish-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
-        .wish-price { font-weight: 800; font-size: 17px; color: var(--text-main); }
+        .info-area { padding: 12px 6px 4px; }
+        .item-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        .item-price { font-size: 18px; font-weight: 800; color: #3b82f6; }
         
-        .btn-view {
-            width: 100%; margin-top: 10px; padding: 10px; border-radius: 12px;
-            border: 1.5px solid var(--sky-blue); background: #f0f7ff;
-            color: #1d4ed8; font-size: 12px; font-weight: 800; cursor: pointer;
+        .btn-checkout {
+            width: 100%; margin-top: 12px; padding: 12px; border-radius: 14px;
+            background: var(--text-dark); color: white; border: none;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            transition: 0.2s;
         }
+        .btn-checkout:active { transform: scale(0.96); }
+
+        /* --- EMPTY STATE --- */
+        .empty-wrap { text-align: center; padding: 100px 40px; color: var(--text-muted); }
+        .empty-wrap i { font-size: 50px; margin-bottom: 20px; color: var(--sky-blue); }
 
         /* --- BOTTOM NAV --- */
         .bottom-nav {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 420px; background: #1e293b;
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 420px; background: var(--text-dark);
             height: 70px; border-radius: 25px; display: flex;
             justify-content: space-around; align-items: center; z-index: 2000;
             box-shadow: 0 15px 30px rgba(0,0,0,0.2);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; gap: 4px; }
+        .nav-item { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
         .nav-item.active { color: var(--mint-green); }
         .nav-item i { font-size: 20px; }
 
-        .nav-plus {
-            background: var(--mint-green); width: 50px; height: 50px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; margin-top: -30px;
-            border: 4px solid #1e293b; color: #1e293b !important;
+        .nav-center {
+            background: var(--sky-blue); width: 50px; height: 50px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; margin-top: -35px;
+            border: 5px solid var(--bg-light); color: var(--text-dark) !important;
         }
-
-        .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); }
-        .empty-state i { font-size: 40px; margin-bottom: 15px; opacity: 0.3; }
     </style>
 </head>
 <body>
 
-<div class="header-box">
-    <div class="header-top">
-        <button class="circle-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></button>
-        <button class="circle-btn" onclick="toggleView()"><i class="fa-solid fa-grip" id="viewIcon"></i></button>
+<div class="header-section">
+    <div class="nav-row">
+        <button class="btn-circle" onclick="history.back()"><i class="fa-solid fa-arrow-left-long"></i></button>
+        <button class="btn-circle" onclick="toggleView()"><i class="fa-solid fa-table-cells-large" id="gridIcon"></i></button>
     </div>
-    <h1>Wishlist <span class="wish-count" id="wishCount">0</span></h1>
-    <p style="font-size: 14px; opacity: 0.8; margin-top: 5px;">Items you're eyeing</p>
+    <h1>Saved Items</h1>
+    <p>Your curated campus collection</p>
+    <div class="wish-stat-badge" id="wishStat">0 Items Saved</div>
 </div>
 
-<div class="search-area">
-    <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-        <input type="text" id="searchInput" placeholder="Search saved items..." oninput="filterWishlist()">
+<div class="utility-box">
+    <div class="search-minimal">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search your wishlist..." oninput="searchWishlist()">
     </div>
 </div>
 
-<div class="filter-row">
-    <div class="pill active" onclick="setFilter('all', this)">All Items</div>
-    <div class="pill" onclick="setFilter('active', this)">In Stock</div>
-    <div class="pill" onclick="setFilter('trade', this)">Swap Enabled</div>
+<div class="pills-container">
+    <div class="filter-pill active" onclick="applyFilter('all', this)">All Collections</div>
+    <div class="filter-pill" onclick="applyFilter('active', this)">In Stock</div>
+    <div class="filter-pill" onclick="applyFilter('trade', this)">Available for Swap</div>
 </div>
 
-<div class="ads-container" id="wishlistList">
-    </div>
+<main class="items-grid" id="wishlistContainer">
+    </main>
 
 <nav class="bottom-nav">
     <a href="dashboard.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Home</span></a>
     <a href="chats.html" class="nav-item"><i class="fa-solid fa-comment"></i><span>Chats</span></a>
-    <a href="add_product.html" class="nav-item nav-plus"><i class="fa-solid fa-plus"></i></a>
+    <a href="add_product.html" class="nav-item nav-center"><i class="fa-solid fa-plus"></i></a>
     <a href="my-ads.html" class="nav-item"><i class="fa-solid fa-layer-group"></i><span>My Ads</span></a>
     <a href="profile.html" class="nav-item active"><i class="fa-solid fa-heart"></i><span>Saved</span></a>
 </nav>
 
 <script>
-    let wishlistItems = [];
-    let isList = false;
+    let savedItems = [];
+    let isListMode = false;
 
     async function init() {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (!session) return location.href = 'login-signup.html';
-        fetchWishlist(session.user.id);
+        loadWishlist(session.user.id);
     }
 
-    async function fetchWishlist(userId) {
+    async function loadWishlist(uid) {
         const { data, error } = await supabaseClient
             .from("wishlist")
             .select(`id, product:products(*)`)
-            .eq("user_id", userId);
+            .eq("user_id", uid);
 
         if (error) return console.error(error);
         
-        wishlistItems = data.filter(item => item.product); // Filter out deleted products
-        document.getElementById('wishCount').innerText = wishlistItems.length;
-        renderWishlist(wishlistItems);
+        savedItems = data.filter(item => item.product); 
+        document.getElementById('wishStat').innerText = `${savedItems.length} Items Saved`;
+        renderGrid(savedItems);
     }
 
-    function renderWishlist(items) {
-        const container = document.getElementById('wishlistList');
-        if (items.length === 0) {
-            container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-heart-crack"></i><p>Your wishlist is empty</p></div>`;
+    function renderGrid(data) {
+        const container = document.getElementById('wishlistContainer');
+        if (data.length === 0) {
+            container.innerHTML = `<div class="empty-wrap" style="grid-column: span 2;"><i class="fa-solid fa-heart-circle-xmark"></i><p>No saved items yet</p></div>`;
             return;
         }
 
-        container.innerHTML = items.map(item => {
+        container.innerHTML = data.map(item => {
             const p = item.product;
             const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.png';
             return `
-                <div class="wish-card">
-                    <button class="remove-btn" onclick="removeFromWishlist('${item.id}')"><i class="fa-solid fa-heart"></i></button>
-                    <div class="img-wrap">
-                        <img src="${img}" class="wish-img">
-                        ${p.swap_enabled ? '<div class="alert-tag">SWAP OK</div>' : ''}
+                <div class="premium-card">
+                    <button class="unlike-btn" onclick="removeItem('${item.id}')"><i class="fa-solid fa-heart"></i></button>
+                    <div class="img-container">
+                        <img src="${img}" class="item-img">
+                        ${p.status === 'sold' ? '<div class="price-drop-tag" style="background:#e2e8f0; color:#475569;">SOLD</div>' : ''}
+                        ${p.price < 500 ? '<div class="price-drop-tag">TOP DEAL</div>' : ''}
                     </div>
-                    <div class="wish-info">
-                        <div class="wish-title">${p.title}</div>
-                        <div class="wish-price">₹${p.price}</div>
-                        <button class="btn-view" onclick="location.href='product_detail.html?id=${p.id}'">View Listing</button>
+                    <div class="info-area">
+                        <div class="item-title">${p.title}</div>
+                        <div class="item-price">₹${p.price}</div>
+                        <button class="btn-checkout" onclick="location.href='product_detail.html?id=${p.id}'">View Detail</button>
                     </div>
                 </div>
             `;
         }).join('');
     }
 
-    async function removeFromWishlist(id) {
+    async function removeItem(id) {
         const { error } = await supabaseClient.from("wishlist").delete().eq("id", id);
         if (!error) {
-            wishlistItems = wishlistItems.filter(item => item.id !== id);
-            document.getElementById('wishCount').innerText = wishlistItems.length;
-            renderWishlist(wishlistItems);
+            savedItems = savedItems.filter(i => i.id !== id);
+            document.getElementById('wishStat').innerText = `${savedItems.length} Items Saved`;
+            renderGrid(savedItems);
         }
     }
 
     function toggleView() {
-        isList = !isList;
-        const container = document.getElementById('wishlistList');
-        const icon = document.getElementById('viewIcon');
-        container.classList.toggle('list-mode', isList);
-        icon.className = isList ? 'fa-solid fa-list' : 'fa-solid fa-grip';
+        isListMode = !isListMode;
+        const container = document.getElementById('wishlistContainer');
+        const icon = document.getElementById('gridIcon');
+        container.classList.toggle('list-view', isListMode);
+        icon.className = isListMode ? 'fa-solid fa-list' : 'fa-solid fa-table-cells-large';
     }
 
-    function filterWishlist() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = wishlistItems.filter(item => 
-            item.product.title.toLowerCase().includes(q)
-        );
-        renderWishlist(filtered);
+    function searchWishlist() {
+        const val = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = savedItems.filter(i => i.product.title.toLowerCase().includes(val));
+        renderGrid(filtered);
     }
 
-    function setFilter(type, el) {
-        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    function applyFilter(type, el) {
+        document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
         el.classList.add('active');
         
-        let filtered = wishlistItems;
-        if(type === 'active') filtered = wishlistItems.filter(i => i.product.status === 'active');
-        if(type === 'trade') filtered = wishlistItems.filter(i => i.product.swap_enabled);
-        
-        renderWishlist(filtered);
+        if(type === 'all') renderGrid(savedItems);
+        if(type === 'active') renderGrid(savedItems.filter(i => i.product.status === 'active'));
+        if(type === 'trade') renderGrid(savedItems.filter(i => i.product.swap_enabled));
     }
 
     window.onload = init;
