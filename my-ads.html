@@ -91,6 +91,108 @@
             margin-top: -30px; border: 4px solid var(--bg); color: white !important;
             box-shadow: 0 4px 20px rgba(5, 150, 105, 0.4);
         }
+        /* EDIT MODAL SCROLL */
+.modal-content{
+max-height:90vh;
+overflow-y:auto;
+}
+
+/* LABEL STYLE */
+.label{
+display:block;
+font-size:12px;
+font-weight:700;
+color:var(--text-light);
+margin-bottom:6px;
+margin-top:12px;
+}
+
+/* INPUT FIELDS */
+.modal-content input,
+.modal-content select,
+.modal-content textarea{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid var(--border);
+font-family:'Inter',sans-serif;
+font-size:14px;
+outline:none;
+transition:0.2s;
+background:white;
+}
+
+/* TEXTAREA */
+.modal-content textarea{
+resize:none;
+}
+
+/* INPUT FOCUS */
+.modal-content input:focus,
+.modal-content select:focus,
+.modal-content textarea:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 3px rgba(16,185,129,0.15);
+}
+
+/* FILE INPUT */
+#editImages{
+padding:8px;
+background:#f8fafc;
+border:1px dashed var(--border);
+cursor:pointer;
+}
+
+/* SELECT DROPDOWN */
+.modal-content select{
+appearance:none;
+background:white;
+}
+
+/* SAVE BUTTON */
+.btn-sold{
+background:linear-gradient(135deg,#10b981,#059669);
+color:white;
+font-weight:700;
+}
+
+/* CANCEL BUTTON */
+.btn-edit{
+background:#f1f5f9;
+color:#0f172a;
+font-weight:600;
+}
+
+/* BUTTON HOVER */
+.btn-sold:hover{
+transform:translateY(-1px);
+box-shadow:0 5px 15px rgba(16,185,129,0.25);
+}
+
+.btn-edit:hover{
+background:#e2e8f0;
+}
+
+/* DELETE BUTTON */
+.modal-content button:last-child:hover{
+color:#dc2626;
+}
+
+/* MOBILE OPTIMIZATION */
+@media(max-width:480px){
+
+.modal-content{
+padding:20px;
+border-radius:20px;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select{
+font-size:16px;
+}
+
+        }
     </style>
 </head>
 <body>
