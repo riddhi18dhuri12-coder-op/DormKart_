@@ -6,118 +6,125 @@
 <title>DormKart • Campus Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --primary: #22c55e;
-  --primary-bright: #4ade80;
+  /* Pastel Rainbow Palette */
+  --baby-pink: #ffb3ba;
+  --apricot: #ffdfba;
+  --pale-yellow: #ffffba;
+  --mint-green: #baffc9;
+  --sky-blue: #bae1ff;
+  
+  /* Core UI Colors */
   --bg: #ffffff;
-  --surface: #f8fafc;
-  --text: #0f172a;
+  --surface: #fefefe;
+  --text: #1e293b;
   --text-light: #64748b;
   --border: #f1f5f9;
   --nav-bg: #1e293b;
-  --radius: 20px;
 }
 
 body.dark {
-  --text: #f1f5f9;
-  --text-light: #94a3b8;
   --bg: #0f172a;
   --surface: #1e293b;
+  --text: #f1f5f9;
   --border: #334155;
+  --nav-bg: #000000;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background-color: var(--bg);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%2322c55e' fill-opacity='0.05'%3E%3Cpath d='M13 32a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V32zm3 0v12h12V32H16zm2 2h8v8h-8V34zm11 76a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56-82v28H56V27h24zM59 30v22h18V30H59zm53 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm41 77a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-41 68v14h14V93h-14zm2-2h10v10h-10V91zm115 11v20h20v-20h-20zm18 18h-16v-16h16v16zM61 97a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H64a3 3 0 0 1-3-3V97zm3 0v12h12V97H64zm1 2h10v8H65v-8zm53 38a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-111 26a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56 61a10 10 0 1 1-10 10 10 10 0 0 1 10-10zm0 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm41-68v28H96V97h24zm-21 3v22h18V100H100zM12 127a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3v-12zm3 0v12h12v-12H15zm1 2h10v8H16v-8zm101 22a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm26-51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'/%3E%3C/g%3E%3C/svg%3E");
+  /* WhatsApp Style Doodle Pattern with Mint Green tint */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%23baffc9' fill-opacity='0.15'%3E%3Cpath d='M13 32a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V32zm3 0v12h12V32H16zm2 2h8v8h-8V34zm11 76a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56-82v28H56V27h24zM59 30v22h18V30H59zm53 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm41 77a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-41 68v14h14V93h-14zm2-2h10v10h-10V91zm115 11v20h20v-20h-20zm18 18h-16v-16h16v16zM61 97a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H64a3 3 0 0 1-3-3V97zm3 0v12h12V97H64zm1 2h10v8H65v-8zm53 38a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-111 26a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56 61a10 10 0 1 1-10 10 10 10 0 0 1 10-10zm0 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm41-68v28H96V97h24zm-21 3v22h18V100H100zM12 127a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3v-12zm3 0v12h12v-12H15zm1 2h10v8H16v-8zm101 22a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm26-51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'/%3E%3C/g%3E%3C/svg%3E");
   background-size: 180px 180px;
   font-family: 'Plus Jakarta Sans', sans-serif;
   color: var(--text);
   padding-bottom: 120px;
 }
 
-/* UI Elements */
+/* Header */
 .app-header {
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: blur(12px);
-  height: 64px;
+  background: var(--surface);
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 20px;
-  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  border-bottom: 3px solid var(--sky-blue);
   position: sticky; top: 0; z-index: 1000;
 }
-.logo { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--primary); }
+.logo { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -1px; }
+.logo span { color: #8b5cf6; } /* Purple accent for 'Kart' */
 
-.hero { padding: 25px 20px 0; }
-.hero-title { font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 800; line-height: 1.1; }
+.hero { padding: 30px 24px 10px; }
+.hero-title { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1.1; color: var(--text); }
+.hero-title em { font-style: normal; color: #3b82f6; }
 
-.search-wrap { position: relative; margin: 15px 0; }
+/* Search Box */
+.search-wrap { position: relative; margin: 20px 0; }
 .search-wrap input {
-  width: 100%; padding: 15px 15px 15px 45px; border-radius: 18px;
-  border: 1px solid var(--border); background: white; outline: none;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  width: 100%; padding: 16px 16px 16px 52px; border-radius: 16px;
+  border: 2px solid var(--sky-blue); background: var(--surface); color: var(--text); 
+  outline: none; font-size: 15px; font-weight: 600;
 }
-.search-icon { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 18px; stroke: var(--text-light); fill: none; }
+.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 22px; stroke: var(--text-light); fill: none; }
 
-/* Enhanced Filter Bar */
-.filter-bar {
-  display: flex; gap: 8px; padding: 10px 20px; overflow-x: auto; scrollbar-width: none;
-}
+/* Filter Bar */
+.filter-bar { display: flex; gap: 10px; padding: 10px 24px; overflow-x: auto; scrollbar-width: none; }
 .filter-item {
-  padding: 8px 14px; border-radius: 12px; border: 1.5px solid var(--border);
-  background: white; font-size: 12px; font-weight: 700; outline: none; white-space: nowrap;
-  transition: 0.2s;
+  padding: 10px 16px; border-radius: 12px; border: 2px solid var(--border);
+  background: var(--surface); font-size: 13px; font-weight: 700; color: var(--text);
+  outline: none; white-space: nowrap; cursor: pointer;
 }
-.filter-item.active-btn { background: var(--primary); color: white; border-color: var(--primary); }
+.filter-item.active-btn { background: var(--mint-green); border-color: var(--mint-green); }
 
 /* Product Grid */
-.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 15px 20px; }
-.product-card { background: white; border-radius: 20px; border: 1px solid var(--border); overflow: hidden; transition: 0.3s; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-.product-card:hover { transform: translateY(-5px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
-.p-img-container { aspect-ratio: 1/1; background: var(--surface); position: relative; }
-.p-img-container img { width: 100%; height: 100%; object-fit: cover; }
-.p-info { padding: 12px; }
-.p-price { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; }
-.p-title { font-size: 13px; color: var(--text-light); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.p-badge { position: absolute; top: 8px; left: 8px; background: var(--primary); color: white; padding: 3px 8px; border-radius: 8px; font-size: 10px; font-weight: 800; }
-
-/* Stats Footer Section */
-.stats-container {
-  margin: 40px 20px 20px;
-  background: white;
-  padding: 30px 20px;
-  border-radius: 24px;
-  border: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  text-align: center;
+.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 15px 24px; }
+.product-card { 
+  background: white; border-radius: 20px; border: 1.5px solid var(--border); 
+  overflow: hidden; transition: 0.3s;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
 }
-.stat-box h3 { font-family: 'Syne', sans-serif; font-size: 24px; color: var(--primary); }
-.stat-box p { font-size: 12px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-top: 4px; }
+.product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 25px rgba(0,0,0,0.06); border-color: var(--sky-blue); }
+
+.p-img-container { aspect-ratio: 1/1; background: var(--sky-blue); position: relative; }
+.p-img-container img { width: 100%; height: 100%; object-fit: cover; }
+
+.p-info { padding: 14px; }
+.p-price { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
+.p-title { font-size: 14px; color: var(--text-light); font-weight: 600; margin: 4px 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+.p-badge { position: absolute; top: 12px; left: 12px; background: var(--pale-yellow); color: var(--text); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; border: 1px solid rgba(0,0,0,0.05); }
+
+/* Stats Section */
+.stats-container {
+  margin: 40px 24px; background: white; padding: 32px 20px; border-radius: 24px;
+  border: 2px solid var(--pale-yellow);
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; text-align: center;
+}
+.stat-box h3 { font-family: 'Syne', sans-serif; font-size: 28px; color: var(--text); margin-bottom: 4px; }
+.stat-box p { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
 
 /* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  width: 90%; max-width: 400px; background: var(--nav-bg);
-  height: 70px; border-radius: 20px; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  width: 92%; max-width: 420px; background: var(--nav-bg);
+  height: 75px; border-radius: 24px; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 .nav-item { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-.nav-item.active { color: var(--primary-bright); }
-.nav-svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2.5; }
-.nav-sell { background: var(--primary); width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -35px; border: 4px solid var(--bg); color: white !important; }
+.nav-item.active { color: var(--mint-green); }
+.nav-svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+.nav-sell { background: var(--baby-pink); width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -40px; border: 5px solid var(--bg); color: var(--text) !important; }
 
-/* Modals */
-#productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; z-index: 3000; align-items: flex-end; backdrop-filter: blur(4px); }
-.modal-content { background: white; width: 100%; border-radius: 30px 30px 0 0; max-height: 85vh; overflow-y: auto; padding-bottom: 30px; }
+/* Modal */
+#productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 3000; align-items: flex-end; backdrop-filter: blur(10px); }
+.modal-content { background: white; width: 100%; border-radius: 32px 32px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 40px; }
 
 @media (min-width: 600px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
   .stats-container { grid-template-columns: repeat(4, 1fr); }
 }
 </style>
@@ -125,15 +132,15 @@ body {
 <body>
 
 <header class="app-header">
-  <div class="logo">DormKart</div>
-  <button onclick="toggleDarkMode()" id="themeBtn" class="theme-btn">🌙</button>
+  <div class="logo">Dorm<span>Kart</span></div>
+  <button onclick="toggleDarkMode()" id="themeBtn" class="filter-item" style="border:none; background: var(--pale-yellow);">🌙 Mode</button>
 </header>
 
 <div class="hero">
-  <div class="hero-title">Exclusive deals for<br><em>your hostel life</em></div>
+  <div class="hero-title">Student deals,<br><em>right in your dorm.</em></div>
   <div class="search-wrap">
-    <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    <input id="searchInput" placeholder="Search books, gadgets, dorm stuff...">
+    <svg class="search-icon" viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input id="searchInput" placeholder="Books, gadgets, decor...">
   </div>
 </div>
 
@@ -148,14 +155,14 @@ body {
     <option value="Common">Common</option>
   </select>
   <select id="semFilter" class="filter-item" onchange="applyFilters()">
-    <option value="">All Sems</option>
+    <option value="">All Semesters</option>
     <option value="1">Sem 1</option><option value="2">Sem 2</option>
     <option value="3">Sem 3</option><option value="4">Sem 4</option>
     <option value="5">Sem 5</option><option value="6">Sem 6</option>
     <option value="7">Sem 7</option><option value="8">Sem 8</option>
   </select>
   <select id="priceSort" class="filter-item" onchange="applyFilters()">
-    <option value="">Price</option>
+    <option value="">Sort By Price</option>
     <option value="low">Low to High</option>
     <option value="high">High to Low</option>
   </select>
@@ -165,20 +172,20 @@ body {
 
 <section class="stats-container">
     <div class="stat-box">
-        <h3 id="statUsers">0</h3>
-        <p>Active Students</p>
+        <h3 id="statUsers">...</h3>
+        <p>Verified Students</p>
     </div>
     <div class="stat-box">
-        <h3 id="statAds">0</h3>
-        <p>Items Listed</p>
+        <h3 id="statAds">...</h3>
+        <p>Live Listings</p>
     </div>
     <div class="stat-box">
-        <h3>4.9/5</h3>
-        <p>Trust Rating</p>
+        <h3>Local</h3>
+        <p>In-Campus Pickup</p>
     </div>
     <div class="stat-box">
-        <h3>12+</h3>
-        <p>Campuses</p>
+        <h3>Safe</h3>
+        <p>Trusted Trades</p>
     </div>
 </section>
 
@@ -194,7 +201,7 @@ body {
     <span>Chats</span>
   </a>
   <a href="add_product.html" class="nav-item nav-sell">
-    <svg class="nav-svg" viewBox="0 0 24 24" style="stroke:white;"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <svg class="nav-svg" viewBox="0 0 24 24" style="stroke:var(--text);"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
   </a>
   <a href="my-ads.html" class="nav-item">
     <svg class="nav-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>
@@ -223,21 +230,18 @@ async function init() {
 }
 
 async function fetchLiveStats() {
-    // Fetch count of users
-    const { count: userCount } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
-    // Fetch count of active products
-    const { count: adCount } = await supabaseClient.from('products').select('*', { count: 'exact', head: true, eq: ('status', 'active') });
-    
-    document.getElementById('statUsers').innerText = (userCount || 0) + "+";
-    document.getElementById('statAds').innerText = (adCount || 0) + "+";
+    const { count: uCount } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
+    const { count: aCount } = await supabaseClient.from('products').select('*', { count: 'exact', head: true }).eq('status', 'active');
+    document.getElementById('statUsers').innerText = (uCount || 0) + "+";
+    document.getElementById('statAds').innerText = (aCount || 0) + "+";
 }
 
 async function fetchProducts() {
   const { data, error } = await supabaseClient
     .from('products')
-    .select(`*, seller:users(name, college, avatar_url, upi_id)`)
-    .eq('status', 'active');
-  
+    .select(`*, seller:users(name, college, avatar_url)`)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false });
   if (error) return console.error(error);
   allProducts = data;
   applyFilters();
@@ -269,20 +273,21 @@ function toggleMyCampus() {
 
 function renderGrid(products) {
   const grid = document.getElementById('productGrid');
-  grid.innerHTML = products.length ? "" : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:grey;">No products found</div>`;
+  grid.innerHTML = products.length ? "" : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-light);">No student listings found.</div>`;
   
   products.forEach(p => {
     const card = document.createElement('div');
     card.className = 'product-card';
+    const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
     card.innerHTML = `
       <div class="p-img-container">
-        <img src="${p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg'}">
+        <img src="${img}" loading="lazy">
         <div class="p-badge">${p.branch} • Sem ${p.semester}</div>
       </div>
       <div class="p-info">
-        <div class="p-price">₹${p.price}</div>
+        <div class="p-price">₹${Math.floor(p.price)}</div>
         <div class="p-title">${p.title}</div>
-        <div style="font-size:10px; color:var(--primary); margin-top:4px; font-weight:700;">${p.seller?.college}</div>
+        <div style="font-size:11px; color:#10b981; font-weight:700;">📍 ${p.seller?.college || 'Campus'}</div>
       </div>
     `;
     card.onclick = () => showDetails(p);
@@ -293,25 +298,31 @@ function renderGrid(products) {
 function showDetails(p) {
   const modal = document.getElementById('productModal');
   const content = document.getElementById('modalContent');
+  const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
   content.innerHTML = `
-    <div style="width:40px;height:5px;background:#eee;margin:10px auto;border-radius:10px;"></div>
-    <div style="padding:20px;">
-        <div style="height:280px;background:#f8fafc;border-radius:20px;overflow:hidden;">
-            <img src="${p.image_url.split(',')[0]}" style="width:100%;height:100%;object-fit:contain;">
+    <div style="width:40px;height:5px;background:#eee;margin:12px auto;border-radius:10px;"></div>
+    <div style="padding:24px;">
+        <button style="float:right; border:none; background:var(--sky-blue); width:32px; height:32px; border-radius:50%;" onclick="closeModal()">✕</button>
+        <div style="height:300px; background:var(--bg); border-radius:24px; overflow:hidden; border:2px solid var(--border);">
+            <img src="${images[0]}" style="width:100%;height:100%;object-fit:contain;">
         </div>
-        <div style="margin-top:20px;">
-            <h1 style="font-family:Syne;font-size:30px;">₹${p.price}</h1>
-            <p style="font-weight:700;font-size:18px;">${p.title}</p>
-            <p style="color:grey;font-size:14px;margin:10px 0;">${p.description}</p>
-        </div>
-        <div style="margin-top:25px;padding:15px;background:var(--surface);border-radius:15px;display:flex;align-items:center;gap:12px;">
-            <div style="width:40px;height:40px;background:var(--primary);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;">${p.seller?.name?.charAt(0)}</div>
-            <div>
-                <p style="font-weight:700;font-size:14px;">${p.seller?.name}</p>
-                <p style="font-size:12px;color:grey;">${p.seller?.college}</p>
+        <div style="margin-top:24px;">
+            <h1 style="font-family:Syne; font-size:32px;">₹${p.price}</h1>
+            <p style="font-weight:700; font-size:20px; margin:4px 0 12px;">${p.title}</p>
+            <div style="display:flex; gap:8px; margin-bottom:16px;">
+                <span style="background:var(--mint-green); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:800;">${p.branch}</span>
+                <span style="background:var(--sky-blue); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:800;">Sem ${p.semester}</span>
             </div>
+            <p style="color:var(--text-light); font-size:14px; line-height:1.6; background:#f9fafb; padding:16px; border-radius:16px;">${p.description || 'No detailed description.'}</p>
         </div>
-        <button onclick="closeModal()" style="width:100%;padding:15px;margin-top:20px;border-radius:15px;border:none;background:#eee;font-weight:700;">Close</button>
+        <div style="margin-top:24px; padding:16px; background:var(--nav-bg); border-radius:20px; display:flex; align-items:center; gap:12px; color:white;">
+            <div style="width:44px; height:44px; background:var(--pale-yellow); border-radius:50%; color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px;">${p.seller?.name?.charAt(0)}</div>
+            <div>
+                <p style="font-weight:700; font-size:15px;">${p.seller?.name}</p>
+                <p style="font-size:11px; color:#94a3b8;">${p.seller?.college}</p>
+            </div>
+            <button onclick="window.location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'" style="margin-left:auto; background:var(--mint-green); border:none; color:var(--text); padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer;">Chat Now</button>
+        </div>
     </div>
   `;
   modal.style.display = 'flex';
