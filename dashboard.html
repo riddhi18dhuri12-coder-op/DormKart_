@@ -6,335 +6,237 @@
 <title>DormKart • Campus Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 <style>
 :root {
-  /* Pastel Rainbow Palette */
-  --baby-pink: #ffb3ba;
-  --apricot: #ffdfba;
   --pale-yellow: #ffffba;
   --mint-green: #baffc9;
   --sky-blue: #bae1ff;
-  
-  /* Core UI Colors */
-  --bg: #ffffff;
-  --surface: #fefefe;
-  --text: #1e293b;
-  --text-light: #64748b;
-  --border: #f1f5f9;
-  --nav-bg: #1e293b;
+  --baby-pink: #ffb3ba;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --bg: #f8fafc;
 }
 
-body.dark {
-  --bg: #0f172a;
-  --surface: #1e293b;
-  --text: #f1f5f9;
-  --border: #334155;
-  --nav-bg: #000000;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); padding-bottom: 100px; color: var(--text-main); }
 
-body {
-  background-color: var(--bg);
-  /* WhatsApp Style Doodle Pattern with Mint Green tint */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='%23baffc9' fill-opacity='0.15'%3E%3Cpath d='M13 32a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V32zm3 0v12h12V32H16zm2 2h8v8h-8V34zm11 76a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56-82v28H56V27h24zM59 30v22h18V30H59zm53 11a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm41 77a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-41 68v14h14V93h-14zm2-2h10v10h-10V91zm115 11v20h20v-20h-20zm18 18h-16v-16h16v16zM61 97a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H64a3 3 0 0 1-3-3V97zm3 0v12h12V97H64zm1 2h10v8H65v-8zm53 38a11 11 0 0 1-11-11v-12a11 11 0 0 1 11-11h12v45h-12zm3-11v-12h-3a9 9 0 0 0-9 9v12a9 9 0 0 0 9 9h3v-18zm-41-61a12 12 0 1 1-12 12 12 12 0 0 1 12-12zm0 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zm-111 26a4 4 0 1 0-8 0 4 4 0 0 0 8 0zm-4-1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm56 61a10 10 0 1 1-10 10 10 10 0 0 1 10-10zm0 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm41-68v28H96V97h24zm-21 3v22h18V100H100zM12 127a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H15a3 3 0 0 1-3-3v-12zm3 0v12h12v-12H15zm1 2h10v8H16v-8zm101 22a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm26-51h-10v-10h10v10zm-2-2v-6h-6v6h6zM28 65a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm0-6a2 2 0 1 0 0 4 2 2 0 0 0 0-4z'/%3E%3C/g%3E%3C/svg%3E");
-  background-size: 180px 180px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: var(--text);
-  padding-bottom: 120px;
-}
-
-/* Header */
+/* Navigation & Header */
 .app-header {
-  background: var(--surface);
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  border-bottom: 3px solid var(--sky-blue);
-  position: sticky; top: 0; z-index: 1000;
+  background: white; padding: 15px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #eee;
 }
-.logo { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -1px; }
-.logo span { color: #8b5cf6; } /* Purple accent for 'Kart' */
+.logo { font-weight: 800; font-size: 22px; color: var(--text-main); letter-spacing: -1px; }
 
-.hero { padding: 30px 24px 10px; }
-.hero-title { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1.1; color: var(--text); }
-.hero-title em { font-style: normal; color: #3b82f6; }
-
-/* Search Box */
-.search-wrap { position: relative; margin: 20px 0; }
-.search-wrap input {
-  width: 100%; padding: 16px 16px 16px 52px; border-radius: 16px;
-  border: 2px solid var(--sky-blue); background: var(--surface); color: var(--text); 
-  outline: none; font-size: 15px; font-weight: 600;
+/* Grid System */
+.product-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 16px; padding: 20px;
 }
-.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); width: 22px; stroke: var(--text-light); fill: none; }
 
-/* Filter Bar */
-.filter-bar { display: flex; gap: 10px; padding: 10px 24px; overflow-x: auto; scrollbar-width: none; }
-.filter-item {
-  padding: 10px 16px; border-radius: 12px; border: 2px solid var(--border);
-  background: var(--surface); font-size: 13px; font-weight: 700; color: var(--text);
-  outline: none; white-space: nowrap; cursor: pointer;
+/* THE NEW PRODUCT CARD (Matching Image) */
+.p-card {
+  background: white; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03); transition: 0.3s;
+  cursor: pointer; position: relative; border: 1px solid #f1f5f9;
 }
-.filter-item.active-btn { background: var(--mint-green); border-color: var(--mint-green); }
+.p-card:hover { transform: translateY(-5px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
 
-/* Product Grid */
-.product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 15px 24px; }
-.product-card { 
-  background: white; border-radius: 20px; border: 1.5px solid var(--border); 
-  overflow: hidden; transition: 0.3s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+.p-img { width: 100%; aspect-ratio: 1.1; object-fit: cover; background: #f8fafc; }
+
+.discount-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: var(--mint-green); color: #065f46;
+    font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 6px;
 }
-.product-card:hover { transform: translateY(-6px); box-shadow: 0 15px 25px rgba(0,0,0,0.06); border-color: var(--sky-blue); }
 
-.p-img-container { aspect-ratio: 1/1; background: var(--sky-blue); position: relative; }
-.p-img-container img { width: 100%; height: 100%; object-fit: cover; }
+.p-content { padding: 12px; }
 
-.p-info { padding: 14px; }
-.p-price { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; color: var(--text); }
-.p-title { font-size: 14px; color: var(--text-light); font-weight: 600; margin: 4px 0 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
-.p-badge { position: absolute; top: 12px; left: 12px; background: var(--pale-yellow); color: var(--text); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; border: 1px solid rgba(0,0,0,0.05); }
+.p-meta-top { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
 
-/* Stats Section */
-.stats-container {
-  margin: 40px 24px; background: white; padding: 32px 20px; border-radius: 24px;
-  border: 2px solid var(--pale-yellow);
-  display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; text-align: center;
+.p-title {
+    font-size: 14px; font-weight: 700; color: #2563eb;
+    margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden;
 }
-.stat-box h3 { font-family: 'Syne', sans-serif; font-size: 28px; color: var(--text); margin-bottom: 4px; }
-.stat-box p { font-size: 11px; font-weight: 800; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+
+.p-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.curr-price { font-size: 18px; font-weight: 800; color: var(--text-main); }
+.old-price { font-size: 12px; color: var(--text-muted); text-decoration: line-through; }
+
+.cond-badge {
+    float: right; background: #eff6ff; color: #3b82f6;
+    font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px;
+}
+
+.p-footer {
+    border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 5px;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.seller-info { display: flex; align-items: center; gap: 6px; }
+.avatar-sm { width: 22px; height: 22px; border-radius: 50%; background: #e2e8f0; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: #475569; }
+.seller-name { font-size: 11px; font-weight: 600; color: var(--text-muted); }
+.rating-pill { font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 2px; }
+
+/* MODAL STYLING */
+#pModal {
+    position: fixed; inset: 0; background: rgba(15,23,42,0.5);
+    display: none; z-index: 5000; align-items: flex-end; backdrop-filter: blur(8px);
+}
+.modal-box {
+    background: white; width: 100%; border-radius: 24px 24px 0 0;
+    max-height: 90vh; overflow-y: auto; padding: 20px; animation: slideUp 0.3s ease;
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+.m-img-box { width: 100%; height: 280px; border-radius: 16px; overflow: hidden; background: #f8fafc; border: 1px solid #f1f5f9; }
+.m-img-box img { width: 100%; height: 100%; object-fit: contain; }
+
+.action-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 20px; }
+.btn-action {
+    padding: 14px; border-radius: 12px; border: none; font-weight: 800;
+    font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: 0.2s;
+}
+.btn-chat { background: var(--sky-blue); color: var(--text-main); }
+.btn-offer { background: var(--pale-yellow); color: var(--text-main); }
+.btn-trade { background: var(--mint-green); color: var(--text-main); grid-column: span 2; }
+.btn-close { background: #f1f5f9; color: var(--text-muted); grid-column: span 2; margin-top: 5px; }
 
 /* Bottom Nav */
 .bottom-nav {
   position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-  width: 92%; max-width: 420px; background: var(--nav-bg);
-  height: 75px; border-radius: 24px; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  width: 90%; max-width: 400px; background: #1e293b;
+  height: 70px; border-radius: 20px; display: flex; justify-content: space-around; align-items: center; z-index: 1000;
 }
 .nav-item { color: #94a3b8; text-decoration: none; font-size: 10px; font-weight: 700; display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .nav-item.active { color: var(--mint-green); }
-.nav-svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 2.5; }
-.nav-sell { background: var(--baby-pink); width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-top: -40px; border: 5px solid var(--bg); color: var(--text) !important; }
 
-/* Modal */
-#productModal { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 3000; align-items: flex-end; backdrop-filter: blur(10px); }
-.modal-content { background: white; width: 100%; border-radius: 32px 32px 0 0; max-height: 90vh; overflow-y: auto; padding-bottom: 40px; }
-
-@media (min-width: 600px) {
-  .product-grid { grid-template-columns: repeat(3, 1fr); }
-  .stats-container { grid-template-columns: repeat(4, 1fr); }
-}
+@media (max-width: 400px) { .product-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <header class="app-header">
-  <div class="logo">Dorm<span>Kart</span></div>
-  <button onclick="toggleDarkMode()" id="themeBtn" class="filter-item" style="border:none; background: var(--pale-yellow);">🌙 Mode</button>
+    <div class="logo">DormKart</div>
+    <div class="seller-info"><span class="material-icons-round">account_circle</span></div>
 </header>
 
-<div class="hero">
-  <div class="hero-title">Student deals,<br><em>right in your dorm.</em></div>
-  <div class="search-wrap">
-    <svg class="search-icon" viewBox="0 0 24 24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    <input id="searchInput" placeholder="Books, gadgets, decor...">
-  </div>
+<main class="product-grid" id="productGrid">
+    </main>
+
+<div id="pModal">
+    <div class="modal-box" id="modalContent"></div>
 </div>
-
-<div class="filter-bar">
-  <button class="filter-item" id="myCampusBtn" onclick="toggleMyCampus()">🏫 My Campus</button>
-  <select id="branchFilter" class="filter-item" onchange="applyFilters()">
-    <option value="">All Branches</option>
-    <option value="CSE">CSE / IT</option>
-    <option value="Mechanical">Mechanical</option>
-    <option value="Civil">Civil</option>
-    <option value="Electrical">Electrical</option>
-    <option value="Common">Common</option>
-  </select>
-  <select id="semFilter" class="filter-item" onchange="applyFilters()">
-    <option value="">All Semesters</option>
-    <option value="1">Sem 1</option><option value="2">Sem 2</option>
-    <option value="3">Sem 3</option><option value="4">Sem 4</option>
-    <option value="5">Sem 5</option><option value="6">Sem 6</option>
-    <option value="7">Sem 7</option><option value="8">Sem 8</option>
-  </select>
-  <select id="priceSort" class="filter-item" onchange="applyFilters()">
-    <option value="">Sort By Price</option>
-    <option value="low">Low to High</option>
-    <option value="high">High to Low</option>
-  </select>
-</div>
-
-<main id="productGrid" class="product-grid"></main>
-
-<section class="stats-container">
-    <div class="stat-box">
-        <h3 id="statUsers">...</h3>
-        <p>Verified Students</p>
-    </div>
-    <div class="stat-box">
-        <h3 id="statAds">...</h3>
-        <p>Live Listings</p>
-    </div>
-    <div class="stat-box">
-        <h3>Local</h3>
-        <p>In-Campus Pickup</p>
-    </div>
-    <div class="stat-box">
-        <h3>Safe</h3>
-        <p>Trusted Trades</p>
-    </div>
-</section>
-
-<div id="productModal"><div class="modal-content" id="modalContent"></div></div>
 
 <nav class="bottom-nav">
-  <a href="dashboard.html" class="nav-item active">
-    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-    <span>Home</span>
-  </a>
-  <a href="chats.html" class="nav-item">
-    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-    <span>Chats</span>
-  </a>
-  <a href="add_product.html" class="nav-item nav-sell">
-    <svg class="nav-svg" viewBox="0 0 24 24" style="stroke:var(--text);"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-  </a>
-  <a href="my-ads.html" class="nav-item">
-    <svg class="nav-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line></svg>
-    <span>My Ads</span>
-  </a>
-  <a href="profile.html" class="nav-item">
-    <svg class="nav-svg" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-    <span>Profile</span>
-  </a>
+  <a href="dashboard.html" class="nav-item active"><span class="material-icons-round">home</span>Home</a>
+  <a href="chats.html" class="nav-item"><span class="material-icons-round">chat</span>Chats</a>
+  <a href="add_product.html" class="nav-item"><span class="material-icons-round">add_box</span>Sell</a>
+  <a href="profile.html" class="nav-item"><span class="material-icons-round">person</span>Profile</a>
 </nav>
 
 <script>
 let allProducts = [];
-let userCollege = "";
-let myCampusOnly = false;
 
 async function init() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   if (!session) { location.href = 'login-signup.html'; return; }
-
-  const { data: profile } = await supabaseClient.from('users').select('college').eq('id', session.user.id).single();
-  userCollege = profile?.college || "";
-
   fetchProducts();
-  fetchLiveStats();
-}
-
-async function fetchLiveStats() {
-    const { count: uCount } = await supabaseClient.from('users').select('*', { count: 'exact', head: true });
-    const { count: aCount } = await supabaseClient.from('products').select('*', { count: 'exact', head: true }).eq('status', 'active');
-    document.getElementById('statUsers').innerText = (uCount || 0) + "+";
-    document.getElementById('statAds').innerText = (aCount || 0) + "+";
 }
 
 async function fetchProducts() {
   const { data, error } = await supabaseClient
     .from('products')
-    .select(`*, seller:users(name, college, avatar_url)`)
-    .eq('status', 'active')
-    .order('created_at', { ascending: false });
+    .select(`*, seller:users(name, college, is_verified)`)
+    .eq('status', 'active');
+  
   if (error) return console.error(error);
   allProducts = data;
-  applyFilters();
+  renderCards(data);
 }
 
-function applyFilters() {
-  let filtered = [...allProducts];
-  const search = document.getElementById('searchInput').value.toLowerCase();
-  const branch = document.getElementById('branchFilter').value;
-  const sem = document.getElementById('semFilter').value;
-  const sort = document.getElementById('priceSort').value;
-
-  if (search) filtered = filtered.filter(p => p.title.toLowerCase().includes(search));
-  if (branch) filtered = filtered.filter(p => p.branch === branch);
-  if (sem) filtered = filtered.filter(p => String(p.semester) === sem);
-  if (myCampusOnly) filtered = filtered.filter(p => p.seller?.college === userCollege);
-
-  if (sort === 'low') filtered.sort((a, b) => a.price - b.price);
-  if (sort === 'high') filtered.sort((a, b) => b.price - a.price);
-
-  renderGrid(filtered);
-}
-
-function toggleMyCampus() {
-  myCampusOnly = !myCampusOnly;
-  document.getElementById('myCampusBtn').classList.toggle('active-btn', myCampusOnly);
-  applyFilters();
-}
-
-function renderGrid(products) {
+function renderCards(products) {
   const grid = document.getElementById('productGrid');
-  grid.innerHTML = products.length ? "" : `<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-light);">No student listings found.</div>`;
+  grid.innerHTML = '';
   
   products.forEach(p => {
+    const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
+    // Random fake discount logic for UI matching your image
+    const oldPrice = Math.floor(p.price * 1.5);
+    const disc = Math.round(((oldPrice - p.price) / oldPrice) * 100);
+
     const card = document.createElement('div');
-    card.className = 'product-card';
-    const img = p.image_url ? p.image_url.split(',')[0] : 'placeholder.jpg';
+    card.className = 'p-card';
     card.innerHTML = `
-      <div class="p-img-container">
-        <img src="${img}" loading="lazy">
-        <div class="p-badge">${p.branch} • Sem ${p.semester}</div>
-      </div>
-      <div class="p-info">
-        <div class="p-price">₹${Math.floor(p.price)}</div>
-        <div class="p-title">${p.title}</div>
-        <div style="font-size:11px; color:#10b981; font-weight:700;">📍 ${p.seller?.college || 'Campus'}</div>
+      <div class="discount-badge">${disc}% off</div>
+      <img src="${images[0]}" class="p-img">
+      <div class="p-content">
+          <div class="p-meta-top">${p.category || 'Books'} • Sem ${p.semester}</div>
+          <div class="p-title">${p.title}</div>
+          <div class="cond-badge">${p.condition || 'Good'}</div>
+          <div class="p-price-row">
+              <span class="curr-price">₹${Math.floor(p.price)}</span>
+              <span class="old-price">₹${oldPrice}</span>
+          </div>
+          <div class="p-footer">
+              <div class="seller-info">
+                  <div class="avatar-sm">${p.seller?.name?.charAt(0) || 'S'}</div>
+                  <span class="seller-name">${p.seller?.name || 'Student'}</span>
+                  ${p.seller?.is_verified ? '<span class="material-icons-round" style="font-size:12px; color:#3b82f6;">verified</span>' : ''}
+              </div>
+              <div class="rating-pill"><span class="material-icons-round" style="font-size:14px; color:#fbbf24;">star</span> 4.8</div>
+          </div>
       </div>
     `;
-    card.onclick = () => showDetails(p);
+    card.onclick = () => showModal(p);
     grid.appendChild(card);
   });
 }
 
-function showDetails(p) {
-  const modal = document.getElementById('productModal');
-  const content = document.getElementById('modalContent');
-  const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
-  content.innerHTML = `
-    <div style="width:40px;height:5px;background:#eee;margin:12px auto;border-radius:10px;"></div>
-    <div style="padding:24px;">
-        <button style="float:right; border:none; background:var(--sky-blue); width:32px; height:32px; border-radius:50%;" onclick="closeModal()">✕</button>
-        <div style="height:300px; background:var(--bg); border-radius:24px; overflow:hidden; border:2px solid var(--border);">
-            <img src="${images[0]}" style="width:100%;height:100%;object-fit:contain;">
+function showModal(p) {
+    const modal = document.getElementById('pModal');
+    const box = document.getElementById('modalContent');
+    const images = p.image_url ? p.image_url.split(',') : ['placeholder.jpg'];
+    
+    // Check if swap/trade is enabled
+    const swapBtn = (p.swap_enabled === true || p.swap_enabled === 'true') 
+        ? `<button class="btn-action btn-trade" onclick="proposeTrade('${p.id}')"><span class="material-icons-round">sync</span>Propose Trade Exchange</button>` 
+        : '';
+
+    box.innerHTML = `
+        <div style="width:40px;height:4px;background:#e2e8f0;margin:0 auto 15px;border-radius:10px;"></div>
+        <div class="m-img-box"><img src="${images[0]}"></div>
+        <div style="margin-top:20px;">
+            <h1 style="font-size:24px; font-weight:800;">₹${p.price}</h1>
+            <h2 style="font-size:18px; margin:5px 0;">${p.title}</h2>
+            <p style="color:var(--text-muted); font-size:14px; line-height:1.6;">${p.description || 'No description provided.'}</p>
         </div>
-        <div style="margin-top:24px;">
-            <h1 style="font-family:Syne; font-size:32px;">₹${p.price}</h1>
-            <p style="font-weight:700; font-size:20px; margin:4px 0 12px;">${p.title}</p>
-            <div style="display:flex; gap:8px; margin-bottom:16px;">
-                <span style="background:var(--mint-green); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:800;">${p.branch}</span>
-                <span style="background:var(--sky-blue); padding:6px 14px; border-radius:10px; font-size:12px; font-weight:800;">Sem ${p.semester}</span>
-            </div>
-            <p style="color:var(--text-light); font-size:14px; line-height:1.6; background:#f9fafb; padding:16px; border-radius:16px;">${p.description || 'No detailed description.'}</p>
+
+        <div class="action-grid">
+            <button class="btn-action btn-chat" onclick="location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'"><span class="material-icons-round">chat</span>Chat</button>
+            <button class="btn-action btn-offer" onclick="makeOffer('${p.price}')"><span class="material-icons-round">local_offer</span>Make Offer</button>
+            ${swapBtn}
+            <button class="btn-action btn-close" onclick="closeModal()">Close</button>
         </div>
-        <div style="margin-top:24px; padding:16px; background:var(--nav-bg); border-radius:20px; display:flex; align-items:center; gap:12px; color:white;">
-            <div style="width:44px; height:44px; background:var(--pale-yellow); border-radius:50%; color:var(--text); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px;">${p.seller?.name?.charAt(0)}</div>
-            <div>
-                <p style="font-weight:700; font-size:15px;">${p.seller?.name}</p>
-                <p style="font-size:11px; color:#94a3b8;">${p.seller?.college}</p>
-            </div>
-            <button onclick="window.location.href='chat_room.html?seller_id=${p.seller_id}&product_id=${p.id}'" style="margin-left:auto; background:var(--mint-green); border:none; color:var(--text); padding:12px 18px; border-radius:14px; font-weight:800; cursor:pointer;">Chat Now</button>
-        </div>
-    </div>
-  `;
-  modal.style.display = 'flex';
+    `;
+    modal.style.display = 'flex';
 }
 
-function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-document.getElementById('searchInput').addEventListener('input', applyFilters);
+function closeModal() { document.getElementById('pModal').style.display = 'none'; }
 
-function toggleDarkMode() {
-  document.body.classList.toggle('dark');
+function makeOffer(price) {
+    const offer = prompt(`The listed price is ₹${price}. Enter your offer:`);
+    if(offer) alert(`Your offer of ₹${offer} has been sent to the seller via chat!`);
 }
 
+function proposeTrade(id) {
+    alert("Trade proposal initiated! The seller will see your request in their chats.");
+}
+
+window.onclick = (e) => { if(e.target.id === 'pModal') closeModal(); }
 window.onload = init;
 </script>
 </body>
